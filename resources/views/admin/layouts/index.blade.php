@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('admin-title')</title>
+    <title>Admin | @yield('admin-title')</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/admin/theme/img/favicon.png') }}">
@@ -22,6 +22,12 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/theme/css/feathericon.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('assets/admin/theme/plugins/morris/morris.css') }}">
+
+    <!-- Datatables CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/admin/theme/plugins/datatables/datatables.min.css') }}">
+
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/admin/theme/css/select2.min.css') }}">
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('assets/admin/theme/css/style.css') }} ">
@@ -45,30 +51,53 @@
                 <!-- Page Header -->
                 <div class="page-header">
                     <div class="row">
-                        <div class="col-sm-12">
-                            <h3 class="page-title">Welcome Admin!</h3>
+                        <div class="col-sm-7 col-auto">
+                            <h3 class="page-title">@yield('page-title')</h3>
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item active">Dashboard</li>
+                                <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                                <li class="breadcrumb-item active">@yield('page-title')</li>
                             </ul>
                         </div>
+                        @yield('add-button')
                     </div>
                 </div>
-
+                <!-- /Page Header -->
                 <div class="row">
-                    <div class="col-xl-3 col-sm-6 col-12">
+                    <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
+
+                                {{-- <div id="loader-container">
+                                    <div class="loader"></div>
+                                </div> --}}
                                 @yield('admin-content')
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- /Page Header -->
             </div>
         </div>
         <!-- /Page Wrapper -->
     </div>
     <!-- /Main Wrapper -->
+    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+    <script type="text/javascript">
+        var BASE_URL = "{{ url('/') }}";
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+    </script>
 
     <!-- jQuery -->
     <script src="{{ asset('assets/admin/theme/js/jquery-3.2.1.min.js') }}"></script>
@@ -77,15 +106,26 @@
     <script src="{{ asset('assets/admin/theme/js/popper.min.js') }}"></script>
     <script src="{{ asset('assets/admin/theme/js/bootstrap.min.js') }}"></script>
 
+    {{-- validate JS  --}}
+    <script src="{{ asset('assets/admin/theme/cdnFiles/validate.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/theme/cdnFiles/additional-methods.min.js') }}"></script>
     <!-- Slimscroll JS -->
     <script src="{{ asset('assets/admin/theme/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
-
     <script src="{{ asset('assets/admin/theme/plugins/raphael/raphael.min.js') }}"></script>
     <script src="{{ asset('assets/admin/theme/plugins/morris/morris.min.js') }}"></script>
     <script src="{{ asset('assets/admin/theme/js/chart.morris.js') }}"></script>
+    {{-- toastr --}}
+    <link rel="stylesheet" href="{{ asset('assets/admin/theme/cdnFiles/toastr.css') }}" />
+    <script src="{{ asset('assets/admin/theme/cdnFiles/toastr.min.js') }}"></script>
+    <!-- Select2 JS -->
+    <script src="{{ asset('assets/admin/theme/js/select2.min.js') }}"></script>
 
+    <!-- Datatables JS -->
+    <script src="{{ asset('assets/admin/theme/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/theme/plugins/datatables/datatables.min.js') }}"></script>
     <!-- Custom JS -->
     <script src="{{ asset('assets/admin/theme/js/script.js') }}"></script>
+    @yield('admin-js')
 
 </body>
 
