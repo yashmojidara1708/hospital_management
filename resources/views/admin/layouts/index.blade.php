@@ -53,8 +53,17 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-xl-3 col-sm-6 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                @yield('admin-content')
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- /Page Header -->
-                @yield('admin-content')
             </div>
         </div>
         <!-- /Page Wrapper -->
