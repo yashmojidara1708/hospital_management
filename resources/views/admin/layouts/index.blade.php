@@ -31,20 +31,19 @@
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('assets/admin/theme/css/style.css') }} ">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-
     <!-- Main Wrapper -->
     <div class="main-wrapper">
-
         <!-- Header -->
         <div class="header">
             @include('admin.layouts.navbar')
         </div>
         <!-- /Header -->
         @include('admin.layouts.sidebar')
-
         <!-- Page Wrapper -->
         <div class="page-wrapper">
             <div class="content container-fluid">
@@ -85,7 +84,6 @@
     </form>
     <script type="text/javascript">
         var BASE_URL = "{{ url('/') }}";
-
         const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
