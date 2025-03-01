@@ -6,6 +6,7 @@ $(document).ready(function() {
         $("#specialitiesForm")[0].reset();
         $("#hid").val("");
         $("#specialitiesForm").validate().resetForm();
+        $("#status").val("").change();
         $("#specialitiesForm").find('.error').removeClass('error');
         $("#oldimgbox").hide();
     });
@@ -13,6 +14,7 @@ $(document).ready(function() {
     if ($.fn.DataTable.isDataTable('#specialitiesTable')) {
         $('#specialitiesTable').DataTable().destroy();
     }
+
     $('#specialitiesTable').dataTable({
         searching: true,
         paging: true,
@@ -27,9 +29,6 @@ $(document).ready(function() {
             },
         },
         columns: [{
-                data: "id",
-            },
-            {
                 data: "name",
             },
             {
@@ -41,13 +40,14 @@ $(document).ready(function() {
             },
         ],
     });
+    $('#loader-container').hide();
 })
 
 $(document).on('click', '#Add_Specialities', function() {
     $('#Add_Specialities_details').modal('show');
     $("#modal_title").html("");
-    $("#modal_title").html("Add Team");
-    $("#modal_title").html("Add Team");
+    $("#modal_title").html("Add Specialities");
+    $("#modal_title").html("Add Specialities");
 });
 
 var validationRules = {
@@ -89,4 +89,64 @@ $('form[id="specialitiesForm"]').validate({
             }
         });
     },
+});
+
+$(document).on('click', '#specialitiesEdit', function() {
+    var id = $(this).data("id");
+    $.ajax({
+        type: "GET",
+        url: "/admin/specialities/edit",
+        data: {
+            _token: $("[name='_token']").val(),
+            id: id,
+        },
+        success: function(response) {
+            console.log("response", response.status);
+            if (response.status == 1) {
+                if (response.specialities_data) {
+                    var specialitiesdata = response.specialities_data;
+                    $('#Add_Specialities_details').modal('show');
+                    $("#modal_title").html("Edit Specialities");
+                    $('#hid').val(specialitiesdata.id);
+                    $('#name').val(specialitiesdata.name);
+                    // $("#status").val(specialitiesdata.status);
+                    $("#status").val(specialitiesdata.status).change();
+                }
+            }
+        },
+    });
+});
+
+$(document).on("click", "#delete_specialities", function() {
+    let id = $(this).data("id");
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/specialities/delete",
+                data: {
+                    _token: $("[name='_token']").val(),
+                    id: id,
+                },
+                success: function(response) {
+                    var data = JSON.parse(response);
+                    console.log("data", data);
+                    if (data.status == 1) {
+                        $('#specialitiesTable').DataTable().ajax.reload();
+                        toastr.success(data.message);
+                    } else {
+                        toastr.error(data.message);
+                    }
+                }
+            });
+        }
+    });
 });

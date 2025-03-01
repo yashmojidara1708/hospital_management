@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Specialities</h5>
+                <h5 class="modal-title" id="modal_title">Add Specialities</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -12,7 +12,7 @@
                 <form onsubmit="return false" method="POST" id="specialitiesForm" name="specialitiesForm"
                     enctype="multipart/form-data">
                     @csrf
-
+                    <input type="hidden" id="hid" name="hid" value="">
                     <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Specialities Name</label>
                         <div class="col-lg-9">
@@ -24,7 +24,7 @@
                         <label class="col-lg-3 col-form-label">Status</label>
                         <div class="col-lg-9">
                             <select class="select" id="status" name="status">
-                                <option>Select</option>
+                                <option value="">Select</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
