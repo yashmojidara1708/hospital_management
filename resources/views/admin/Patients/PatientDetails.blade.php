@@ -72,7 +72,7 @@
         </div>
         <!-- /Personal Details Tab -->
     </div>
-    @include('admin.Patients.PatientsModal')
+    @include('admin.patients.PatientsModal')
 @endsection
 
 @section('admin-js')

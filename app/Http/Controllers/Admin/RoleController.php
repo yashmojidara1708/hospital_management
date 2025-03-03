@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\admin;
+
 use App\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class RoleController extends Controller
     //
     public function index()
     {
-        return view('admin.HMS_Role.index');
+        return view('admin.hms_role.index');
     }
     public function rolelist(Request $request)
     {
@@ -53,87 +54,86 @@ class RoleController extends Controller
             })
             ->rawColumns(['action', 'status']) // Ensure HTML is not escaped
             ->make(true);
-    
     }
-    public function togglechange(Request $request,string $id)
+    public function togglechange(Request $request, string $id)
     {
 
-        $role=role::find($id);
+        $role = role::find($id);
         $role->status = $request->status;
         $role->save();
-        return response()->json(['message'=>'Status Updated Successfully!!']);
+        return response()->json(['message' => 'Status Updated Successfully!!']);
     }
-    
-        // Create a new role
-        public function save(Request $request)
-        {
-            $post = $request->post();
-            $response['status'] = 0;
-            $response['message'] = "Somthing Gose Wrong!";
-            $feilds =   [
-                'name' => $request->name,
+
+    // Create a new role
+    public function save(Request $request)
+    {
+        $post = $request->post();
+        $response['status'] = 0;
+        $response['message'] = "Somthing Gose Wrong!";
+        $feilds =   [
+            'name' => $request->name,
+        ];
+
+        $rules = [
+            'name' => ['required'],
+        ];
+
+        $msg = [
+            'name.required' => 'Please enter role name',
+        ];
+
+        $validator = Validator::make(
+            $feilds,
+            $rules,
+            $msg
+        );
+        if (!$validator->fails()) {
+            $insert_team_data = [
+                'name' => isset($post['name']) ? $post['name'] : "",
+                'status' => isset($post['status']) ? $post['status'] : "",
             ];
-    
-            $rules = [
-                'name' => ['required'],
-            ];
-    
-            $msg = [
-                'name.required' => 'Please enter role name',
-            ];
-    
-            $validator = Validator::make(
-                $feilds,
-                $rules,
-                $msg
-            );
-            if (!$validator->fails()) {
-                $insert_team_data = [
-                    'name' => isset($post['name']) ? $post['name'] : "",
-                    'status' => isset($post['status']) ? $post['status'] : "",
-                ];
-                $id = isset($post['hid']) ? intval($post['hid']) : null;
-                if ($id) {
-                    // Update existing record
-                    $role = role::find($id);
-                    if ($role) {
-                        $role->update($insert_team_data);
-                        $response['status'] = 1;
-                        $response['message'] = "Role updated successfully!";
-                    } else {
-                        $response['message'] = "Role not found!";
-                    }
-                } else {
-                    // Create new record
-                    if (role::create($insert_team_data)) {
-                        $response['status'] = 1;
-                        $response['message'] = "Role added successfully!";
-                    } else {
-                        $response['message'] = "Failed to add Role!";
-                    }
-                }
-            }
-            return response()->json($response);
-            exit;
-        }
-        public function delete(Request $request)
-        {
-            $post = $request->post();
-            $id = isset($post['id']) ? $post['id'] : "";
-            $response['status']  = 0;
-            $response['message']  = "Somthing Goes Wrong!";
-            if (is_numeric($id)) {
-                $delete_role = role::where('id', $id)->update(['status' => -1]);
-                if ($delete_role) {
+            $id = isset($post['hid']) ? intval($post['hid']) : null;
+            if ($id) {
+                // Update existing record
+                $role = role::find($id);
+                if ($role) {
+                    $role->update($insert_team_data);
                     $response['status'] = 1;
-                    $response['message'] = 'Role deleted successfully.';
+                    $response['message'] = "Role updated successfully!";
                 } else {
-                    $response['message'] = 'something went wrong.';
+                    $response['message'] = "Role not found!";
+                }
+            } else {
+                // Create new record
+                if (role::create($insert_team_data)) {
+                    $response['status'] = 1;
+                    $response['message'] = "Role added successfully!";
+                } else {
+                    $response['message'] = "Failed to add Role!";
                 }
             }
-            echo json_encode($response);
-            exit;
         }
+        return response()->json($response);
+        exit;
+    }
+    public function delete(Request $request)
+    {
+        $post = $request->post();
+        $id = isset($post['id']) ? $post['id'] : "";
+        $response['status']  = 0;
+        $response['message']  = "Somthing Goes Wrong!";
+        if (is_numeric($id)) {
+            $delete_role = role::where('id', $id)->update(['status' => -1]);
+            if ($delete_role) {
+                $response['status'] = 1;
+                $response['message'] = 'Role deleted successfully.';
+            } else {
+                $response['message'] = 'something went wrong.';
+            }
+        }
+        echo json_encode($response);
+        exit;
+    }
     public function edit(Request $request)
     {
         $id = $request->query('id');

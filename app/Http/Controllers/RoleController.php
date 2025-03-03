@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\admin;
+
 use App\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,33 +15,33 @@ class RoleController extends Controller
     }
     public function list(Request $request)
     {
-       if ($request->ajax()) {
+        if ($request->ajax()) {
             $data = role::get();
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('status', function($row){
-                    $checked = $row->status ? 'checked':'';
+                ->addColumn('status', function ($row) {
+                    $checked = $row->status ? 'checked' : '';
                     return '<div class="form-check form-switch">
-                            <input class="form-check-input toggle-status" 
+                            <input class="form-check-input toggle-status"
                             type="checkbox" data-id="' . $row->id . '" ' . $checked . '>
                         </div>';
                 })
                 ->addColumn('action', function ($row) {
-                return '<button class="edit btn btn-info btn-sm"  onclick="editcategory('.$row->id.')"><i class="fas fa-edit"></i></button>
-                        <button class="delete btn btn-danger btn-sm" onclick="deletecategory('.$row->id.')"><i class="fa fa-trash" aria-hidden="true"></i>
+                    return '<button class="edit btn btn-info btn-sm"  onclick="editcategory(' . $row->id . ')"><i class="fas fa-edit"></i></button>
+                        <button class="delete btn btn-danger btn-sm" onclick="deletecategory(' . $row->id . ')"><i class="fa fa-trash" aria-hidden="true"></i>
             </button>';
                 })
-                ->rawColumns(['status','action'])
+                ->rawColumns(['status', 'action'])
                 ->make(true);
         }
     }
-    public function togglechange(Request $request,string $id)
+    public function togglechange(Request $request, string $id)
     {
 
-        $role=role::find($id);
+        $role = role::find($id);
         $role->status = $request->status;
         $role->save();
-        return response()->json(['message'=>'Status Updated Successfully!!']);
+        return response()->json(['message' => 'Status Updated Successfully!!']);
     }
     public function getRole()
     {

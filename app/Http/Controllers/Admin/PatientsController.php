@@ -18,7 +18,7 @@ class PatientsController extends Controller
     {
         $countries = GlobalHelper::getAllCountries();
         $states = GlobalHelper::getAllStates();
-        return view('admin.Patients.index', compact('countries', 'states'));
+        return view('admin.patients.index', compact('countries', 'states'));
     }
 
     public function save(Request $request)
@@ -202,7 +202,7 @@ class PatientsController extends Controller
             return redirect()->back()->with('error', 'Patient not found or deleted.');
         }
 
-        return view('admin.Patients.PatientDetails', compact('patient', 'countries'));
+        return view('admin.patients.PatientDetails', compact('patient', 'countries'));
     }
 
     public function edit(Request $request)
