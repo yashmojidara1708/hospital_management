@@ -1,27 +1,27 @@
 $(document).ready(function() {
-    $("#specialitiesForm")[0].reset();
+    $("#roleForm")[0].reset();
     $("#hid").val("");
 
-    $("#Add_Specialities_details").on("hidden.bs.modal", function() {
-        $("#specialitiesForm")[0].reset();
+    $("#Add_Role_details").on("hidden.bs.modal", function() {
+        $("#roleForm")[0].reset();
         $("#hid").val("");
-        $("#specialitiesForm").validate().resetForm();
+        $("#roleForm").validate().resetForm();
         $("#status").val("").change();
-        $("#specialitiesForm").find('.error').removeClass('error');
+        $("#roleForm").find('.error').removeClass('error');
         $("#oldimgbox").hide();
     });
 
-    if ($.fn.DataTable.isDataTable('#specialitiesTable')) {
-        $('#specialitiesTable').DataTable().destroy();
+    if ($.fn.DataTable.isDataTable('#roleTable')) {
+        $('#roleTable').DataTable().destroy();
     }
 
-    $('#specialitiesTable').dataTable({
+    $('#roleTable').dataTable({
         searching: true,
         paging: true,
         pageLength: 10,
 
         "ajax": {
-            url: "/admin/specialitieslist",
+            url: "/admin/rolelist",
             type: 'POST',
             dataType: 'json',
             data: {
@@ -43,13 +43,12 @@ $(document).ready(function() {
     $('#loader-container').hide();
 })
 
-$(document).on('click', '#Add_Specialities', function() {
-    $('#Add_Specialities_details').modal('show');
+$(document).on('click', '#Add_Role', function() {
+    $('#Add_Role_details').modal('show');
     $("#modal_title").html("");
-    $("#modal_title").html("Add Specialities");
-    $("#modal_title").html("Add Specialities");
+    $("#modal_title").html("Add Role");
+    $("#modal_title").html("Add Role");
 });
-
 var validationRules = {
     name: "required",
 };
@@ -58,14 +57,14 @@ var validationMessages = {
     name: 'This field is required',
 };
 
-$('form[id="specialitiesForm"]').validate({
+$('form[id="roleForm"]').validate({
     rules: validationRules,
     messages: validationMessages,
     submitHandler: function() {
-        var formData = new FormData($("#specialitiesForm")[0]);
+        var formData = new FormData($("#roleForm")[0]);
         $('#loader-container').show();
         $.ajax({
-            url: BASE_URL + '/admin/specialities/save',
+            url: BASE_URL + '/admin/role/save',
             type: 'POST',
             data: formData,
             processData: false,
@@ -76,26 +75,25 @@ $('form[id="specialitiesForm"]').validate({
                     if (data.status == 1) {
                         toastr.success(data.message);
                         $('#loader-container').hide();
-                        $('#Add_Specialities_details').modal('hide');
+                        $('#Add_Role_details').modal('hide');
                     } else {
                         toastr.error(data.message);
                         $('#loader-container').hide();
                     }
                 }
-                $("#specialitiesForm")[0].reset();
-                $("#specialitiesForm").validate().resetForm();
-                $("#specialitiesForm").find('.error').removeClass('error');
-                $('#specialitiesTable').DataTable().ajax.reload();
+                $("#roleForm")[0].reset();
+                $("#roleForm").validate().resetForm();
+                $("#roleForm").find('.error').removeClass('error');
+                $('#roleTable').DataTable().ajax.reload();
             }
         });
     },
 });
-
-$(document).on('click', '#specialitiesEdit', function() {
+$(document).on('click', '#edit_role', function() {
     var id = $(this).data("id");
     $.ajax({
         type: "GET",
-        url: "/admin/specialities/edit",
+        url: "/admin/role/edit",
         data: {
             _token: $("[name='_token']").val(),
             id: id,
@@ -103,21 +101,20 @@ $(document).on('click', '#specialitiesEdit', function() {
         success: function(response) {
             console.log("response", response.status);
             if (response.status == 1) {
-                if (response.specialities_data) {
-                    var specialitiesdata = response.specialities_data;
-                    $('#Add_Specialities_details').modal('show');
-                    $("#modal_title").html("Edit Specialities");
-                    $('#hid').val(specialitiesdata.id);
-                    $('#name').val(specialitiesdata.name);
+                if (response.role_data) {
+                    var roledata = response.role_data;
+                    $('#Add_Role_details').modal('show');
+                    $("#modal_title").html("Edit Role");
+                    $('#hid').val(roledata.id);
+                    $('#name').val(roledata.name);
                     // $("#status").val(specialitiesdata.status);
-                    $("#status").val(specialitiesdata.status).change();
+                    $("#status").val(roledata.status).change();
                 }
             }
         },
     });
 });
-
-$(document).on("click", "#delete_specialities", function() {
+$(document).on("click", "#delete_role", function() {
     let id = $(this).data("id");
     Swal.fire({
         title: "Are you sure?",
@@ -131,7 +128,7 @@ $(document).on("click", "#delete_specialities", function() {
         if (result.isConfirmed) {
             $.ajax({
                 type: "POST",
-                url: "/admin/specialities/delete",
+                url: "/admin/role/delete",
                 data: {
                     _token: $("[name='_token']").val(),
                     id: id,
@@ -140,7 +137,7 @@ $(document).on("click", "#delete_specialities", function() {
                     var data = JSON.parse(response);
                     console.log("data", data);
                     if (data.status == 1) {
-                        $('#specialitiesTable').DataTable().ajax.reload();
+                        $('#roleTable').DataTable().ajax.reload();
                         toastr.success(data.message);
                     } else {
                         toastr.error(data.message);

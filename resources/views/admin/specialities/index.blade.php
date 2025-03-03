@@ -4,15 +4,14 @@
 @section('add-button')
     <div class="col-sm-5 col">
         <a id="Add_Specialities" data-toggle="modal" data-target="#Add_Specialities_details"
-            class="btn btn-primary float-right mt-2">Add</a>
+            class="btn btn-primary float-right mt-2 text-light">Add</a>
     </div>
 @endsection
 @section('admin-content')
     <div class="table-responsive">
         <table class="datatable table table-hover table-center mb-0" id="specialitiesTable">
-            <thead>
+            <thead class="text-center">
                 <tr>
-                    <th>id</th>
                     <th>Name</th>
                     <th>Status</th>
                     <th>Action</th>

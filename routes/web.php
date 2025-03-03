@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Admin\DashboardController;
 
 Auth::routes();
@@ -15,6 +16,13 @@ Route::any('/admin/logout', [App\Http\Controllers\Auth\LoginController::class, '
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('admin.home');
+
+    Route::get('/role', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin.role');
+    Route::post('/rolelist', [App\Http\Controllers\Admin\RoleController::class, 'rolelist'])->name('admin.rolelist');
+    Route::post('/role/save', [App\Http\Controllers\Admin\RoleController::class, 'save'])->name('save.role');
+    Route::get('/role/edit', [App\Http\Controllers\Admin\RoleController::class, 'edit'])->name('edit.role');
+    Route::post('/role/delete', [App\Http\Controllers\Admin\RoleController::class, 'delete'])->name('delete.role');
+
     // Specialities
     Route::get('/specialities', [App\Http\Controllers\Admin\SpecialitiesController::class, 'index'])->name('admin.specialities');
     Route::post('/specialitieslist', [App\Http\Controllers\Admin\SpecialitiesController::class, 'specialitieslist'])->name('admin.specialitieslist');

@@ -43,11 +43,25 @@ class SpecialitiesController extends Controller
                 'name' => isset($post['name']) ? $post['name'] : "",
                 'status' => isset($post['status']) ? $post['status'] : "",
             ];
-            if (Specialities::create($insert_team_data)) {
-                $response['status'] = 1;
-                $response['message'] = "Specialiti added Successfully";
+            $id = isset($post['hid']) ? intval($post['hid']) : null;
+            if ($id) {
+                // Update existing record
+                $speciality = Specialities::find($id);
+                if ($speciality) {
+                    $speciality->update($insert_team_data);
+                    $response['status'] = 1;
+                    $response['message'] = "Speciality updated successfully!";
+                } else {
+                    $response['message'] = "Speciality not found!";
+                }
             } else {
-                $response['message'] = "Fail to Add Specialiti Data!!";
+                // Create new record
+                if (Specialities::create($insert_team_data)) {
+                    $response['status'] = 1;
+                    $response['message'] = "Speciality added successfully!";
+                } else {
+                    $response['message'] = "Failed to add Speciality!";
+                }
             }
         }
         return response()->json($response);
@@ -57,7 +71,7 @@ class SpecialitiesController extends Controller
     // List Show
     public function specialitieslist()
     {
-        $specialities_data = Specialities::select('*')->get();
+        $specialities_data = Specialities::select('*')->where('status', '!=', -1)->get();
         return Datatables::of($specialities_data)
             ->addIndexColumn()
             ->addColumn('status', function ($data) {
@@ -72,7 +86,7 @@ class SpecialitiesController extends Controller
                                <i class="bx bx-dots-vertical-rounded"></i>
                              </button>
                              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-                                 <a class="dropdown-item" href="javascript:void(0);" data-id="' . $row->id . '" id="teamroleEdit">
+                                 <a class="dropdown-item" href="javascript:void(0);" data-id="' . $row->id . '">
                                      <i class="bx bx-edit-alt me-1"></i> Edit
                                  </a>
                                  <a class="teamroleDelete dropdown-item" href="javascript:void(0);" data-id="' . $row->id . '">
@@ -80,12 +94,12 @@ class SpecialitiesController extends Controller
                                  </a>
                              </div>
                            </div>
-                           <div class="actions text-right">
-                               <a class="btn btn-sm bg-success-light" data-toggle="modal" href="#edit_specialities_details">
-                                   <i class="fe fe-pencil"></i> Edit
+                           <div class="actions text-center">
+                               <a class="btn btn-sm bg-success-light" data-toggle="modal" href="javascript:void(0);" id="specialitiesEdit" data-id="' . $row->id . '">
+                                   <i class="fe fe-pencil"></i>
                                </a>
-                               <a data-toggle="modal" href="#delete_modal" class="btn btn-sm bg-danger-light">
-                                   <i class="fe fe-trash"></i> Delete
+                               <a data-toggle="modal" class="btn btn-sm bg-danger-light" href="javascript:void(0);" id="delete_specialities" data-id="' . $row->id . '">
+                                   <i class="fe fe-trash"></i>
                                </a>
                            </div>';
 
@@ -100,21 +114,43 @@ class SpecialitiesController extends Controller
         $post = $request->post();
         $id = isset($post['id']) ? $post['id'] : "";
         $response['status']  = 0;
-        $response['msg']  = "Somthing Goes Wrong!";
-        if ($id != "") {
-            $team_data = Specialities::where("id", $id)->get()->toArray();
-            if (empty($team_data)) {
-                $team_remove = Specialities::where('id', $id)->delete();
-                if ($team_remove) {
-                    $response['status']  = 1;
-                    $response['msg']  = "Teme Role Deleted";
-                }
+        $response['message']  = "Somthing Goes Wrong!";
+        if (is_numeric($id)) {
+            $delete_specialities = Specialities::where('id', $id)->update(['status' => -1]);
+            if ($delete_specialities) {
+                $response['status'] = 1;
+                $response['message'] = 'Speciality deleted successfully.';
             } else {
-                $response['msg']  = "Role have Attached with Member.";
+                $response['message'] = 'something went wrong.';
+            }
+        }
+        echo json_encode($response);
+        exit;
+    }
+
+    public function edit(Request $request)
+    {
+        $id = $request->query('id');
+
+        // Initialize response
+        $response = [
+            'status' => 0,
+            'message' => 'Something went wrong!'
+        ];
+
+        // Check if ID is valid
+        if (is_numeric($id)) {
+            $specialities_data = Specialities::find($id); // Use `find($id)` instead of `where()->get()->first()`
+
+            if ($specialities_data) {
+                $response = [
+                    'status' => 1,
+                    'specialities_data' => $specialities_data
+                ];
             }
         }
 
-        echo json_encode($response);
-        exit;
+        return response()->json($response);
+        exit; // Proper JSON response
     }
 }
