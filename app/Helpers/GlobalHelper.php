@@ -31,6 +31,19 @@ class GlobalHelper
     }
 
     /**
+     * Get all states from the 'roles' table.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getAllRoles()
+    {
+        return DB::table('roles')
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
      * Get patient data by ID.
      *
      * @param int $patientId
