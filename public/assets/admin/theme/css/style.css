@@ -2020,6 +2020,22 @@ html.menu-opened body {
     position: absolute;
 }
 
+.patient-link {
+    color: rgb(20, 80, 170);
+    /* Default link color */
+    text-decoration: none;
+    /* Remove underline */
+    transition: color 0.3s;
+    /* Smooth transition */
+}
+
+.patient-link:hover {
+    color: #0d6efd;
+    /* Primary color on hover */
+    text-decoration: none;
+    /* Optional: Add underline on hover */
+}
+
 
 /*-----------------
 	9. Sidebar
@@ -2132,7 +2148,7 @@ html.menu-opened body {
 .sidebar .sidebar-menu>ul>li>a span {
     transition: all 0.2s ease-in-out 0s;
     display: inline-block;
-    margin-left: 10px;
+    margin-left: 14px;
     white-space: nowrap;
 }
 

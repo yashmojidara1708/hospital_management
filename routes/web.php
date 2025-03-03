@@ -29,4 +29,12 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::post('/specialities/save', [App\Http\Controllers\Admin\SpecialitiesController::class, 'save'])->name('save.specialities');
     Route::get('/specialities/edit', [App\Http\Controllers\Admin\SpecialitiesController::class, 'edit'])->name('edit.specialities');
     Route::post('/specialities/delete', [App\Http\Controllers\Admin\SpecialitiesController::class, 'delete'])->name('delete.specialities');
+
+    // Patient
+    Route::get('/patients', [App\Http\Controllers\Admin\PatientsController::class, 'index'])->name('admin.patients');
+    Route::post('/patientslist', [App\Http\Controllers\Admin\PatientsController::class, 'patientslist'])->name('admin.patientslist');
+    Route::post('/patients/save', [App\Http\Controllers\Admin\PatientsController::class, 'save'])->name('save.patients');
+    Route::get('/patients/edit', [App\Http\Controllers\Admin\PatientsController::class, 'edit'])->name('edit.patients');
+    Route::post('/patients/delete', [App\Http\Controllers\Admin\PatientsController::class, 'delete'])->name('delete.patients');
+    Route::get('/patients/{id}', [App\Http\Controllers\Admin\PatientsController::class, 'patientDetails'])->name('patients.details');
 });

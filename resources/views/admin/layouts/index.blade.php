@@ -32,6 +32,8 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('assets/admin/theme/css/style.css') }} ">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -53,8 +55,19 @@
                         <div class="col-sm-7 col-auto">
                             <h3 class="page-title">@yield('page-title')</h3>
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                                <li class="breadcrumb-item active">@yield('page-title')</li>
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('admin.home') }}">Dashboard</a>
+                                </li>
+                                @hasSection('center-title')
+                                    <li class="breadcrumb-item active">
+                                        <a href="@yield('center-title-route')">@yield('center-title')</a>
+                                    </li>
+                                @endif
+                                @hasSection('page-title')
+                                    <li class="breadcrumb-item active">
+                                        @yield('page-title')
+                                    </li>
+                                @endif
                             </ul>
                         </div>
                         @yield('add-button')
