@@ -20,7 +20,7 @@
                 </li>
                 <li class="menu-item  {{ $currentRouteName == 'admin.role' ? 'active' : '' }}">
                     <a href="{{ route('admin.role') }}" class="menu-link">
-                        <i class='menu-icon fa-solid fa-users'></i>
+                        <i class='menu-icon fa-solid fa-people-arrows'></i>
                         <span>HMS Role</span>
                     </a>
                 </li>
@@ -34,6 +34,12 @@
                     <a href="{{ route('admin.medicines') }}" class="menu-link">
                         <i class="menu-icon fa-solid fa-pills"></i>
                         <span>Medicines</span>
+                    </a>
+                </li>
+                <li class="menu-item  {{ $currentRouteName == 'admin.staff' ? 'active' : '' }}">
+                    <a href="{{ route('admin.staff') }}" class="menu-link">
+                        <i class="menu-icon fa-solid fa-users"></i>
+                        <span>Staff</span>
                     </a>
                 </li>
             </ul>
