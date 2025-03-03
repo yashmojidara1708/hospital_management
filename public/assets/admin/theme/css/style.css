@@ -2041,6 +2041,26 @@ html.menu-opened body {
 	9. Sidebar
 -----------------------*/
 
+.menu-item {
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.menu-item.menu-item-animating {
+    transition: height 0.3s ease-in-out;
+}
+
+.menu-icon {
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.menu:not(.menu-no-animation) .menu-icon {
+    transition: margin-right 0.3s ease;
+}
+
 .sidebar {
     background-color: #1b5a90;
     /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
