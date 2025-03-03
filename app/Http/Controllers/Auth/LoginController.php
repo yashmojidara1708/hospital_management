@@ -50,6 +50,9 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        echo '<pre>';
+        print_r($request);
+        die;
 
         if ($request->isMethod('post')) {
 
@@ -60,16 +63,19 @@ class LoginController extends Controller
 
             $credentials = $request->only('email', 'password');
 //           
-            $users = DB::table('users')
-            ->join('roles', 'users.role_id', '=', 'roles.id')
-            ->where('users.email', $request->email)
-            ->select('users.role_id', 'users.email','users.name as username','roles.name as role_name')
+            $staff = DB::table('staff')
+            ->join('roles', 'staff.roles', '=', 'roles.id')
+            ->where('staff.email', $request->email)
+            ->select('staff.roles', 'staff.email','staff.name as username','roles.name as role_name')
             ->get();
-            $userCount = $users->count();
+            echo '<pre>';
+            print_r($staff);
+            die;
+            $userCount = $staff->count();
             if (Auth::attempt($credentials)) {
               if($userCount==1)
               {
-                $user = $users->first();
+                $user = $staff->first();
                 session([
                     'user_email' => $user->email,
                     'user_name' => $user->username,
