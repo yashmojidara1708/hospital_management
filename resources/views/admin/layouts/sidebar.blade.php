@@ -24,10 +24,16 @@
                         <span>Specialities</span>
                     </a>
                 </li>
+                <li class="menu-item  {{ $currentRouteName == 'admin.role' ? 'active' : '' }}">
+                    <a href="{{ route('admin.role') }}" class="menu-link">
+                        <i class='fe fe-users'></i>
+                        <span>HMS Role</span>
+                </li>
                 <li class="menu-item  {{ $currentRouteName == 'admin.patients' ? 'active' : '' }}">
                     <a href="{{ route('admin.patients') }}" class="menu-link">
                         <i class="fa-solid fa-hospital-user"></i>
                         <span>Patients</span>
+
                     </a>
                 </li>
             </ul>
