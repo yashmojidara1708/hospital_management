@@ -22,7 +22,7 @@
             </tbody>
         </table>
     </div>
-    @include('admin.HMS_Role.HMSRolemodel')
+    @include('admin.HMS_Role.hms_roleModel')
 @endsection
 
 @section('admin-js')

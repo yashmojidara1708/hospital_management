@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->string('city');
             $table->string('zip');
             $table->string('phone');
-            $table->string('email')();
+            $table->string('email');
             $table->date('last_visit')->nullable();
             $table->integer('paid')->default(0);
             $table->integer('isdeleted')->default(0);
