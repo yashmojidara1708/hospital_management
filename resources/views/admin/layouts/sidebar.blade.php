@@ -20,8 +20,14 @@
                 </li>
                 <li class="menu-item  {{ $currentRouteName == 'admin.specialities' ? 'active' : '' }}">
                     <a href="{{ route('admin.specialities') }}" class="menu-link">
-                        <i class='fe fe-users'></i>
+                        <i class='fa-solid fa-stethoscope'></i>
                         <span>Specialities</span>
+                    </a>
+                </li>
+                <li class="menu-item  {{ $currentRouteName == 'admin.patients' ? 'active' : '' }}">
+                    <a href="{{ route('admin.patients') }}" class="menu-link">
+                        <i class="fa-solid fa-hospital-user"></i>
+                        <span>Patients</span>
                     </a>
                 </li>
             </ul>
