@@ -15,7 +15,7 @@ return [
 
     'defaults' => [
         'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'passwords' => env('AUTH_PASSWORD_BROKER', 'staff'),
     ],
 
     /*
@@ -40,6 +40,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'staff' => [ // Custom guard for staff
+            'driver' => 'session',
+            'provider' => 'staff', // Link to the 'staff' provider
+        ],
+
     ],
 
     /*
@@ -62,13 +68,14 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'staff' => [ // Custom provider for staff
+            'driver' => 'database', // or 'eloquent' if using a Staff model
+            'table' => 'staff', // Table name
+        ],
+
     ],
 
     /*
@@ -91,8 +98,8 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'staff' => [
+            'provider' => 'staff',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,

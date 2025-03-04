@@ -1,3 +1,9 @@
+@php
+    $staffData = session('staff_data');
+    $currentloginRole = isset($staffData['role_name']) ? $staffData['role_name'] : '';
+    $currentloginName = isset($staffData['username']) ? $staffData['username'] : '';
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -78,7 +84,6 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
-
                                 {{-- <div id="loader-container">
                                     <div class="loader"></div>
                                 </div> --}}

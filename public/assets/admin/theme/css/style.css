@@ -4982,8 +4982,8 @@ table.table-inbox tbody tr.checked {
     position: relative;
     display: inline-block;
     z-index: 201;
-    top: 50%;
-    left: 50%;
+    /* top: 50%;
+    left: 50%; */
     transform: translate(-50%, -50%);
     font-size: 48px;
     font-weight: 600;
