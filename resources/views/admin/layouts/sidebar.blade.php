@@ -1,7 +1,42 @@
 @php
     $currentRouteName = \Route::currentRouteName();
+    // dd(session('staff_data'));
 
+    // Define menu items dynamically
+    $menuItems = [
+        [
+            'route' => 'admin.home',
+            'icon' => 'fa-solid fa-home',
+            'label' => 'Dashboard',
+            'roles' => ['Admin', 'Staff'],
+        ],
+        [
+            'route' => 'admin.role',
+            'icon' => 'fa-solid fa-people-arrows',
+            'label' => 'HMS Role',
+            'roles' => ['Admin'], // Only for Admins
+        ],
+        [
+            'route' => 'admin.patients',
+            'icon' => 'fa-solid fa-hospital-user',
+            'label' => 'Patients',
+            'roles' => ['Admin', 'Staff'],
+        ],
+        [
+            'route' => 'admin.medicines',
+            'icon' => 'fa-solid fa-pills',
+            'label' => 'Medicines',
+            'roles' => ['Admin', 'Staff'],
+        ],
+        [
+            'route' => 'admin.staff',
+            'icon' => 'fa-solid fa-users',
+            'label' => 'Staff',
+            'roles' => ['Admin'],
+        ],
+    ];
 @endphp
+
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
@@ -9,35 +44,11 @@
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
                 <!--admin sidebar-->
-                <li class="menu-title">
+                {{-- <li class="menu-title">
                     <span>
-                        <h5>{{ session('user_role_name', 'N/A') }}</h5>
+                        <h5>{{ isset($currentloginRole) ? $currentloginRole : '' }}</h5>
                     </span>
-                </li>
-
-                <li class="menu-item  {{ $currentRouteName == 'admin.home' ? 'active' : '' }}">
-                    <a href="{{ route('admin.home') }}" class="menu-link">
-                        <i class='menu-icon fa-solid fa-home'></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-
-                <li class="menu-item  {{ $currentRouteName == 'admin.role' ? 'active' : '' }}">
-                    <a href="{{ route('admin.role') }}" class="menu-link">
-                        <i class='menu-icon fa-solid fa-people-arrows'></i>
-                        <span>HMS Role</span>
-                    </a>
-                </li>
-
-                <li class="menu-item  {{ $currentRouteName == 'admin.patients' ? 'active' : '' }}">
-                    <a href="{{ route('admin.patients') }}" class="menu-link">
-                        <i class="menu-icon fa-solid fa-hospital-user"></i>
-                        <span>Patients</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="appointment-list.html"><i class="fe fe-layout"></i> <span>Appointments</span></a>
-                </li>
+                </li> --}}
 
                 <li class="menu-item  {{ $currentRouteName == 'admin.medicines' ? 'active' : '' }}">
                     <a href="{{ route('admin.medicines') }}" class="menu-link">
@@ -63,6 +74,16 @@
                         <span>Doctors</span>
                     </a>
                 </li>
+                @foreach ($menuItems as $item)
+                    @if (in_array($currentloginRole, $item['roles']))
+                        <li class="menu-item {{ $currentRouteName == $item['route'] ? 'active' : '' }}">
+                            <a href="{{ route($item['route']) }}" class="menu-link">
+                                <i class="menu-icon {{ $item['icon'] }}"></i>
+                                <span>{{ $item['label'] }}</span>
+                            </a>
+                        </li>
+                    @endif
+                @endforeach
             </ul>
         </div>
     </div>

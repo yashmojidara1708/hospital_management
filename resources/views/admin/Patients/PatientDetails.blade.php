@@ -35,33 +35,34 @@
                             </h5>
                             <div class="row">
                                 <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Name</p>
-                                <p class="col-sm-10">{{ $patient->name }}
+                                <p class="col-sm-10">{{ isset($patient->name) ? $patient->name : '' }}
                                 </p>
                             </div>
                             <div class="row">
                                 <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Age</p>
                                 <p class="col-sm-10">
-                                    {{ $patient->age }}
+                                    {{ isset($patient->age) ? $patient->age : '' }}
                                 </p>
                             </div>
                             <div class="row">
                                 <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Email ID</p>
                                 <p class="col-sm-10">
-                                    {{ $patient->email }}</p>
+                                    {{ isset($patient->email) ? $patient->email : '' }}</p>
                             </div>
                             <div class="row">
                                 <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Mobile</p>
                                 <p class="col-sm-10">
-                                    {{ $patient->phone }}
+                                    {{ isset($patient->phone) ? $patient->phone : '' }}
                                 </p>
                             </div>
                             <div class="row">
                                 <p class="col-sm-2 text-muted text-sm-right mb-0">Address</p>
                                 <p class="col-sm-10 mb-0">
-                                    {{ $patient->address }},<br>
-                                    {{ $patient->city }} - {{ $patient->zip }},<br>
-                                    {{ $patient->state }},<br>
-                                    {{ $patient->country }}.
+                                    {{ isset($patient->address) ? $patient->address : '' }},<br>
+                                    {{ isset($patient->city) ? $patient->city : '' }} -
+                                    {{ isset($patient->zip) ? $patient->zip : '' }},<br>
+                                    {{ isset($patient->state) ? $patient->state : '' }},<br>
+                                    {{ isset($patient->country) ? $patient->country : '' }}
                                 </p>
                             </div>
                         </div>
