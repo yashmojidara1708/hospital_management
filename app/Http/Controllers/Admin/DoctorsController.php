@@ -27,33 +27,14 @@ class DoctorsController extends Controller
     {
         $post = $request->post();
         $hid = isset($post['hid']) ? intval($post['hid']) : null;
-        $response['status'] = 0;
-        $response['message'] = "Somthing Goes Wrong!";
-
-        $feilds = [
-            'name' => $request->name,
-            'specialization' => $request->specialization,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'experience' => $request->experience,
-            'qualification' => $request->qualification,
-            'address' => $request->address,
-            'country' => $request->country,
-            'city' => $request->city,
-            'state' => $request->state,
-            'zip' => $request->zip,
-            'image' => $request->image,
-        ];
+        $response = ['status' => 0, 'message' => 'Something went wrong!'];
 
         // Validation rules
         $rules = [
             'name' => 'required',
             'specialization' => 'required',
             'phone' => 'required',
-            'email' => [
-                'required',
-                'email',
-            ],
+            'email' => 'required|email',
             'experience' => 'required|numeric',
             'qualification' => 'required',
             'address' => 'required',
@@ -63,38 +44,23 @@ class DoctorsController extends Controller
             'zip' => 'required',
             'image' => 'nullable|mimes:jpeg,png|max:5120',
         ];
+
         // Custom error messages
         $msg = [
             'name.required' => 'Please enter the doctor name',
-            'specialization.required' => 'Please select the specialization',
-            'phone.required' => 'Please enter the phone number',
-            'email.required' => 'Please enter the email address',
             'email.email' => 'Please enter a valid email address',
-            'experience.required' => 'Please enter the experience',
             'experience.numeric' => 'Experience must be a number',
-            'qualification.required' => 'Please enter the qualification',
-            'address.required' => 'Please enter the address',
-            'country.required' => 'Please select a country',
-            'city.required' => 'Please enter the city',
-            'state.required' => 'Please enter the state',
-            'zip.required' => 'Please enter the ZIP code',
             'image.mimes' => 'Only jpeg and png images are allowed',
             'image.max' => 'Image size should not exceed 5MB',
-
         ];
 
-        $validator = Validator::make(
-            $feilds,
-            $rules,
-            $msg
-        );
+        $validator = Validator::make($post, $rules, $msg);
 
         if (!$validator->fails()) {
-            // Check if email already exists for another patient and is not deleted
+            // Check if email already exists for another doctor (exclude the current one if updating)
             $existingEmailQuery = Doctor::where('email', $request->email)
                 ->where('isdeleted', '!=', 1);
 
-            // Exclude the current record from the check if updating
             if ($hid) {
                 $existingEmailQuery->where('id', '!=', $hid);
             }
@@ -107,81 +73,83 @@ class DoctorsController extends Controller
             }
 
             $imagePath = 'assets/admin/theme/img/doctors/';
-
-            // Create directory if it doesn't exist
             if (!File::exists(public_path($imagePath))) {
                 File::makeDirectory(public_path($imagePath), 0755, true);
             }
 
             $imageName = null;
 
+            if ($hid) {
+                // If updating, get the old image
+                $Doctors = Doctor::find($hid);
+                $imageName = $Doctors ? $Doctors->image : null;
+            }
+
+            // Handle image upload if a new image is provided
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+                // Delete old image if exists and a new image is uploaded
+                if ($Doctors && $Doctors->image && File::exists(public_path($Doctors->image))) {
+                    File::delete(public_path($Doctors->image));
+                }
+
                 $image->move(public_path($imagePath), $imageName);
+                $imageName = $imageName; // Store full path
             }
 
+            // Data array for insertion/updation
             $insert_doctor_data = [
-                'name' => isset($post['name']) ? $post['name'] : "",
-                'specialization' => isset($post['specialization']) ? $post['specialization'] : "",
-                'phone' => isset($post['phone']) ? $post['phone'] : "",
-                'email' => isset($post['email']) ? $post['email'] : "",
-                'experience' => isset($post['experience']) ? $post['experience'] : "",
-                'qualification' => isset($post['qualification']) ? $post['qualification'] : "",
-                'address' => isset($post['address']) ? $post['address'] : "",
-                'country' => isset($post['country']) ? $post['country'] : "",
-                'city' => isset($post['city']) ? $post['city'] : "",
-                'state' => isset($post['state']) ? $post['state'] : "",
-                'zip' => isset($post['zip']) ? $post['zip'] : "",
+                'name' => $request->name,
+                'specialization' => $request->specialization,
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'experience' => $request->experience,
+                'qualification' => $request->qualification,
+                'address' => $request->address,
+                'country' => $request->country,
+                'city' => $request->city,
+                'state' => $request->state,
+                'zip' => $request->zip,
                 'image' => $imageName,
             ];
 
             if ($hid) {
                 // Update existing record
-                $Doctors = Doctor::where('id', $hid)->first();
-                $imageName = $Doctors ? $Doctors->image : null; // Keep old image if updating
-
-                if ($request->hasFile('image')) {
-                    // Delete old image if exists
-                    if ($Doctors && $Doctors->image && File::exists(public_path($Doctors->image))) {
-                        File::delete(public_path($Doctors->image));
-                    }
-                    $image = $request->file('image');
-                    $imageName = time() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path($imagePath), $imageName);
-                    $imageName = $imagePath . $imageName; // Store full path
-                }
-
-
                 if ($Doctors) {
                     $Doctors->update($insert_doctor_data);
-                    $response['status'] = 1;
-                    $response['message'] = "Doctor updated successfully!";
+                    $response = ['status' => 1, 'message' => 'Doctor updated successfully!'];
                 } else {
-                    $response['message'] = "Doctor not found!";
+                    $response['message'] = 'Doctor not found!';
                 }
             } else {
                 // Create new record
                 if (Doctor::create($insert_doctor_data)) {
-                    $response['status'] = 1;
-                    $response['message'] = "Doctor added successfully!";
+                    $response = ['status' => 1, 'message' => 'Doctor added successfully!'];
                 } else {
-                    $response['message'] = "Failed to add Doctor!";
+                    $response['message'] = 'Failed to add Doctor!';
                 }
             }
+        } else {
+            $response['message'] = $validator->errors()->first();
         }
+
         return response()->json($response);
-        exit;
     }
+
     public function doctorslist()
     {
-        $doctors_data = Doctor::select('*')->where('isdeleted', '!=', 1)->get();
+        $doctors_data = Doctor::select('doctors.*', 'specialities.name as specialization_name')
+            ->where('doctors.isdeleted', '!=', 1)
+            ->leftJoin('specialities', 'specialities.id', '=', 'doctors.specialization')
+            ->get();
         return Datatables::of($doctors_data)
             ->addIndexColumn()
             ->addColumn('name', function ($doctor) {
                 $imagePath = $doctor->image
                     ? asset("assets/admin/theme/img/doctors/" . $doctor->image)
-                    : asset("assets/admin/theme/img/default.png");
+                    : asset("assets/admin/theme/img/doctors/defult.jpg");
 
                 return '
                     <h2 class="table-avatar">
@@ -190,6 +158,9 @@ class DoctorsController extends Controller
                         </a>
                         <a href="profile.html">' . e($doctor->name) . '</a>
                     </h2>';
+            })
+            ->addColumn('specialization', function ($doctor) {
+                return e($doctor->specialization_name);
             })
             ->addColumn('address', function ($row) {
                 return $row->address . ', ' . $row->city . ', ' . $row->state . ', ' . $row->country . ' - ' . $row->zip;
