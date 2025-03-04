@@ -11,7 +11,7 @@ Route::any('/admin/login', [LoginController::class, 'showLoginForm'])->name('adm
 Route::any('/check/login', [LoginController::class, 'login']);
 Route::any('/admin/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('admin.logout');
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('admin.home');
 
     Route::get('/role', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin.role');
