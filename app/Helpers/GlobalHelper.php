@@ -55,6 +55,22 @@ class GlobalHelper
             ->get();
     }
 
+    public static function getAllDoctors()
+    {
+        return DB::table('doctors')
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+    }
+
+    public static function getAllPatients()
+    {
+        return DB::table('patients')
+            ->select('patient_id', 'name')
+            ->orderBy('name')
+            ->get();
+    }
+
     /**
      * Get patient data by ID.
      *

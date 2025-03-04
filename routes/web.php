@@ -56,4 +56,11 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
      Route::get('/doctors/edit', [App\Http\Controllers\Admin\DoctorsController::class, 'edit'])->name('edit.doctors');
      Route::post('/doctors/delete', [App\Http\Controllers\Admin\DoctorsController::class, 'delete'])->name('delete.doctors');
   
+    // Appointment
+    Route::get('/appointments', [App\Http\Controllers\Admin\AppointmentsController::class, 'index'])->name('admin.appointments');
+    Route::post('/appointmentslist', [App\Http\Controllers\Admin\AppointmentsController::class, 'appointmentslist'])->name('admin.appointmentslist');
+    Route::post('/appointments/save', [App\Http\Controllers\Admin\AppointmentsController::class, 'save'])->name('save.appointments');
+    Route::get('/appointments/edit', [App\Http\Controllers\Admin\AppointmentsController::class, 'edit'])->name('edit.appointments');
+    Route::post('/appointments/delete', [App\Http\Controllers\Admin\AppointmentsController::class, 'delete'])->name('delete.appointments');
+
 });

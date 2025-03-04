@@ -17,6 +17,12 @@
             'roles' => ['Admin'], // Only for Admins
         ],
         [
+            'route' => 'admin.appointments',
+            'icon' => 'fa-solid fa-people-arrows',
+            'label' => 'Appointments',
+            'roles' => ['Admin','Staff'], // Only for Admins
+        ],
+        [
             'route' => 'admin.patients',
             'icon' => 'fa-solid fa-hospital-user',
             'label' => 'Patients',
