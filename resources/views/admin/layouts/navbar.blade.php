@@ -123,7 +123,7 @@
                         class="avatar-img rounded-circle">
                 </div>
                 <div class="user-text">
-                    <h6>{{ isset($currentLoginName) ? $currentLoginName : '' }}</h6>
+                    <h6>{{ isset($currentloginName) ? $currentloginName : '' }}</h6>
                     <p class="text-muted mb-0">{{ isset($currentloginRole) ? $currentloginRole : '' }}</p>
                 </div>
             </div>
