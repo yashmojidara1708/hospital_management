@@ -34,6 +34,12 @@
             'label' => 'Staff',
             'roles' => ['Admin'],
         ],
+        [
+            'route' => 'admin.doctors',
+            'icon' => 'fa-solid fa-user-doctor',
+            'label' => 'Doctors',
+            'roles' => ['Admin'],
+        ],
     ];
 @endphp
 
@@ -49,31 +55,6 @@
                         <h5>{{ isset($currentloginRole) ? $currentloginRole : '' }}</h5>
                     </span>
                 </li> --}}
-
-                <li class="menu-item  {{ $currentRouteName == 'admin.medicines' ? 'active' : '' }}">
-                    <a href="{{ route('admin.medicines') }}" class="menu-link">
-                        <i class="menu-icon fa-solid fa-pills"></i>
-                        <span>Medicines</span>
-                    </a>
-                </li>
-                <li class="menu-item  {{ $currentRouteName == 'admin.staff' ? 'active' : '' }}">
-                    <a href="{{ route('admin.staff') }}" class="menu-link">
-                        <i class="menu-icon fa-solid fa-users"></i>
-                        <span>Staff</span>
-                    </a>
-                </li>
-                <li class="menu-item  {{ $currentRouteName == 'admin.specialities' ? 'active' : '' }}">
-                    <a href="{{ route('admin.specialities') }}" class="menu-link">
-                        <i class="menu-icon fa-solid fa-user"></i>
-                        <span>Specialities</span>
-                    </a>
-                </li>
-                <li class="menu-item  {{ $currentRouteName == 'admin.doctors' ? 'active' : '' }}">
-                    <a href="{{ route('admin.doctors') }}" class="menu-link">
-                        <i class="menu-icon fa-solid fa-user-doctor"></i>
-                        <span>Doctors</span>
-                    </a>
-                </li>
                 @foreach ($menuItems as $item)
                     @if (in_array($currentloginRole, $item['roles']))
                         <li class="menu-item {{ $currentRouteName == $item['route'] ? 'active' : '' }}">
