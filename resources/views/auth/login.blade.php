@@ -2,7 +2,6 @@
 @section('admin-title', 'Admin Login')
 @section('content')
     <!-- Content -->
-
     <div class="container col-lg-4 mt-5">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner">
@@ -23,6 +22,9 @@
                                 <label for="email" class="form-label text-dark">Email</label>
                                 <input type="text" class="form-control" id="email" name="email"
                                     placeholder="Enter your email" autofocus required />
+                                @if ($errors->has('email'))
+                                    <div class="text-danger">{{ $errors->first('email') }}</div>
+                                @endif
                             </div>
                             <div class="mb-3 form-password-toggle">
                                 <div class="d-flex justify-content-between">
@@ -34,6 +36,9 @@
                                         aria-describedby="password" />
                                     {{-- <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span> --}}
                                 </div>
+                                @if ($errors->has('password'))
+                                    <div class="text-danger">{{ $errors->first('password') }}</div>
+                                @endif
                             </div>
 
                             <div class="mb-3">
@@ -50,15 +55,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- Include toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script>
-        // Check if the success message exists in the session and display it using toastr
-        @if (session('success'))
-            toastr.success('{{ session('success') }}');
-        @endif
-
-        // Check if the error message exists in the session and display it using toastr
-        @if (session('error'))
-            toastr.error('{{ session('error') }}');
-        @endif
-    </script>
 @endsection

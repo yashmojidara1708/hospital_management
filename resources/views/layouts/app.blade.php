@@ -29,18 +29,39 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('assets/admin/theme/css/style.css') }} ">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
 <body>
-    <x-toast />
     <div id="app">
         <main class="py-4">
             @yield('content')
         </main>
     </div>
 </body>
+<script type="text/javascript">
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+</script>
 
+@if (session('message'))
+    <script>
+        Toast.fire({
+            icon: "{{ session('type') }}",
+            title: "{{ session('message') }}"
+        });
+    </script>
+@endif
 <!-- jQuery -->
 <script src="{{ asset('assets/admin/theme/js/jquery-3.2.1.min.js') }}"></script>
 

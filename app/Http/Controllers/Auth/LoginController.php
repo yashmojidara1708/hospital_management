@@ -54,9 +54,22 @@ class LoginController extends Controller
         if ($request->isMethod('post')) {
 
             $this->validate($request, [
-                'email'    => 'required|email',
-                'password' => 'required|min:8|max:20|alpha_dash|regex:/^[A-Za-z0-9 ]+$/',
+                'email' => 'required|email',
+                'password' => [
+                    'required',
+                    'min:8',
+                    'max:20',
+                    'regex:/^[A-Za-z0-9-_]+$/'
+                ],
+            ], [
+                'email.required' => 'Email is required.',
+                'email.email' => 'Please enter a valid email address.',
+                'password.required' => 'Password is required.',
+                'password.min' => 'Password must be at least 8 characters.',
+                'password.max' => 'Password must not exceed 20 characters.',
+                'password.regex' => 'Password must contain only letters, numbers, hyphens, and underscores.',
             ]);
+
 
             $credentials = $request->only('email', 'password');
 
@@ -112,7 +125,6 @@ class LoginController extends Controller
     {
         Session::flush();
         Auth::logout();
-
-        return redirect()->route('admin.login')->with('success', 'You have been successfully logged out.');
+        return redirect()->route('admin.login')->with(['message' => 'You have been successfully logged out.', 'type' => 'success']);
     }
 }

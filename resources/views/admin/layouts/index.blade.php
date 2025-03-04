@@ -2,7 +2,11 @@
     $staffData = session('staff_data');
     $currentloginRole = isset($staffData['role_name']) ? $staffData['role_name'] : '';
     $currentloginName = isset($staffData['username']) ? $staffData['username'] : '';
+
+    // dd(session('message'));
+
 @endphp
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -114,6 +118,15 @@
             }
         });
     </script>
+
+    @if (session('message'))
+        <script>
+            Toast.fire({
+                icon: "{{ session('type') }}",
+                title: "{{ session('message') }}"
+            });
+        </script>
+    @endif
 
     <!-- jQuery -->
     <script src="{{ asset('assets/admin/theme/js/jquery-3.2.1.min.js') }}"></script>
