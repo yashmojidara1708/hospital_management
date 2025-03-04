@@ -42,10 +42,18 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/medicines/edit', [App\Http\Controllers\Admin\MedicinesController::class, 'edit'])->name('edit.medicines');
     Route::post('/medicines/delete', [App\Http\Controllers\Admin\MedicinesController::class, 'delete'])->name('delete.medicines');
 
-    // Medicines
+    // staff
     Route::get('/staff', [App\Http\Controllers\Admin\StaffController::class, 'index'])->name('admin.staff');
     Route::post('/stafflist', [App\Http\Controllers\Admin\StaffController::class, 'stafflist'])->name('admin.stafflist');
     Route::post('/staff/save', [App\Http\Controllers\Admin\StaffController::class, 'save'])->name('save.staff');
     Route::get('/staff/edit', [App\Http\Controllers\Admin\StaffController::class, 'edit'])->name('edit.staff');
     Route::post('/staff/delete', [App\Http\Controllers\Admin\StaffController::class, 'delete'])->name('delete.staff');
+
+     // Doctor
+     Route::get('/doctors', [App\Http\Controllers\Admin\DoctorsController::class, 'index'])->name('admin.doctors');
+     Route::post('/doctorslist', [App\Http\Controllers\Admin\DoctorsController::class, 'doctorslist'])->name('admin.doctorslist');
+     Route::post('/doctors/save', [App\Http\Controllers\Admin\DoctorsController::class, 'save'])->name('save.doctors');
+     Route::get('/doctors/edit', [App\Http\Controllers\Admin\DoctorsController::class, 'edit'])->name('edit.doctors');
+     Route::post('/doctors/delete', [App\Http\Controllers\Admin\DoctorsController::class, 'delete'])->name('delete.doctors');
+  
 });

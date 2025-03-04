@@ -51,6 +51,18 @@
                         <span>Staff</span>
                     </a>
                 </li>
+                <li class="menu-item  {{ $currentRouteName == 'admin.specialities' ? 'active' : '' }}">
+                    <a href="{{ route('admin.specialities') }}" class="menu-link">
+                        <i class="menu-icon fa-solid fa-user"></i>
+                        <span>Specialities</span>
+                    </a>
+                </li>
+                <li class="menu-item  {{ $currentRouteName == 'admin.doctors' ? 'active' : '' }}">
+                    <a href="{{ route('admin.doctors') }}" class="menu-link">
+                        <i class="menu-icon fa-solid fa-user-doctor"></i>
+                        <span>Doctors</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

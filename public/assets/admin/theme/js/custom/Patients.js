@@ -166,7 +166,6 @@ $(document).on("click", "#delete_patients", function() {
         }
     });
 });
-
 $(document).on('click', '#patientsEdit', function() {
     var id = $(this).data("id");
     $.ajax({

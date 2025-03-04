@@ -42,6 +42,18 @@ class GlobalHelper
             ->orderBy('name')
             ->get();
     }
+    /**
+     * Get all specialities from the 'specilaites' table.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getAllSpecialities()
+    {
+        return DB::table('specialities')
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+    }
 
     /**
      * Get patient data by ID.
