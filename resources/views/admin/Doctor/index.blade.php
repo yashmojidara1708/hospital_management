@@ -12,7 +12,6 @@
         <table class="datatable table table-hover mb-0" id="DoctorsTable">
             <thead class="text-left">
                 <tr>
-                    <th>Image</th>
                     <th>Doctor Name</th>
                     <th>Specialization</th>
                     <th>Phone</th>

@@ -1,14 +1,23 @@
 $(document).ready(function() {
-    $('#image').change(function(event) {
-        let reader = new FileReader();
-        reader.onload = function() {
-            $('#imagePreview').attr('src', reader.result).show();
-        };
-        reader.readAsDataURL(event.target.files[0]); // Read the selected file
-    });
-
     $("#DoctorsForm")[0].reset();
     $("#hid").val("");
+    $("#priview_image_title").hide();
+    $("#close_icone").hide();
+    image.onchange = evt => {
+        const [file] = image.files
+        if (file) {
+            $("#img_privew").show();
+            $("#priview_image_title").show();
+            $("#close_icone").show();
+            img_privew.src = URL.createObjectURL(file)
+        }
+    }
+
+    $("#close_icone").click(function() {
+        $("#img_privew").attr('src', '#').hide();
+        $("#priview_image_title").hide();
+        $("#image").val(''); // Clear file input
+    });
 
     $("#Add_Doctors_details").on("hidden.bs.modal", function() {
         $("#DoctorsForm")[0].reset();
@@ -36,9 +45,6 @@ $(document).ready(function() {
             },
         },
         columns: [{
-                data: "image",
-            },
-            {
                 data: "name",
             },
             {
@@ -143,8 +149,43 @@ $('form[id="DoctorsForm"]').validate({
         });
     },
 });
-$(document).on('click', '#doctorsEdit', function() {
+
+$(document).on("click", "#delete_doctors", function() {
+    let id = $(this).data("id");
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/doctors/delete",
+                data: {
+                    _token: $("[name='_token']").val(),
+                    id: id,
+                },
+                success: function(response) {
+                    var data = JSON.parse(response);
+                    if (data.status == 1) {
+                        $('#DoctorsTable').DataTable().ajax.reload();
+                        toastr.success(data.message);
+                    } else {
+                        toastr.error(data.message);
+                    }
+                }
+            });
+        }
+    });
+});
+
+$(document).on('click', '#delete_edit', function() {
     var id = $(this).data("id");
+    console.log("id", id);
     $.ajax({
         type: "GET",
         url: "/admin/doctors/edit",
@@ -154,9 +195,10 @@ $(document).on('click', '#doctorsEdit', function() {
         },
         success: function(response) {
             if (response.status == 1) {
-                if (response.doctors_data) {
-                    var doctorsdata = response.doctors_data;
-                    $('#Add_Patients_details').modal('show');
+                if (response.doctor_data) {
+                    var doctorsdata = response.doctor_data;
+                    console.log("doctorsdata", doctorsdata);
+                    $('#Add_Doctors_details').modal('show');
                     $("#modal_title").html("Edit Doctor");
                     $('#hid').val(doctorsdata.id);
                     $('#name').val(doctorsdata.name);
@@ -170,6 +212,11 @@ $(document).on('click', '#doctorsEdit', function() {
                     $('#state').val(doctorsdata.state);
                     $("#zip").val(doctorsdata.zip);
                     $("#country").val(doctorsdata.country).change();
+                    $("#image").attr("required", false);
+                    if (doctorsdata.image != "") {
+                        $("#oldimgbox").show();
+                        $("#imgbox").html(doctorsdata.image);
+                    }
                 }
             }
         },
