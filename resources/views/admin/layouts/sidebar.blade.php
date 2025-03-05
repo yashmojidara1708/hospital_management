@@ -18,7 +18,7 @@
         ],
         [
             'route' => 'admin.appointments',
-            'icon' => 'fa-solid fa-people-arrows',
+            'icon' => 'fa-solid fa-calendar',
             'label' => 'Appointments',
             'roles' => ['Admin','Staff'], // Only for Admins
         ],

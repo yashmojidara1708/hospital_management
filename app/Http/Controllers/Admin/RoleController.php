@@ -16,16 +16,29 @@ class RoleController extends Controller
     {
         return view('admin.hms_role.index');
     }
+    public function toggleStatus(Request $request)
+{
+    $role =role::find($request->id);
+    if ($role) {
+        $role->status = $request->status;
+        $role->save();
+        return response()->json(['message' => 'Status updated successfully.']);
+    }
+    return response()->json(['message' => 'Role not found!'], 404);
+}
     public function rolelist(Request $request)
     {
         $role_data = role::select('*')->where('status', '!=', -1)->get();
         return Datatables::of($role_data)
             ->addIndexColumn()
-            ->addColumn('status', function ($data) {
-                $status = $data->status == 1
-                    ? '<span class="badge badge-pill bg-success inv-badge">Active</span>'
-                    : '<span class="badge badge-pill bg-danger inv-badge ">Inactive</span>';
-                return $status;
+            ->addColumn('status', function ($row) {
+                $checked = $row->status ? 'checked' : '';
+                return '
+                <div class="status-toggle">
+                    <input type="checkbox" id="status_' . $row->id . '" class="check toggle-status" data-id="' . $row->id . '" ' . $checked . '>
+                    <label for="status_' . $row->id . '" class="checktoggle">checkbox</label>
+                </div>';
+       
             })
             ->addColumn('action', function ($row) {
                 $action = '<div class="dropdown dropup d-flex justify-content-center">

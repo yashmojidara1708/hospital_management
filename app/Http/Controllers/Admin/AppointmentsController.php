@@ -26,6 +26,16 @@ class AppointmentsController extends Controller
         $specializations = GlobalHelper::getAllSpecialities();
         return view('admin.Appointments.index', compact('specializations', 'doctors','patients'));
     }
+    public function toggleStatus(Request $request)
+    {
+        $appointments =appointments::find($request->id);
+        if ($appointments) {
+            $appointments->status = $request->status;
+            $appointments->save();
+            return response()->json(['message' => 'Status updated successfully.']);
+        }
+        return response()->json(['message' => 'Appointment not found!'], 404);
+    }
     public function save(Request $request)
     {
         $post = $request->post();
@@ -124,11 +134,14 @@ public function appointmentslist()
         ->addColumn('patient', function ($appointment) {
             return ($appointment->patient_name);
         })
-        ->addColumn('status', function ($data) {
-            $status = $data->status == 1
-                ? '<span class="badge badge-pill bg-success inv-badge">Active</span>'
-                : '<span class="badge badge-pill bg-danger inv-badge ">Inactive</span>';
-            return $status;
+        ->addColumn('status', function ($row) {
+            $checked = $row->status ? 'checked' : '';
+            return '
+            <div class="status-toggle">
+                <input type="checkbox" id="status_' . $row->id . '" class="check toggle-status" data-id="' . $row->id . '" ' . $checked . '>
+                <label for="status_' . $row->id . '" class="checktoggle">checkbox</label>
+            </div>';
+   
         })
         ->addColumn('appointment_time', function ($row) {
             $formattedDate = Carbon::parse($row->date)->format('j M Y');
@@ -173,7 +186,7 @@ public function delete(Request $request)
     $response['status']  = 0;
     $response['message']  = "Somthing Goes Wrong!";
     if (is_numeric($id)) {
-        $delete_appointment = appointments::where('id', $id)->update(['status' => -1]);;
+        $delete_appointment = appointments::where('id', $id)->delete();
         if ($delete_appointment) {
             $response['status'] = 1;
             $response['message'] = 'Appointment deleted successfully.';
