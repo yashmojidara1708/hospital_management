@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DoctorsController extends Controller
 {
@@ -27,6 +28,8 @@ class DoctorsController extends Controller
     {
         $post = $request->post();
         $hid = isset($post['hid']) ? intval($post['hid']) : null;
+        $Doctors = null; // Initialize to avoid "Undefined variable" error
+
         $response = ['status' => 0, 'message' => 'Something went wrong!'];
 
         // Validation rules
@@ -44,11 +47,15 @@ class DoctorsController extends Controller
             'zip' => 'required',
             'image' => 'nullable|mimes:jpeg,png|max:5120',
         ];
-
+        if (!$hid) {
+            $rules['password'] = 'required|min:8';
+        }
         // Custom error messages
         $msg = [
             'name.required' => 'Please enter the doctor name',
             'email.email' => 'Please enter a valid email address',
+            'email.required' => 'Please enter the email address',
+            'password.required' => 'Please enter the password',
             'experience.numeric' => 'Experience must be a number',
             'image.mimes' => 'Only jpeg and png images are allowed',
             'image.max' => 'Image size should not exceed 5MB',
@@ -101,23 +108,28 @@ class DoctorsController extends Controller
 
             // Data array for insertion/updation
             $insert_doctor_data = [
-                'name' => $request->name,
-                'specialization' => $request->specialization,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'experience' => $request->experience,
-                'qualification' => $request->qualification,
-                'address' => $request->address,
-                'country' => $request->country,
-                'city' => $request->city,
-                'state' => $request->state,
-                'zip' => $request->zip,
+                'name' => isset($request->name) ? $request->name : "",
+                'specialization' => isset($request->specialization) ? $request->specialization : "",
+                'phone' => isset($request->phone) ? $request->phone : "",
+                'email' => isset($request->email) ? $request->email : "",
+                'password' => isset($request->password) ? Hash::make($request->password) : "",
+                'role' => 'doctor',
+                'experience' => isset($request->experience) ? $request->experience : "",
+                'qualification' => isset($request->qualification) ? $request->qualification : "",
+                'address' => isset($request->address) ? $request->address : "",
+                'country' => isset($request->country) ? $request->country : "",
+                'city' => isset($request->city) ? $request->city : "",
+                'state' => isset($request->state) ? $request->state : "",
+                'zip' => isset($request->zip) ? $request->zip : "",
                 'image' => $imageName,
             ];
 
             if ($hid) {
                 // Update existing record
-                if ($Doctors) {
+                if (isset($Doctors)) {
+                    if (!empty($post['password'])) {
+                        $Doctors->password = Hash::make($post['password']);
+                    }
                     $Doctors->update($insert_doctor_data);
                     $response = ['status' => 1, 'message' => 'Doctor updated successfully!'];
                 } else {

@@ -15,9 +15,11 @@ class Doctor extends Model
     protected $fillable = [
         'id',
         'name',
+        'role',
         'specialization',
         'phone',
         'email',
+        'password',
         'experience',
         'qualification',
         'address',
@@ -27,6 +29,24 @@ class Doctor extends Model
         'zip',
         'image',
     ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+    ];
+
+
+    /**
+     * Automatically hash the password when setting it.
+     */
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
 }
-
-

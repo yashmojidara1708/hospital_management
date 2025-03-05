@@ -3,6 +3,7 @@ $(document).ready(function() {
     $("#hid").val("");
     $("#priview_image_title").hide();
     $("#close_icone").hide();
+    $("#oldimgbox").hide();
     image.onchange = evt => {
         const [file] = image.files
         if (file) {
@@ -26,6 +27,7 @@ $(document).ready(function() {
         $("#status").val("").change();
         $("#DoctorsForm").find('.error').removeClass('error');
         $("#oldimgbox").hide();
+        $('.password-container').show();
     });
 
     if ($.fn.DataTable.isDataTable('#DoctorsTable')) {
@@ -85,36 +87,77 @@ $(document).on('click', '#Add_Doctors', function() {
 var validationRules = {
     name: "required",
     specialization: "required",
-    phone: "required",
+    phone: {
+        required: true,
+        digits: true,
+        minlength: 10,
+        maxlength: 10,
+    },
     email: {
         required: true,
         email: true,
     },
-    experience: "required",
+    experience: {
+        required: true,
+        digits: true,
+        maxlength: 2,
+    },
     qualification: "required",
     address: "required",
     country: "required",
     city: "required",
     state: "required",
-    zip: "required",
+    zip: {
+        required: true,
+        digits: true,
+        minlength: 6,
+        maxlength: 6,
+    },
+    password: {
+        required: function() {
+            return $('#hid').val() === "";
+        },
+
+        minlength: 8,
+        pattern: /^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/,
+    },
 
 };
 
 var validationMessages = {
     name: "Please enter the doctor's name",
     specialization: "Please select the doctor's specialization",
-    phone: "Please enter the phone number",
+    phone: {
+        required: "Please enter the phone number",
+        digits: "Please enter only digits for the phone number",
+        minlength: "Phone number must be exactly 10 digits",
+        maxlength: "Phone number must be exactly 10 digits",
+    },
     email: {
         required: "Please enter the email address",
         email: "Please enter a valid email address",
     },
-    experience: "Please enter the experience in years",
+    experience: {
+        required: "Please enter the experience in years",
+        digits: "Experience must be a valid number",
+        maxlength: "Experience must be a maximum of 2 digits",
+    },
     qualification: "Please enter the qualification",
     address: "Please enter the address",
     country: "Please select a country",
     city: "Please enter the city",
     state: "Please enter the state",
-    zip: "Please enter the ZIP code",
+    zip: {
+        required: "Please enter the ZIP code",
+        digits: "ZIP code must be numeric",
+        minlength: "ZIP code must be exactly 6 digits",
+        maxlength: "ZIP code must be exactly 6 digits",
+    },
+    password: {
+        required: "Please enter a password",
+        minlength: "Password must be at least 8 characters long",
+        pattern: "Password must contain at least one special character",
+    },
 };
 
 $('form[id="DoctorsForm"]').validate({
@@ -218,6 +261,7 @@ $(document).on('click', '#delete_edit', function() {
                         $("#oldimgbox").show();
                         $("#imgbox").html(doctorsdata.image);
                     }
+                    $('.password-container').hide();
                 }
             }
         },

@@ -49,6 +49,14 @@
                                 placeholder="Please enter email">
                         </div>
                     </div>
+                    <div class="form-group
+                        row  password-container">
+                        <label class="col-lg-3 col-form-label">Password</label>
+                        <div class="col-lg-9">
+                            <input type="password" id="password" name="password" class="form-control"
+                                placeholder="Please enter password">
+                        </div>
+                    </div>
                     <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Experience</label>
                         <div class="col-lg-9">
@@ -86,8 +94,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="text" placeholder="State" class="form-control" name="state"
-                                            id="state">
+                                        <input type="text" placeholder="State" class="form-control"
+                                            name="state" id="state">
                                     </div>
                                     <div class="form-group">
                                         <input type="text" placeholder="ZIP code" class="form-control"
