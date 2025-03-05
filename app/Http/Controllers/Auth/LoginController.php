@@ -96,7 +96,9 @@ class LoginController extends Controller
             // Fetch the matching role name
             $roleName = DB::table('roles')
                 ->whereIn('id', $roles) // Match role ID with roles.id
-                ->value('name');
+                ->pluck('name');
+
+            $roleNamesString = implode(', ', $roleName->toArray());
 
             if (!$roleName) {
                 die('No matching role found.');
@@ -107,7 +109,7 @@ class LoginController extends Controller
                 'roles' => $staff->roles,
                 'email' => $staff->email,
                 'username' => $staff->username,
-                'role_name' => $roleName,
+                'role_name' => $roleNamesString,
             ];
 
             if (Auth::guard('staff')->attempt($credentials)) {

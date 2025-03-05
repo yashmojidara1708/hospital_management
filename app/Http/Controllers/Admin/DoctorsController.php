@@ -147,14 +147,18 @@ class DoctorsController extends Controller
         return Datatables::of($doctors_data)
             ->addIndexColumn()
             ->addColumn('name', function ($doctor) {
-                $imagePath = $doctor->image
-                    ? asset("assets/admin/theme/img/doctors/" . $doctor->image)
-                    : asset("assets/admin/theme/img/doctors/defult.jpg");
+                $imagePath = "assets/admin/theme/img/doctors/" . $doctor->image;
+                $defaultImage = asset("assets/admin/theme/img/doctors/default.jpg");
+
+                // Check if the file exists using the public path
+                $imageUrl = (!empty($doctor->image) && file_exists(public_path($imagePath)))
+                    ? asset($imagePath)
+                    : $defaultImage;
 
                 return '
                     <h2 class="table-avatar">
                         <a href="profile.html" class="avatar avatar-sm mr-2">
-                            <img src="' . $imagePath . '" width="50" height="50" class="rounded-circle" alt="User Image">
+                            <img src="' . $imageUrl . '" width="50" height="50" class="rounded-circle" alt="User Image">
                         </a>
                         <a href="profile.html">' . e($doctor->name) . '</a>
                     </h2>';
@@ -228,12 +232,13 @@ class DoctorsController extends Controller
         $doctor = Doctor::where("id", $id)->get();
 
         if (!empty($doctor[0])) {
-            $path = public_path("assets/admin/theme/img/doctors") . "/" . $doctor[0]['image'];
-            if (file_exists($path)) {
-                $doctor_img = "<img src='" . asset("assets/admin/theme/img/doctors") . "/" . $doctor[0]['image'] . "' alt='Not Found' height='100px'' width='auto'>";
-                $doctor[0]['image'] = $doctor_img;
+            $imagePath = public_path("assets/admin/theme/img/doctors") . "/" . $doctor[0]['image'];
+            $defaultImage = asset("assets/admin/theme/img/doctors/default.jpg"); // Path to the default image
+
+            if (!empty($doctor[0]['image']) && file_exists($imagePath)) {
+                $doctor[0]['image'] = "<img src='" . asset("assets/admin/theme/img/doctors/" . $doctor[0]['image']) . "' alt='Doctor Image' height='100px' width='auto'>";
             } else {
-                $doctor[0]['image'] = "";
+                $doctor[0]['image'] = "<img src='" . $defaultImage . "' alt='Default Image' height='100px' width='auto'>";
             }
             $response['doctor_data'] = $doctor[0];
             $response['status'] = 1;
