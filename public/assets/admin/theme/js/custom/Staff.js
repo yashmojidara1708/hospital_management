@@ -1,6 +1,56 @@
 $(document).ready(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     $("#StaffForm")[0].reset();
     $("#hid").val("");
+    $('#country').on('change', function() {
+        var countryId = $(this).val();
+        $('#state').html('<option value="">Loading...</option>'); // Show loading text
+        $('#city').html('<option value="">Select City</option>'); // Reset city
+
+        if (countryId) {
+            $.ajax({
+                url: 'get-states/' + countryId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(states) {
+                    $('#state').html('<option value="">Select State</option>');
+                    $.each(states, function(index, state) {
+                        $('#state').append('<option value="' + state.id + '">' + state.name + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#state').html('<option value="">Select State</option>'); // Reset state if no country selected
+        }
+    });
+
+    // When State is changed, fetch cities
+    $('#state').on('change', function() {
+        var stateId = $(this).val();
+        $('#city').html('<option value="">Loading...</option>'); // Show loading text
+
+        if (stateId) {
+            $.ajax({
+                url: 'get-cities/' + stateId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(cities) {
+                    $('#city').html('<option value="">Select City</option>');
+                    $.each(cities, function(index, city) {
+                        $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#city').html('<option value="">Select City</option>'); // Reset city if no state selected
+        }
+    });
+
+
 
     $("#Add_Staff_details").on("hidden.bs.modal", function() {
         $("#StaffForm")[0].reset();
@@ -59,8 +109,8 @@ $(document).ready(function() {
 $(document).on('click', '#Add_Staff', function() {
     $('#Add_Staff_details').modal('show');
     $("#modal_title").html("");
-    $("#modal_title").html("Add Patients");
-    $("#modal_title").html("Add Patients");
+    $("#modal_title").html("Add Staff");
+    $("#modal_title").html("Add Staff");
 });
 
 
@@ -73,8 +123,18 @@ var validationRules = {
     country: "required",
     city: "required",
     state: "required",
-    zip: "required",
-    phone: "required",
+    zip: {
+        required: true,
+        maxlength: 6,
+        minlength: 5,
+        digits: true, // Ensures only numbers
+    },
+    phone: {
+        required: true,
+        digits: true, // Ensures only numbers
+        minlength: 10,
+        maxlength: 10,
+    },
     email: {
         required: true,
         email: true,
@@ -97,8 +157,18 @@ var validationMessages = {
     country: "Please select a country",
     city: "Please enter the city",
     state: "Please enter the state",
-    zip: "Please enter the ZIP code",
-    phone: "Please enter the phone number",
+    zip: {
+        required: "Please enter the ZIP code",
+        maxlength: "ZIP code cannot be more than 6 digits",
+        minlength: "ZIP code must be at least 5 digits",
+        digits: "ZIP code must contain only numbers",
+    },
+    phone: {
+        required: "Please enter the phone number",
+        digits: "Phone number must contain only numbers",
+        minlength: "Phone number must be exactly 10 digits",
+        maxlength: "Phone number must be exactly 10 digits",
+    },
     email: {
         required: "Please enter the email address",
         email: "Please enter a valid email address",
@@ -110,7 +180,12 @@ var validationMessages = {
     },
     date_of_birth: "Please select the birth date",
 };
+let yesterday = new Date();
+yesterday.setDate(yesterday.getDate() - 1); // Set to previous date
 
+let formattedDate = yesterday.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+$("#date_of_birth").val(formattedDate); // Set default value
+$("#date_of_birth").attr("max", formattedDate);
 
 $('form[id="StaffForm"]').validate({
     rules: validationRules,
@@ -169,26 +244,64 @@ $(document).on('click', '#edit_staff', function() {
                     var staffsdata = response.staffs_data;
                     $('#Add_Staff_details').modal('show');
                     $("#modal_title").html("Edit Staff");
+
+                    // Set form values
                     $('#hid').val(staffsdata.id);
                     $('#name').val(staffsdata.name);
                     $('#address').val(staffsdata.address);
                     $('#phone').val(staffsdata.phone);
                     $('#email').val(staffsdata.email);
-                    $('#city').val(staffsdata.city);
-                    $('#state').val(staffsdata.state);
                     $("#zip").val(staffsdata.zip);
-                    $("#country").val(staffsdata.country).change();
+                    $('#date_of_birth').val(staffsdata.date_of_birth);
+                    $('.password-container').hide();
+
+                    // Load and set country, state, and city
+                    $('#country').val(staffsdata.country).change();
+
+                    // Load states based on selected country
+                    $.ajax({
+                        url: 'get-states/' + staffsdata.country,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(states) {
+                            $('#state').html('<option value="">Select State</option>');
+                            $.each(states, function(index, state) {
+                                $('#state').append('<option value="' + state.id + '">' + state.name + '</option>');
+                            });
+                            console.log("staffsdata.state", staffsdata.state);
+                            $('#state').val(staffsdata.state).change(); // Set selected state
+                        }
+                    });
+                    $stateId = staffsdata.state;
+                    // Load cities based on selected state
+                    $.ajax({
+                        url: 'get-cities/' + $stateId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(cities) {
+                            $('#city').html('<option value="">Select City</option>');
+                            console.log("cities", cities);
+
+                            $.each(cities, function(index, city) {
+                                console.log("city.id", city.id);
+                                $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                            });
+                            console.log("staffsdata.city", staffsdata.city);
+                            $('#city').val(String(staffsdata.city)).change(); // Force to string
+                        }
+                    });
+
+                    // Set roles checkboxes
                     $('input[type="checkbox"][name="roles[]"]').prop('checked', false);
                     $.each(staffsdata.roles, function(key, value) {
                         $('input[type="checkbox"][name="roles[]"][value="' + value + '"]').prop('checked', true);
                     });
-                    $('#date_of_birth').val(staffsdata.date_of_birth);
-                    $('.password-container').hide();
                 }
             }
         },
     });
 });
+
 
 $(document).on("click", "#delete_staff", function() {
     let id = $(this).data("id");

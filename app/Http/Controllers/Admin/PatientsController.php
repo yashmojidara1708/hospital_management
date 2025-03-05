@@ -17,8 +17,9 @@ class PatientsController extends Controller
     public function index()
     {
         $countries = GlobalHelper::getAllCountries();
+        $cities = GlobalHelper::getAllCities();
         $states = GlobalHelper::getAllStates();
-        return view('admin.patients.index', compact('countries', 'states'));
+        return view('admin.patients.index', compact('countries', 'states','cities'));
     }
 
     public function save(Request $request)

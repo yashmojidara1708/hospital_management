@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Helpers\GlobalHelper;
 use App\Http\Controllers\Admin\DashboardController;
 
 Auth::routes();
@@ -14,7 +15,15 @@ Route::any('/admin/logout', [App\Http\Controllers\Auth\LoginController::class, '
 
 Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('admin.home');
-    //role
+
+    Route::get('/get-states/{country_id}', function ($country_id) {
+        return response()->json(GlobalHelper::getStatesByCountry($country_id));
+    });
+    
+    Route::get('/get-cities/{state_id}', function ($state_id) {
+        return response()->json(GlobalHelper::getCitiesByState($state_id));
+    });
+
     Route::get('/role', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin.role');
     Route::post('/rolelist', [App\Http\Controllers\Admin\RoleController::class, 'rolelist'])->name('admin.rolelist');
     Route::post('/role/save', [App\Http\Controllers\Admin\RoleController::class, 'save'])->name('save.role');
