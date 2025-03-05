@@ -161,13 +161,33 @@ $(document).on("click", "#delete_appointment", function() {
                     var data = JSON.parse(response);
                     console.log("data", data);
                     if (data.status == 1) {
-                        $('#appointmentsTable').DataTable().ajax.reload();
+                        $('#AppointmentsTable').DataTable().ajax.reload();
                         toastr.success(data.message);
                     } else {
                         toastr.error(data.message);
                     }
                 }
             });
+        }
+    });
+});
+$(document).on('change', '.toggle-status', function() {
+    var id = $(this).data('id');
+    var status = $(this).is(':checked') ? 1 : 0;
+
+    $.ajax({
+        url: "/admin/appointments/toggle-status",
+        type: "POST",
+        data: {
+            _token: $("[name='_token']").val(),
+            id: id,
+            status: status
+        },
+        success: function(response) {
+            toastr.success(response.message);
+        },
+        error: function() {
+            toastr.error("Something went wrong!");
         }
     });
 });

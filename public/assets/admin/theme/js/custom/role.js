@@ -147,3 +147,23 @@ $(document).on("click", "#delete_role", function() {
         }
     });
 });
+$(document).on('change', '.toggle-status', function() {
+    var id = $(this).data('id');
+    var status = $(this).is(':checked') ? 1 : 0;
+
+    $.ajax({
+        url: "/admin/role/toggle-status",
+        type: "POST",
+        data: {
+            _token: $("[name='_token']").val(),
+            id: id,
+            status: status
+        },
+        success: function(response) {
+            toastr.success(response.message);
+        },
+        error: function() {
+            toastr.error("Something went wrong!");
+        }
+    });
+});

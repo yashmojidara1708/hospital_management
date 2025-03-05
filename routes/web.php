@@ -13,13 +13,13 @@ Route::any('/admin/logout', [App\Http\Controllers\Auth\LoginController::class, '
 
 Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('admin.home');
-
+//role
     Route::get('/role', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin.role');
     Route::post('/rolelist', [App\Http\Controllers\Admin\RoleController::class, 'rolelist'])->name('admin.rolelist');
     Route::post('/role/save', [App\Http\Controllers\Admin\RoleController::class, 'save'])->name('save.role');
     Route::get('/role/edit', [App\Http\Controllers\Admin\RoleController::class, 'edit'])->name('edit.role');
     Route::post('/role/delete', [App\Http\Controllers\Admin\RoleController::class, 'delete'])->name('delete.role');
-
+    Route::post('/role/toggle-status', [App\Http\Controllers\Admin\RoleController::class, 'toggleStatus'])->name('role.toggleStatus');
     // Specialities
     Route::get('/specialities', [App\Http\Controllers\Admin\SpecialitiesController::class, 'index'])->name('admin.specialities');
     Route::post('/specialitieslist', [App\Http\Controllers\Admin\SpecialitiesController::class, 'specialitieslist'])->name('admin.specialitieslist');
@@ -55,12 +55,14 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
      Route::post('/doctors/save', [App\Http\Controllers\Admin\DoctorsController::class, 'save'])->name('save.doctors');
      Route::get('/doctors/edit', [App\Http\Controllers\Admin\DoctorsController::class, 'edit'])->name('edit.doctors');
      Route::post('/doctors/delete', [App\Http\Controllers\Admin\DoctorsController::class, 'delete'])->name('delete.doctors');
-  
+     Route::get('/doctors/{id}', [App\Http\Controllers\Admin\DoctorsController::class, 'doctorsDetails'])->name('doctors.details');
+
     // Appointment
     Route::get('/appointments', [App\Http\Controllers\Admin\AppointmentsController::class, 'index'])->name('admin.appointments');
     Route::post('/appointmentslist', [App\Http\Controllers\Admin\AppointmentsController::class, 'appointmentslist'])->name('admin.appointmentslist');
     Route::post('/appointments/save', [App\Http\Controllers\Admin\AppointmentsController::class, 'save'])->name('save.appointments');
     Route::get('/appointments/edit', [App\Http\Controllers\Admin\AppointmentsController::class, 'edit'])->name('edit.appointments');
     Route::post('/appointments/delete', [App\Http\Controllers\Admin\AppointmentsController::class, 'delete'])->name('delete.appointments');
+    Route::post('/appointments/toggle-status', [App\Http\Controllers\Admin\AppointmentsController::class, 'toggleStatus'])->name('appointments.toggleStatus');
 
 });
