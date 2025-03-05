@@ -10,6 +10,7 @@ Auth::routes();
 Route::any('/', [LoginController::class, 'showLoginForm'])->name('admin');
 Route::any('/admin/login', [LoginController::class, 'showLoginForm'])->name('admin.login');
 Route::any('/check/login', [LoginController::class, 'login']);
+Route::any('/check/doctorlogin', [LoginController::class, 'doctorloginlogin']);
 Route::any('/admin/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('admin.logout');
 
 Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
@@ -23,7 +24,6 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
         return response()->json(GlobalHelper::getCitiesByState($state_id));
     });
 
-//role
     Route::get('/role', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin.role');
     Route::post('/rolelist', [App\Http\Controllers\Admin\RoleController::class, 'rolelist'])->name('admin.rolelist');
     Route::post('/role/save', [App\Http\Controllers\Admin\RoleController::class, 'save'])->name('save.role');
@@ -59,13 +59,13 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/staff/edit', [App\Http\Controllers\Admin\StaffController::class, 'edit'])->name('edit.staff');
     Route::post('/staff/delete', [App\Http\Controllers\Admin\StaffController::class, 'delete'])->name('delete.staff');
 
-     // Doctor
-     Route::get('/doctors', [App\Http\Controllers\Admin\DoctorsController::class, 'index'])->name('admin.doctors');
-     Route::post('/doctorslist', [App\Http\Controllers\Admin\DoctorsController::class, 'doctorslist'])->name('admin.doctorslist');
-     Route::post('/doctors/save', [App\Http\Controllers\Admin\DoctorsController::class, 'save'])->name('save.doctors');
-     Route::get('/doctors/edit', [App\Http\Controllers\Admin\DoctorsController::class, 'edit'])->name('edit.doctors');
-     Route::post('/doctors/delete', [App\Http\Controllers\Admin\DoctorsController::class, 'delete'])->name('delete.doctors');
-     Route::get('/doctors/{id}', [App\Http\Controllers\Admin\DoctorsController::class, 'doctorsDetails'])->name('doctors.details');
+    // Doctor
+    Route::get('/doctors', [App\Http\Controllers\Admin\DoctorsController::class, 'index'])->name('admin.doctors');
+    Route::post('/doctorslist', [App\Http\Controllers\Admin\DoctorsController::class, 'doctorslist'])->name('admin.doctorslist');
+    Route::post('/doctors/save', [App\Http\Controllers\Admin\DoctorsController::class, 'save'])->name('save.doctors');
+    Route::get('/doctors/edit', [App\Http\Controllers\Admin\DoctorsController::class, 'edit'])->name('edit.doctors');
+    Route::post('/doctors/delete', [App\Http\Controllers\Admin\DoctorsController::class, 'delete'])->name('delete.doctors');
+    Route::get('/doctors/{id}', [App\Http\Controllers\Admin\DoctorsController::class, 'doctorsDetails'])->name('doctors.details');
 
     // Appointment
     Route::get('/appointments', [App\Http\Controllers\Admin\AppointmentsController::class, 'index'])->name('admin.appointments');
@@ -74,5 +74,8 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/appointments/edit', [App\Http\Controllers\Admin\AppointmentsController::class, 'edit'])->name('edit.appointments');
     Route::post('/appointments/delete', [App\Http\Controllers\Admin\AppointmentsController::class, 'delete'])->name('delete.appointments');
     Route::post('/appointments/toggle-status', [App\Http\Controllers\Admin\AppointmentsController::class, 'toggleStatus'])->name('appointments.toggleStatus');
+});
 
+Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
+    Route::get('/home', [DashboardController::class, 'index'])->name('doctor.home');
 });
