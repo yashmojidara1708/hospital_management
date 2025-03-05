@@ -68,14 +68,7 @@ class RoleController extends Controller
             ->rawColumns(['action', 'status']) // Ensure HTML is not escaped
             ->make(true);
     }
-    public function togglechange(Request $request, string $id)
-    {
-
-        $role = role::find($id);
-        $role->status = $request->status;
-        $role->save();
-        return response()->json(['message' => 'Status Updated Successfully!!']);
-    }
+   
 
     // Create a new role
     public function save(Request $request)

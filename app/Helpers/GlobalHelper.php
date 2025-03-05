@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Patients;
+
 use Illuminate\Support\Facades\DB;
 
 class GlobalHelper
@@ -14,8 +15,9 @@ class GlobalHelper
      */
     public static function getAllCountries()
     {
-        return DB::table('countries')->select('code', 'name')->orderBy('name')->get();
+        return DB::table('countries')->select('id','code', 'name')->orderBy('name')->get();
     }
+
 
     /**
      * Get all states from the 'states' table.
@@ -29,7 +31,13 @@ class GlobalHelper
             ->orderBy('name')
             ->get();
     }
-
+    public static function getAllCities()
+    {
+        return DB::table('cities')
+        ->select('id', 'name','state_id','country_id')
+        ->orderBy('name')
+        ->get();
+    }
     /**
      * Get all states from the 'roles' table.
      *
@@ -59,6 +67,7 @@ class GlobalHelper
     {
         return DB::table('doctors')
             ->select('id', 'name')
+            ->where('isdeleted', '!=', 1)
             ->orderBy('name')
             ->get();
     }
@@ -68,6 +77,7 @@ class GlobalHelper
         return DB::table('patients')
             ->select('patient_id', 'name')
             ->orderBy('name')
+            ->where('isdeleted', '!=', 1)
             ->get();
     }
 
@@ -77,7 +87,19 @@ class GlobalHelper
      * @param int $patientId
      * @return Patients|null
      */
-    function getPatientById($patientId)
+    public static  function getStatesByCountry($country_id)
+    {
+      return DB::table('states')
+                ->where('country_id', $country_id)
+                ->get();
+    }
+    public static function getCitiesByState($state_id)
+    {
+         return DB::table('cities')
+                ->where('state_id', $state_id)
+                ->get();
+    }
+    public static function getPatientById($patientId)
     {
         return Patients::where('patient_id', $patientId)
             ->where('isdeleted', '!=', 1)

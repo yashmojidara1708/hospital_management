@@ -56,18 +56,39 @@ $(document).on('click', '#Add_Medicines', function() {
     $("#modal_title").html("Add Medicine");
 });
 
+let today = new Date();
+today.setDate(today.getDate() + 1); // Set to tomorrow (future date)
+
+let formattedDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+$("#expiry_date").attr("min", formattedDate);
+
 var validationRules = {
     name: "required",
     expiry_date: "required",
-    price: "required",
-    stock: "required",
+    price: {
+        required: true,
+        number: true, // Ensures only numeric values
+        min: 10, // Minimum 2-digit number (10)
+        max: 99999 // Maximum 5-digit number (99999)
+    },
+    stock: {
+        required: true,
+        digits: true,
+    },
 };
-
 var validationMessages = {
     name: "Please enter the medicines name",
     expiry_date: "Please select the expiry date",
-    price: "Please enter price",
-    stock: "Please enter stock",
+    price: {
+        required: "Please enter the price",
+        number: "Price must be a valid number",
+        min: "Price must be at least 10",
+        max: "Price cannot exceed 99999"
+    },
+    stock: {
+        required: "Please enter the stock",
+        digits: "Stock must contain only numbers",
+    },
 };
 
 $('form[id="MedicinesForm"]').validate({

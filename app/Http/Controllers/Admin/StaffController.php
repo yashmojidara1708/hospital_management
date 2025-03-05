@@ -19,8 +19,10 @@ class StaffController extends Controller
     public function index()
     {
         $countries = GlobalHelper::getAllCountries();
+        $cities = GlobalHelper::getAllCities();
+        $states = GlobalHelper::getAllStates();
         $roles = GlobalHelper::getAllRoles();
-        return view('admin.staff.index', compact('countries', 'roles'));
+        return view('admin.staff.index', compact('countries', 'cities','states','roles'));
     }
 
     public function save(Request $request)
@@ -147,8 +149,12 @@ class StaffController extends Controller
     // // // List Show
     public function stafflist()
     {
-        $staff_data = Staff::select('staff.*', DB::raw("GROUP_CONCAT(roles.name SEPARATOR ', ') as role_names"))
+        $staff_data = Staff::select('staff.*','countries.name as country_name', 'states.name as state_name','cities.name as city_name',
+                     DB::raw("GROUP_CONCAT(roles.name SEPARATOR ', ') as role_names"))
             ->leftJoin('roles', DB::raw("JSON_CONTAINS(staff.roles, JSON_QUOTE(CAST(roles.id AS CHAR)) )"), '>', DB::raw('0'))
+            ->leftJoin('countries', 'staff.country', '=', 'countries.id')
+            ->leftJoin('states', 'staff.state', '=', 'states.id')
+            ->leftJoin('cities', 'staff.city', '=', 'cities.id')
             ->where('staff.isdeleted', '!=', 1)
             ->groupBy('staff.id') // Group by staff ID to avoid duplicate rows
             ->get();
@@ -157,7 +163,12 @@ class StaffController extends Controller
         return Datatables::of($staff_data)
             ->addIndexColumn()
             ->addColumn('address', function ($row) {
-                return $row->address . ', ' . $row->city . ', ' . $row->state . ', ' . $row->country . ' - ' . $row->zip;
+                $address = $row->address ?? 'N/A';
+                $city = $row->city_name ?? 'N/A';
+                $state = $row->state_name ?? 'N/A';
+                $country = $row->country_name ?? 'N/A';
+                return "$address, $city, $state, $country";
+               // return $row->address . ', ' . $row->cities_name . ', ' . $row->states_name . ', ' . $row->country_name . ' - ' . $row->zip;
             })
             // Display role names as a comma-separated string
             ->addColumn('roles', function ($row) {

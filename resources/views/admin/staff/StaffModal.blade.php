@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_title">Add Medicine</h5>
+                <h5 class="modal-title" id="modal_title">Add Staff</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -50,19 +50,22 @@
                                         <select name="country" class="form-control" id="country">
                                             <option value="">Select Country</option>
                                             @foreach ($countries as $country)
-                                                <option value="{{ $country->code }}">{{ $country->name }}</option>
+                                                <option value="{{ $country->id }}">{{ $country->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" placeholder="City" class="form-control" name="city"
-                                            id="city">
+                                        <select name="city" class="form-control" id="city">
+                                            <option value="">Select City</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
+                                    
                                     <div class="form-group">
-                                        <input type="text" placeholder="State" class="form-control" name="state"
-                                            id="state">
+                                        <select name="state" class="form-control" id="state">
+                                            <option value="">Select State</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <input type="text" placeholder="ZIP code" class="form-control" name="zip"
