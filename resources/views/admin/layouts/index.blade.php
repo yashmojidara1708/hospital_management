@@ -1,10 +1,9 @@
 @php
+    $currentRouteName = \Route::currentRouteName();
     $staffData = session('staff_data');
     $currentloginRole = isset($staffData['role_name']) ? $staffData['role_name'] : '';
+
     $currentloginName = isset($staffData['username']) ? $staffData['username'] : '';
-
-    // dd(session('message'));
-
 @endphp
 
 
@@ -63,7 +62,12 @@
                 <div class="page-header">
                     <div class="row">
                         <div class="col-sm-7 col-auto">
-                            <h3 class="page-title">@yield('page-title')</h3>
+                            @if ($currentRouteName === 'admin.home')
+                                <h3 class="page-title">Welcome, {{ isset($currentloginName) ? $currentloginName : '' }}
+                                </h3>
+                            @else
+                                <h3 class="page-title">@yield('page-title')</h3>
+                            @endif
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a href="{{ route('admin.home') }}">Dashboard</a>
@@ -88,9 +92,11 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
-                                {{-- <div id="loader-container">
-                                    <div class="loader"></div>
-                                </div> --}}
+                                @if ($currentRouteName != 'admin.home')
+                                    <div id="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                @endif
                                 @yield('admin-content')
                             </div>
                         </div>

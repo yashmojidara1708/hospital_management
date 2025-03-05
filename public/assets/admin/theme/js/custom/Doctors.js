@@ -213,6 +213,7 @@ $(document).on('click', '#delete_edit', function() {
                     $("#zip").val(doctorsdata.zip);
                     $("#country").val(doctorsdata.country).change();
                     $("#image").attr("required", false);
+                    console.log("doctorsdata.image", doctorsdata.image);
                     if (doctorsdata.image != "") {
                         $("#oldimgbox").show();
                         $("#imgbox").html(doctorsdata.image);

@@ -116,7 +116,7 @@
                         </div>
                     </div>
                     <div class="col-lg-9" id="oldimgbox">
-                        <label>Old image</label>
+                        <label>Curent Image</label>
                         <div class="col-sm-10" id="imgbox">
                         </div>
                     </div>
