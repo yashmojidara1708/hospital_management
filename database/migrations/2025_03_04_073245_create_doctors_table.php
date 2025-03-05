@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->text('role');
             $table->string('specialization');
             $table->string('phone')->unique();
             $table->string('email')->unique();
+            $table->string('password');
             $table->integer('experience')->unsigned()->comment('Experience in years');
             $table->string('qualification');
             $table->text('address');
@@ -28,7 +30,6 @@ return new class extends Migration
             $table->integer('isdeleted')->default(0);
             $table->timestamps();
         });
-
     }
 
     /**

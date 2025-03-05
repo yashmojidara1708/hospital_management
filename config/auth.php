@@ -45,6 +45,10 @@ return [
             'driver' => 'session',
             'provider' => 'staff', // Link to the 'staff' provider
         ],
+        'doctor' => [ // Custom guard for staff
+            'driver' => 'session',
+            'provider' => 'doctor', // Link to the 'doctor' provider
+        ],
 
     ],
 
@@ -74,6 +78,10 @@ return [
         'staff' => [ // Custom provider for staff
             'driver' => 'database', // or 'eloquent' if using a Staff model
             'table' => 'staff', // Table name
+        ],
+        'doctor' => [ // Custom provider for staff
+            'driver' => 'database', // or 'eloquent' if using a Staff model
+            'table' => 'doctors', // Table name
         ],
 
     ],
