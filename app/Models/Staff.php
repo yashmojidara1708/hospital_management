@@ -40,8 +40,10 @@ class Staff extends Model
     /**
      * Automatically hash the password when setting it.
      */
-    public function setPasswordAttribute($value)
+    protected function casts(): array
     {
-        $this->attributes['password'] = bcrypt($value);
+        return [
+            'password' => 'hashed',
+        ];
     }
 }

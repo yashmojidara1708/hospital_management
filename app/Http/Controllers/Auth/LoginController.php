@@ -59,7 +59,7 @@ class LoginController extends Controller
                     'required',
                     'min:8',
                     'max:20',
-                    'regex:/^[A-Za-z0-9-_]+$/'
+                    // 'regex:/^[A-Za-z0-9-_]+$/'
                 ],
             ], [
                 'email.required' => 'Email is required.',
@@ -67,7 +67,7 @@ class LoginController extends Controller
                 'password.required' => 'Password is required.',
                 'password.min' => 'Password must be at least 8 characters.',
                 'password.max' => 'Password must not exceed 20 characters.',
-                'password.regex' => 'Password must contain only letters, numbers, hyphens, and underscores.',
+                // 'password.regex' => 'Password must contain only letters, numbers, hyphens, and underscores.',
             ]);
 
 

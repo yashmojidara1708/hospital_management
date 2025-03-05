@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class StaffController extends Controller
 {
@@ -103,7 +104,7 @@ class StaffController extends Controller
                 'date_of_birth' => $post['date_of_birth'] ?? "",
                 'phone' => $post['phone'] ?? "",
                 'email' => $post['email'] ?? "",
-                'password' => isset($post['password']) ? bcrypt($post['password']) : "",
+                'password' => isset($post['password']) ? Hash::make($post['password']) : "",
                 'address' => $post['address'] ?? "",
                 'country' => $post['country'] ?? "",
                 'state' => $post['state'] ?? "",
@@ -117,7 +118,7 @@ class StaffController extends Controller
                 if ($Staff) {
                     // Avoid re-hashing the password if not changed
                     if (!empty($post['password'])) {
-                        $Staff['password'] = bcrypt($post['password']);
+                        $Staff['password'] = Hash::make($post['password']);
                     }
                     $Staff->update($Staff_insert_data);
                     $response['status'] = 1;
