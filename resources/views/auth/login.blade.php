@@ -23,15 +23,16 @@
                                         data-toggle="tab">Doctor</a>
                                 </li>
                             </ul>
+                            <div id="welcomeMessage" class="text-center my-3"></div>
+
                             <div class="tab-content">
                                 <!-- Admin Tab Pane -->
                                 <div class="tab-pane show active" id="solid-rounded-justified-tab1" role="tabpanel"
                                     aria-labelledby="admin-tab">
-                                    <form id="adminLoginForm" method="POST" action="{{ url('/check/login') }}"
-                                        style="margin-top: 5%">
+                                    <form id="adminLoginForm" method="POST" action="{{ url('/check/login') }}">
                                         @csrf
                                         <div class="mb-3">
-                                            <label for="admin-email" class="form-label text-dark">Email</label>
+                                            <label for="admin-email" class="form-label text-dark">Admin Email</label>
                                             <input type="text" class="form-control" id="admin-email" name="email"
                                                 placeholder="Enter your email" autofocus required />
                                             @if ($errors->has('email'))
@@ -39,7 +40,7 @@
                                             @endif
                                         </div>
                                         <div class="mb-3 form-password-toggle">
-                                            <label class="form-label text-dark" for="admin-password">Password</label>
+                                            <label class="form-label text-dark" for="admin-password">Admin Password</label>
                                             <div class="input-group input-group-merge">
                                                 <input type="password" id="admin-password" class="form-control"
                                                     name="password" placeholder="••••••••••••"
@@ -59,11 +60,10 @@
                                 <!-- Doctor Tab Pane -->
                                 <div class="tab-pane" id="solid-rounded-justified-tab2" role="tabpanel"
                                     aria-labelledby="doctor-tab">
-                                    <form id="adminLoginForm" method="POST" action="{{ url('/check/doctorlogin') }}"
-                                        style="margin-top: 5%">
+                                    <form id="adminLoginForm" method="POST" action="{{ url('/check/doctorlogin') }}">
                                         @csrf
                                         <div class="mb-3">
-                                            <label for="admin-email" class="form-label text-dark">Email</label>
+                                            <label for="admin-email" class="form-label text-dark">Doctor Email</label>
                                             <input type="text" class="form-control" id="admin-email" name="email"
                                                 placeholder="Enter your email" autofocus required />
                                             @if ($errors->has('email'))
@@ -71,7 +71,7 @@
                                             @endif
                                         </div>
                                         <div class="mb-3 form-password-toggle">
-                                            <label class="form-label text-dark" for="admin-password">Password</label>
+                                            <label class="form-label text-dark" for="admin-password">Doctor Password</label>
                                             <div class="input-group input-group-merge">
                                                 <input type="password" id="admin-password" class="form-control"
                                                     name="password" placeholder="••••••••••••"
@@ -99,6 +99,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Get the active tab from localStorage
             var activeTab = localStorage.getItem('activeTab');
+            var welcomeMessageElement = document.getElementById('welcomeMessage');
+
+            function updateWelcomeMessage(tabId) {
+                if (tabId === '#solid-rounded-justified-tab1') {
+                    welcomeMessageElement.textContent = 'Welcome Back, Admin Please login access to our dashboard.';
+                } else if (tabId === '#solid-rounded-justified-tab2') {
+                    welcomeMessageElement.textContent = 'Hello Doctor! We are glad to see you. Please log in.';
+                } else {
+                    welcomeMessageElement.textContent = '';
+                }
+            }
+
 
             if (activeTab) {
                 // Show the stored active tab
@@ -113,6 +125,8 @@
                     // Add active class to the stored tab and pane
                     tabElement.classList.add('active');
                     tabPaneElement.classList.add('show', 'active');
+
+                    updateWelcomeMessage(activeTab);
                 }
             }
 
@@ -121,6 +135,7 @@
                 tab.addEventListener('click', function() {
                     var tabId = this.getAttribute('href');
                     localStorage.setItem('activeTab', tabId);
+                    updateWelcomeMessage(tabId);
                 });
             });
         });
