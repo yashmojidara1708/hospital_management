@@ -30,7 +30,7 @@
         ],
         [
             'route' => 'admin.specialities',
-            'icon' => 'fa-solid fa-pills',
+            'icon' => 'fa-solid fa-brain',
             'label' => 'Specialities',
             'roles' => ['Admin'],
         ],

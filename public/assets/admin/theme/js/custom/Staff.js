@@ -59,8 +59,8 @@ $(document).ready(function() {
 $(document).on('click', '#Add_Staff', function() {
     $('#Add_Staff_details').modal('show');
     $("#modal_title").html("");
-    $("#modal_title").html("Add Patients");
-    $("#modal_title").html("Add Patients");
+    $("#modal_title").html("Add Staff");
+    $("#modal_title").html("Add Staff");
 });
 
 

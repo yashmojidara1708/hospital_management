@@ -90,7 +90,26 @@ $('form[id="specialitiesForm"]').validate({
         });
     },
 });
+$(document).on('change', '.toggle-status', function() {
+    var id = $(this).data('id');
+    var status = $(this).is(':checked') ? 1 : 0;
 
+    $.ajax({
+        url: "/admin/specialities/toggle-status",
+        type: "POST",
+        data: {
+            _token: $("[name='_token']").val(),
+            id: id,
+            status: status
+        },
+        success: function(response) {
+            toastr.success(response.message);
+        },
+        error: function() {
+            toastr.error("Something went wrong!");
+        }
+    });
+});
 $(document).on('click', '#specialitiesEdit', function() {
     var id = $(this).data("id");
     $.ajax({
