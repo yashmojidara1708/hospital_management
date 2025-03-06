@@ -60,6 +60,20 @@ class MedicinesController extends Controller
         );
 
         if (!$validator->fails()) {
+            $NameexistingQuery = Medicine::where('name', $request->name)
+                ->where('isdeleted', '!=', 1);
+
+            // hid the current record from the check if updating
+            if ($hid) {
+                $NameexistingQuery->where('id', '!=', $hid);
+            }
+
+            if ($NameexistingQuery->exists()) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'The Medicines already exists.',
+                ]);
+            }
             $insert_medicin_data = [
                 'name' => isset($post['name']) ? $post['name'] : "",
                 'expiry_date' => isset($post['expiry_date']) ? $post['expiry_date'] : "",
@@ -72,9 +86,9 @@ class MedicinesController extends Controller
                 if ($Medicine) {
                     $Medicine->update($insert_medicin_data);
                     $response['status'] = 1;
-                    $response['message'] = "Patients updated successfully!";
+                    $response['message'] = "Medicines updated successfully!";
                 } else {
-                    $response['message'] = "Patients not found!";
+                    $response['message'] = "Medicines not found!";
                 }
             } else {
                 // Create new record

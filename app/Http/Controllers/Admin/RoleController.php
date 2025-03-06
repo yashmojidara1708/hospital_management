@@ -110,17 +110,17 @@ class RoleController extends Controller
             }
         
             // Check if a soft-deleted role exists with the same name
-            // $deletedRole =role::where('name', $request->name)->where('isdeleted', 1)->first();
+             $deletedRole =role::where('name', $request->name)->where('isdeleted', 1)->first();
         
-            // if ($deletedRole) {
+            if ($deletedRole) {
             //     // Restore the deleted role instead of creating a new one
-            //     $deletedRole->update(['isdeleted' => 0, 'status' => $post['status'] ?? 1]);
+                $deletedRole->update(['isdeleted' => 0, 'status' => $post['status'] ?? 1]);
         
-            //     return response()->json([
-            //         'status' => 1,
-            //         'message' => "Role restored successfully!",
-            //     ]);
-            // }
+               return response()->json([
+                     'status' => 1,
+                     'message' => "Role restored successfully!",
+                 ]);
+             }
             
             $insert_team_data = [
                 'name' => isset($post['name']) ? $post['name'] : "",

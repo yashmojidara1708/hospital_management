@@ -45,7 +45,7 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/patients/edit', [App\Http\Controllers\Admin\PatientsController::class, 'edit'])->name('edit.patients');
     Route::post('/patients/delete', [App\Http\Controllers\Admin\PatientsController::class, 'delete'])->name('delete.patients');
     Route::get('/patients/{id}', [App\Http\Controllers\Admin\PatientsController::class, 'patientDetails'])->name('patients.details');
-
+    
     // Medicines
     Route::get('/medicines', [App\Http\Controllers\Admin\MedicinesController::class, 'index'])->name('admin.medicines');
     Route::post('/medicineslist', [App\Http\Controllers\Admin\MedicinesController::class, 'medicineslist'])->name('admin.medicineslist');

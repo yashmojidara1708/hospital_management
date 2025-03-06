@@ -47,6 +47,7 @@ class GlobalHelper
     {
         return DB::table('roles')
             ->select('id', 'name')
+            ->where('isdeleted', '!=',1)
             ->orderBy('name')
             ->get();
     }
@@ -59,8 +60,8 @@ class GlobalHelper
     {
         return DB::table('specialities')
             ->select('id', 'name')
-            ->where('status', '=',1)
-            ->orderBy('name')
+            ->where('isdeleted', '!=',1)
+               ->orderBy('name')
             ->get();
     }
 
@@ -102,8 +103,12 @@ class GlobalHelper
     }
     public static function getPatientById($patientId)
     {
-        return Patients::where('patient_id', $patientId)
+        return Patients::select('patients.*','countries.name as country', 'states.name as state', 'cities.name as city')
+        ->where('patient_id', $patientId)
             ->where('isdeleted', '!=', 1)
+            ->leftJoin('countries', 'patients.country', '=', 'countries.id')
+            ->leftJoin('states', 'patients.state', '=', 'states.id')
+            ->leftJoin('cities', 'patients.city', '=', 'cities.id')
             ->first();
     }
 }

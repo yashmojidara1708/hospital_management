@@ -30,8 +30,8 @@
                         <div class="card-body">
                             <h5 class="card-title d-flex justify-content-between">
                                 <span>Patients Details</span>
-                                <a class="edit-link" data-toggle="modal" href="javascript:void(0);" id="patientsEdit"
-                                    data-id="{{ $patient->patient_id }}"><i class="fa fa-edit mr-1"></i>Edit</a>
+                                {{-- <a class="edit-link" data-toggle="modal" href="javascript:void(0);" id="patientsEdit"
+                                    data-id="{{ $patient->patient_id }}"><i class="fa fa-edit mr-1"></i>Edit</a> --}}
                             </h5>
                             <div class="row">
                                 <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Name</p>
