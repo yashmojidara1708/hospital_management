@@ -79,6 +79,7 @@ $('form[id="specialitiesForm"]').validate({
                         $('#Add_Specialities_details').modal('hide');
                     } else {
                         toastr.error(data.message);
+                        $('#Add_Specialities_details').modal('hide');
                         $('#loader-container').hide();
                     }
                 }
