@@ -17,7 +17,7 @@ class SpecialitiesController extends Controller
     }
     public function toggleStatus(Request $request)
     {
-        $specialities =Specialities::find($request->id);
+        $specialities = Specialities::find($request->id);
         if ($specialities) {
             $specialities->status = $request->status;
             $specialities->save();
@@ -53,6 +53,21 @@ class SpecialitiesController extends Controller
                 'status' => isset($post['status']) ? $post['status'] : "",
             ];
             $id = isset($post['hid']) ? intval($post['hid']) : null;
+
+            $NameexistingQuery = Specialities::where('name', $request->name)
+                ->where('isdeleted', '!=', 1);
+
+            // Exclude the current record from the check if updating
+            if ($id) {
+                $NameexistingQuery->where('id', '!=', $id);
+            }
+
+            if ($NameexistingQuery->exists()) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'The Specialities already exists.',
+                ]);
+            }
             if ($id) {
                 // Update existing record
                 $speciality = Specialities::find($id);
@@ -90,7 +105,6 @@ class SpecialitiesController extends Controller
                     <input type="checkbox" id="status_' . $row->id . '" class="check toggle-status" data-id="' . $row->id . '" ' . $checked . '>
                     <label for="status_' . $row->id . '" class="checktoggle">checkbox</label>
                 </div>';
-       
             })
             ->addColumn('action', function ($row) {
                 $action = '<div class="dropdown dropup d-flex justify-content-center">
@@ -128,7 +142,7 @@ class SpecialitiesController extends Controller
         $response['status']  = 0;
         $response['message']  = "Somthing Goes Wrong!";
         if (is_numeric($id)) {
-            $delete_specialities = Specialities::where('id', $id)->update(['status' => -1]);
+            $delete_specialities = Specialities::where('id', $id)->update(['isdeleted' => 1]);
             if ($delete_specialities) {
                 $response['status'] = 1;
                 $response['message'] = 'Speciality deleted successfully.';
