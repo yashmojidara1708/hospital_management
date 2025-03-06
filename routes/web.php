@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Helpers\GlobalHelper;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Doctor\AppointmentController;
 
 Auth::routes();
 Route::any('/', [LoginController::class, 'showLoginForm'])->name('admin');
@@ -19,7 +20,7 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/get-states/{country_id}', function ($country_id) {
         return response()->json(GlobalHelper::getStatesByCountry($country_id));
     });
-    
+
     Route::get('/get-cities/{state_id}', function ($state_id) {
         return response()->json(GlobalHelper::getCitiesByState($state_id));
     });
@@ -77,9 +78,9 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::post('/appointments/toggle-status', [App\Http\Controllers\Admin\AppointmentsController::class, 'toggleStatus'])->name('appointments.toggleStatus');
     Route::get('/appointments/getTimeSlots', [App\Http\Controllers\Admin\AppointmentsController::class, 'getTimeSlots'])->name('appointments.getTimeSlots');
     Route::GET('/appointments/checkAvailability', [App\Http\Controllers\Admin\AppointmentsController::class, 'checkAvailability'])->name('appointments.checkAvailability');
-
 });
 
+Route::any('/doctor/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('doctor.logout');
 Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
-    Route::get('/home', [DashboardController::class, 'index'])->name('doctor.home');
+    Route::get('/home', [App\Http\Controllers\Doctor\DashboardController::class, 'index'])->name('doctor.home');
 });
