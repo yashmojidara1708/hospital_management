@@ -152,9 +152,12 @@ class DoctorsController extends Controller
 
     public function doctorslist()
     {
-        $doctors_data = Doctor::select('doctors.*', 'specialities.name as specialization_name')
+        $doctors_data = Doctor::select('doctors.*', 'specialities.name as specialization_name', 'countries.name as country', 'states.name as state', 'cities.name as city')
             ->where('doctors.isdeleted', '!=', 1)
             ->leftJoin('specialities', 'specialities.id', '=', 'doctors.specialization')
+            ->leftJoin('countries', 'doctors.country', '=', 'countries.id')
+            ->leftJoin('states', 'doctors.state', '=', 'states.id')
+            ->leftJoin('cities', 'doctors.city', '=', 'cities.id')
             ->get();
         return Datatables::of($doctors_data)
             ->addIndexColumn()
@@ -196,7 +199,7 @@ class DoctorsController extends Controller
                                  </div>
                                </div>
                                <div class="actions text-center">
-                                   <a class="btn btn-sm bg-success-light" data-toggle="modal" href="javascript:void(0);" id="delete_edit" data-id="' . $row->id . '">
+                                   <a class="btn btn-sm bg-success-light" data-toggle="modal" href="javascript:void(0);" id="edit_doctors" data-id="' . $row->id . '">
                                        <i class="fe fe-pencil"></i>
                                    </a>
                                    <a data-toggle="modal" class="btn btn-sm bg-danger-light" href="javascript:void(0);" id="delete_doctors" data-id="' . $row->id . '">

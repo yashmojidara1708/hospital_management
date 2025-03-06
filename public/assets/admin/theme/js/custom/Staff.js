@@ -259,6 +259,10 @@ $(document).on('click', '#edit_staff', function() {
                     $('#country').val(staffsdata.country).change();
 
                     // Load states based on selected country
+                    // Load and set country, state, and city
+                    $('#country').val(staffsdata.country).change();
+
+                    // Load states based on selected country
                     $.ajax({
                         url: 'get-states/' + staffsdata.country,
                         type: 'GET',
@@ -268,29 +272,27 @@ $(document).on('click', '#edit_staff', function() {
                             $.each(states, function(index, state) {
                                 $('#state').append('<option value="' + state.id + '">' + state.name + '</option>');
                             });
-                            console.log("staffsdata.state", staffsdata.state);
-                            $('#state').val(staffsdata.state).change(); // Set selected state
-                        }
-                    });
-                    $stateId = staffsdata.state;
-                    // Load cities based on selected state
-                    $.ajax({
-                        url: 'get-cities/' + $stateId,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(cities) {
-                            $('#city').html('<option value="">Select City</option>');
-                            console.log("cities", cities);
 
-                            $.each(cities, function(index, city) {
-                                console.log("city.id", city.id);
-                                $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                            // Set the state value and trigger change to load cities
+                            $('#state').val(staffsdata.state).change();
+
+                            // Load cities based on selected state
+                            $.ajax({
+                                url: 'get-cities/' + staffsdata.state,
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(cities) {
+                                    $('#city').html('<option value="">Select City</option>');
+                                    $.each(cities, function(index, city) {
+                                        $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                                    });
+
+                                    // Set the city value once the cities are loaded
+                                    $('#city').val(staffsdata.city);
+                                }
                             });
-                            console.log("staffsdata.city", staffsdata.city);
-                            $('#city').val(String(staffsdata.city)).change(); // Force to string
                         }
                     });
-
                     // Set roles checkboxes
                     $('input[type="checkbox"][name="roles[]"]').prop('checked', false);
                     $.each(staffsdata.roles, function(key, value) {
