@@ -20,6 +20,50 @@ $(document).ready(function() {
         $("#image").val(''); // Clear file input
     });
 
+    $('#country').on('change', function() {
+        var countryId = $(this).val();
+        $('#state').html('<option value="">Loading...</option>'); // Show loading text
+        $('#city').html('<option value="">Select City</option>'); // Reset city
+
+        if (countryId) {
+            $.ajax({
+                url: 'get-states/' + countryId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(states) {
+                    $('#state').html('<option value="">Select State</option>');
+                    $.each(states, function(index, state) {
+                        $('#state').append('<option value="' + state.id + '">' + state.name + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#state').html('<option value="">Select State</option>'); // Reset state if no country selected
+        }
+    });
+
+    // When State is changed, fetch cities
+    $('#state').on('change', function() {
+        var stateId = $(this).val();
+        $('#city').html('<option value="">Loading...</option>'); // Show loading text
+
+        if (stateId) {
+            $.ajax({
+                url: 'get-cities/' + stateId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(cities) {
+                    $('#city').html('<option value="">Select City</option>');
+                    $.each(cities, function(index, city) {
+                        $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#city').html('<option value="">Select City</option>'); // Reset city if no state selected
+        }
+    });
+
     $("#Add_Doctors_details").on("hidden.bs.modal", function() {
         $("#DoctorsForm")[0].reset();
         $("#hid").val("");
@@ -226,7 +270,7 @@ $(document).on("click", "#delete_doctors", function() {
     });
 });
 
-$(document).on('click', '#delete_edit', function() {
+$(document).on('click', '#edit_doctors', function() {
     var id = $(this).data("id");
     console.log("id", id);
     $.ajax({
@@ -251,17 +295,51 @@ $(document).on('click', '#delete_edit', function() {
                     $('#experience').val(doctorsdata.experience);
                     $('#qualification').val(doctorsdata.qualification);
                     $('#address').val(doctorsdata.address);
-                    $('#city').val(doctorsdata.city);
-                    $('#state').val(doctorsdata.state);
+                    // $('#city').val(doctorsdata.city);
+                    // $('#state').val(doctorsdata.state);
+                    // $("#country").val(doctorsdata.country).change();
                     $("#zip").val(doctorsdata.zip);
-                    $("#country").val(doctorsdata.country).change();
                     $("#image").attr("required", false);
-                    console.log("doctorsdata.image", doctorsdata.image);
+                    console.log("doctorsdata.image", doctorsdata);
                     if (doctorsdata.image != "") {
                         $("#oldimgbox").show();
                         $("#imgbox").html(doctorsdata.image);
                     }
                     $('.password-container').hide();
+
+                    $('#country').val(doctorsdata.country).change();
+
+                    // Load states based on selected country
+                    $.ajax({
+                        url: 'get-states/' + doctorsdata.country,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(states) {
+                            $('#state').html('<option value="">Select State</option>');
+                            $.each(states, function(index, state) {
+                                $('#state').append('<option value="' + state.id + '">' + state.name + '</option>');
+                            });
+
+                            // Set the state value and trigger change to load cities
+                            $('#state').val(doctorsdata.state).change();
+
+                            // Load cities based on selected state
+                            $.ajax({
+                                url: 'get-cities/' + doctorsdata.state,
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(cities) {
+                                    $('#city').html('<option value="">Select City</option>');
+                                    $.each(cities, function(index, city) {
+                                        $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                                    });
+
+                                    // Set the city value once the cities are loaded
+                                    $('#city').val(doctorsdata.city);
+                                }
+                            });
+                        }
+                    });
                 }
             }
         },
