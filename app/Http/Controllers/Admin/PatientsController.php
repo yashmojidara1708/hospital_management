@@ -19,7 +19,7 @@ class PatientsController extends Controller
         $countries = GlobalHelper::getAllCountries();
         $cities = GlobalHelper::getAllCities();
         $states = GlobalHelper::getAllStates();
-        return view('admin.patients.index', compact('countries', 'states','cities'));
+        return view('admin.patients.index', compact('countries', 'states', 'cities'));
     }
 
     public function save(Request $request)
@@ -143,12 +143,12 @@ class PatientsController extends Controller
     // // List Show
     public function patientslist()
     {
-        $patients_data = Patients::select('patients.*','countries.name as country', 'states.name as state', 'cities.name as city')
-                         ->where('isdeleted', '!=', 1)
-                        ->leftJoin('countries', 'patients.country', '=', 'countries.id')
-                        ->leftJoin('states', 'patients.state', '=', 'states.id')
-                        ->leftJoin('cities', 'patients.city', '=', 'cities.id')
-                        ->get();
+        $patients_data = Patients::select('patients.*', 'countries.name as country', 'states.name as state', 'cities.name as city')
+            ->where('isdeleted', '!=', 1)
+            ->leftJoin('countries', 'patients.country', '=', 'countries.id')
+            ->leftJoin('states', 'patients.state', '=', 'states.id')
+            ->leftJoin('cities', 'patients.city', '=', 'cities.id')
+            ->get();
         return Datatables::of($patients_data)
             ->addIndexColumn()
             ->addColumn('name', function ($row) {
@@ -169,6 +169,9 @@ class PatientsController extends Controller
                              </div>
                            </div>
                            <div class="actions text-center">
+                           <a class="btn btn-sm bg-success-light" data-toggle="modal" href="javascript:void(0);" id="patientsEdit" data-id="' . $row->patient_id . '">
+                                   <i class="fe fe-pencil"></i>
+                               </a>
                                <a data-toggle="modal" class="btn btn-sm bg-danger-light" href="javascript:void(0);" id="delete_patients" data-id="' . $row->patient_id . '">
                                    <i class="fe fe-trash"></i>
                                </a>

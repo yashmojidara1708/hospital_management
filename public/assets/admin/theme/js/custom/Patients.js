@@ -138,7 +138,7 @@ var validationRules = {
     paid: {
         required: true,
         digits: true, // Ensures only numbers
-        minlength: 3,
+        minlength: 1,
         maxlength: 5,
     },
 };
