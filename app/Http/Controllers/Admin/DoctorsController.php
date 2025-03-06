@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DoctorsController extends Controller
 {
@@ -27,6 +28,8 @@ class DoctorsController extends Controller
     {
         $post = $request->post();
         $hid = isset($post['hid']) ? intval($post['hid']) : null;
+        $Doctors = null; // Initialize to avoid "Undefined variable" error
+
         $response = ['status' => 0, 'message' => 'Something went wrong!'];
 
         // Validation rules
@@ -44,11 +47,15 @@ class DoctorsController extends Controller
             'zip' => 'required',
             'image' => 'nullable|mimes:jpeg,png|max:5120',
         ];
-
+        if (!$hid) {
+            $rules['password'] = 'required|min:8';
+        }
         // Custom error messages
         $msg = [
             'name.required' => 'Please enter the doctor name',
             'email.email' => 'Please enter a valid email address',
+            'email.required' => 'Please enter the email address',
+            'password.required' => 'Please enter the password',
             'experience.numeric' => 'Experience must be a number',
             'image.mimes' => 'Only jpeg and png images are allowed',
             'image.max' => 'Image size should not exceed 5MB',
@@ -101,23 +108,28 @@ class DoctorsController extends Controller
 
             // Data array for insertion/updation
             $insert_doctor_data = [
-                'name' => $request->name,
-                'specialization' => $request->specialization,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'experience' => $request->experience,
-                'qualification' => $request->qualification,
-                'address' => $request->address,
-                'country' => $request->country,
-                'city' => $request->city,
-                'state' => $request->state,
-                'zip' => $request->zip,
+                'name' => isset($request->name) ? $request->name : "",
+                'specialization' => isset($request->specialization) ? $request->specialization : "",
+                'phone' => isset($request->phone) ? $request->phone : "",
+                'email' => isset($request->email) ? $request->email : "",
+                'password' => isset($request->password) ? Hash::make($request->password) : "",
+                'role' => 'doctor',
+                'experience' => isset($request->experience) ? $request->experience : "",
+                'qualification' => isset($request->qualification) ? $request->qualification : "",
+                'address' => isset($request->address) ? $request->address : "",
+                'country' => isset($request->country) ? $request->country : "",
+                'city' => isset($request->city) ? $request->city : "",
+                'state' => isset($request->state) ? $request->state : "",
+                'zip' => isset($request->zip) ? $request->zip : "",
                 'image' => $imageName,
             ];
 
             if ($hid) {
                 // Update existing record
-                if ($Doctors) {
+                if (isset($Doctors)) {
+                    if (!empty($post['password'])) {
+                        $Doctors->password = Hash::make($post['password']);
+                    }
                     $Doctors->update($insert_doctor_data);
                     $response = ['status' => 1, 'message' => 'Doctor updated successfully!'];
                 } else {
@@ -140,21 +152,28 @@ class DoctorsController extends Controller
 
     public function doctorslist()
     {
-        $doctors_data = Doctor::select('doctors.*', 'specialities.name as specialization_name')
+        $doctors_data = Doctor::select('doctors.*', 'specialities.name as specialization_name', 'countries.name as country', 'states.name as state', 'cities.name as city')
             ->where('doctors.isdeleted', '!=', 1)
             ->leftJoin('specialities', 'specialities.id', '=', 'doctors.specialization')
+            ->leftJoin('countries', 'doctors.country', '=', 'countries.id')
+            ->leftJoin('states', 'doctors.state', '=', 'states.id')
+            ->leftJoin('cities', 'doctors.city', '=', 'cities.id')
             ->get();
         return Datatables::of($doctors_data)
             ->addIndexColumn()
             ->addColumn('name', function ($doctor) {
-                $imagePath = $doctor->image
-                    ? asset("assets/admin/theme/img/doctors/" . $doctor->image)
-                    : asset("assets/admin/theme/img/doctors/defult.jpg");
+                $imagePath = "assets/admin/theme/img/doctors/" . $doctor->image;
+                $defaultImage = asset("assets/admin/theme/img/doctors/default.jpg");
+
+                // Check if the file exists using the public path
+                $imageUrl = (!empty($doctor->image) && file_exists(public_path($imagePath)))
+                    ? asset($imagePath)
+                    : $defaultImage;
 
                 return '
                     <h2 class="table-avatar">
                         <a href="profile.html" class="avatar avatar-sm mr-2">
-                            <img src="' . $imagePath . '" width="50" height="50" class="rounded-circle" alt="User Image">
+                            <img src="' . $imageUrl . '" width="50" height="50" class="rounded-circle" alt="User Image">
                         </a>
                         <a href="profile.html">' . e($doctor->name) . '</a>
                     </h2>';
@@ -180,7 +199,7 @@ class DoctorsController extends Controller
                                  </div>
                                </div>
                                <div class="actions text-center">
-                                   <a class="btn btn-sm bg-success-light" data-toggle="modal" href="javascript:void(0);" id="delete_edit" data-id="' . $row->id . '">
+                                   <a class="btn btn-sm bg-success-light" data-toggle="modal" href="javascript:void(0);" id="edit_doctors" data-id="' . $row->id . '">
                                        <i class="fe fe-pencil"></i>
                                    </a>
                                    <a data-toggle="modal" class="btn btn-sm bg-danger-light" href="javascript:void(0);" id="delete_doctors" data-id="' . $row->id . '">
@@ -228,12 +247,13 @@ class DoctorsController extends Controller
         $doctor = Doctor::where("id", $id)->get();
 
         if (!empty($doctor[0])) {
-            $path = public_path("assets/admin/theme/img/doctors") . "/" . $doctor[0]['image'];
-            if (file_exists($path)) {
-                $doctor_img = "<img src='" . asset("assets/admin/theme/img/doctors") . "/" . $doctor[0]['image'] . "' alt='Not Found' height='100px'' width='auto'>";
-                $doctor[0]['image'] = $doctor_img;
+            $imagePath = public_path("assets/admin/theme/img/doctors") . "/" . $doctor[0]['image'];
+            $defaultImage = asset("assets/admin/theme/img/doctors/default.jpg"); // Path to the default image
+
+            if (!empty($doctor[0]['image']) && file_exists($imagePath)) {
+                $doctor[0]['image'] = "<img src='" . asset("assets/admin/theme/img/doctors/" . $doctor[0]['image']) . "' alt='Doctor Image' height='100px' width='auto'>";
             } else {
-                $doctor[0]['image'] = "";
+                $doctor[0]['image'] = "<img src='" . $defaultImage . "' alt='Default Image' height='100px' width='auto'>";
             }
             $response['doctor_data'] = $doctor[0];
             $response['status'] = 1;

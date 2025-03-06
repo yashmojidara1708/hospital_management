@@ -49,6 +49,14 @@
                                 placeholder="Please enter email">
                         </div>
                     </div>
+                    <div class="form-group
+                        row  password-container">
+                        <label class="col-lg-3 col-form-label">Password</label>
+                        <div class="col-lg-9">
+                            <input type="password" id="password" name="password" class="form-control"
+                                placeholder="Please enter password">
+                        </div>
+                    </div>
                     <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Experience</label>
                         <div class="col-lg-9">
@@ -75,19 +83,22 @@
                                         <select name="country" class="form-control" id="country">
                                             <option value="">Select Country</option>
                                             @foreach ($countries as $country)
-                                                <option value="{{ $country->code }}">{{ $country->name }}</option>
+                                                <option value="{{ $country->id }}">{{ $country->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" placeholder="City" class="form-control" name="city"
-                                            id="city">
+                                        <select name="city" class="form-control" id="city">
+                                            <option value="">Select City</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
+
                                     <div class="form-group">
-                                        <input type="text" placeholder="State" class="form-control" name="state"
-                                            id="state">
+                                        <select name="state" class="form-control" id="state">
+                                            <option value="">Select State</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <input type="text" placeholder="ZIP code" class="form-control"
@@ -116,7 +127,7 @@
                         </div>
                     </div>
                     <div class="col-lg-9" id="oldimgbox">
-                        <label>Old image</label>
+                        <label>Curent Image</label>
                         <div class="col-sm-10" id="imgbox">
                         </div>
                     </div>

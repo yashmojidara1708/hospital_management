@@ -4978,6 +4978,13 @@ table.table-inbox tbody tr.checked {
      }
   } */
 
+#welcomeMessage {
+    font-size: 1.25rem;
+    color: #00D0F1;
+    font-weight: bold;
+    margin-top: 31px !important;
+}
+
 .loader {
     position: relative;
     display: inline-block;

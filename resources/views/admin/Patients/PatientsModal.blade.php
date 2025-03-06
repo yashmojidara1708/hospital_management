@@ -43,15 +43,24 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" placeholder="City" class="form-control" name="city"
-                                            id="city">
+                                        <select name="city" class="form-control" id="city">
+                                            <option value="">Select City</option>
+                                            @foreach ($cities as $city)
+                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="text" placeholder="State" class="form-control" name="state"
-                                            id="state">
+                                        <select name="state" class="form-control" id="state">
+                                            <option value="">Select State</option>
+                                            @foreach ($states as $state)
+                                                <option value="{{ $state->id }}">{{ $state->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
+                                    
                                     <div class="form-group">
                                         <input type="text" placeholder="ZIP code" class="form-control" name="zip"
                                             id="zip">

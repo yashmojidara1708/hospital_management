@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'shareData' => \App\Http\Middleware\ShareDataWithViews::class,
         'auth.staff' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth.doctor' => \App\Http\Middleware\DoctorAuth::class,
     ];
 }

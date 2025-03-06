@@ -75,13 +75,29 @@ var validationRules = {
     country: "required",
     city: "required",
     state: "required",
-    zip: "required",
-    phone: "required",
+    zip: {
+        required: true,
+        maxlength: 6,
+        minlength: 5,
+        digits: true, // Ensures only numbers
+    },
+    phone: {
+        required: true,
+        digits: true, // Ensures only numbers
+        minlength: 10,
+        maxlength: 10,
+    },
     email: {
         required: true,
         email: true,
     },
     last_visit: "required",
+    paid: {
+        required: true,
+        digits: true, // Ensures only numbers
+        minlength: 3,
+        maxlength: 5,
+    },
 };
 
 var validationMessages = {
@@ -91,14 +107,36 @@ var validationMessages = {
     country: "Please select a country",
     city: "Please enter the city",
     state: "Please enter the state",
-    zip: "Please enter the ZIP code",
-    phone: "Please enter the phone number",
+    zip: {
+        required: "Please enter the ZIP code",
+        maxlength: "ZIP code cannot be more than 6 digits",
+        minlength: "ZIP code must be at least 5 digits",
+        digits: "ZIP code must contain only numbers",
+    },
+    phone: {
+        required: "Please enter the phone number",
+        digits: "Phone number must contain only numbers",
+        minlength: "Phone number must be exactly 10 digits",
+        maxlength: "Phone number must be exactly 10 digits",
+    },
     email: {
         required: "Please enter the email address",
         email: "Please enter a valid email address",
     },
     last_visit: "Please select the last visit date",
+    paid: {
+        required: "Please enter the Paid Amount",
+        maxlength: "Paid amount cannot be more than 5 digits",
+        minlength: "Paid amount must be at least 3 digits",
+        digits: "Paid amount must contain only numbers",
+    },
 };
+let yesterday = new Date();
+yesterday.setDate(yesterday.getDate() - 1); // Set to previous date
+
+let formattedDate = yesterday.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+$("#last_visit").val(formattedDate); // Set default value
+$("#last_visit").attr("max", formattedDate);
 
 $('form[id="PatientsForm"]').validate({
     rules: validationRules,

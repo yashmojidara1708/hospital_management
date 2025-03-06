@@ -1,7 +1,8 @@
 @php
-    $currentRouteName = \Route::currentRouteName();
     // dd(session('staff_data'));
-
+    $currentloginRoles = is_string($currentloginRole)
+        ? array_map('trim', explode(',', $currentloginRole))
+        : (array) $currentloginRole;
     // Define menu items dynamically
     $menuItems = [
         [
@@ -30,7 +31,7 @@
         ],
         [
             'route' => 'admin.specialities',
-            'icon' => 'fa-solid fa-brain',
+            'icon' => 'fa-solid fa-stethoscope',
             'label' => 'Specialities',
             'roles' => ['Admin'],
         ],
@@ -50,7 +51,7 @@
             'route' => 'admin.doctors',
             'icon' => 'fa-solid fa-user-doctor',
             'label' => 'Doctors',
-            'roles' => ['Admin'],
+            'roles' => ['Medical', 'Nurse', 'Admin'],
         ],
     ];
 @endphp
@@ -62,16 +63,11 @@
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
                 <!--admin sidebar-->
-                {{-- <li class="menu-title">
-                    <span>
-                        <h5>{{ isset($currentloginRole) ? $currentloginRole : '' }}</h5>
-                    </span>
-                </li> --}}
                 @foreach ($menuItems as $item)
-                    @if (in_array($currentloginRole, $item['roles']))
-                        <li class="menu-item {{ $currentRouteName == $item['route'] ? 'active' : '' }}">
-                            <a href="{{ route($item['route']) }}" class="menu-link">
-                                <i class="menu-icon {{ $item['icon'] }}"></i>
+                    @if (!empty(array_intersect((array) $currentloginRoles, $item['roles'])))
+                        <li class="{{ $currentRouteName == $item['route'] ? 'active' : '' }}">
+                            <a href="{{ route($item['route']) }}">
+                                <i class="{{ $item['icon'] }}"></i>
                                 <span>{{ $item['label'] }}</span>
                             </a>
                         </li>
