@@ -27,6 +27,79 @@ class AppointmentsController extends Controller
         $specializations = GlobalHelper::getAllSpecialities();
         return view('admin.Appointments.index', compact('specializations', 'doctors', 'patients'));
     }
+    public function getTimeSlots(Request $request)
+    {
+        $startTime = strtotime('10:00 AM');
+        $endTime = strtotime('6:00 PM');
+        $timeSlots = [];
+    
+        $selectedTime = null;
+    
+        if ($request->has('appointment_id')) {
+            $currentAppointment = appointments::find($request->appointment_id);
+            
+            if ($currentAppointment && !empty($currentAppointment->time)) {
+                $selectedTime = date("h:i A", strtotime($currentAppointment->time)); // Convert to 12-hour format
+            }
+        }
+    
+        while ($startTime < $endTime) {
+            $slot = date("h:i A", $startTime);
+    
+            // Exclude Lunch Break (1:00 PM - 2:00 PM)
+            if ($slot !== "01:00 PM" && $slot !== "01:30 PM") {
+                $timeSlots[] = $slot;
+            }
+    
+            $startTime = strtotime('+30 minutes', $startTime);
+        }
+    
+        return response()->json([
+            'timeSlots' => $timeSlots,
+            'selectedTime' => $selectedTime
+        ]);
+    }
+    public function checkAvailability(Request $request)
+    {
+        $doctorId = $request->doctor_id;
+        $patientId = $request->patient_id;
+        $selectedDate = $request->date;
+        $specializationId = $request->specialization_id;
+        $selectedTime = date("H:i:s", strtotime($request->time)); // Convert to 24-hour format
+
+    // Check if an appointment exists for the doctor at the given date and time
+    $appointmentExists = appointments::where('doctor', $doctorId)
+        ->where('specialization', $specializationId)
+        ->where('date', $selectedDate)
+        ->where('time', $selectedTime)
+        ->exists();
+
+        // Check if the patient already has an appointment with the same doctor at this time
+    $patientBooked = appointments::where('patient', $patientId)
+    ->where('specialization', $specializationId)
+    ->where('doctor', $doctorId)
+    ->where('date', $selectedDate)
+    ->where('time', $selectedTime)
+    ->exists();
+    if ($appointmentExists) {
+        return response()->json([
+            'available' => false,
+            'message' => 'This time slot is already booked for the selected doctor!'
+        ], 400);
+    }
+
+    if ($patientBooked) {
+        return response()->json([
+            'available' => false,
+            'message' => 'You have already booked an appointment with this doctor at this time!'
+        ], 400);
+    }
+
+    return response()->json([
+        'available' => true,
+        'message' => 'This time slot is available!'
+    ]);
+}
     public function toggleStatus(Request $request)
     {
         $appointments = appointments::find($request->id);
@@ -37,6 +110,7 @@ class AppointmentsController extends Controller
         }
         return response()->json(['message' => 'Appointment not found!'], 404);
     }
+    
     public function save(Request $request)
     {
         $post = $request->post();
@@ -75,12 +149,13 @@ class AppointmentsController extends Controller
             $msg
         );
         if (!$validator->fails()) {
+            $appointmentTime = date("H:i:s", strtotime($request->time));
             $insert_team_data = [
                 'doctor' => isset($post['doctor']) ? $post['doctor'] : "",
                 'specialization' => isset($post['specialization']) ? $post['specialization'] : "",
                 'patient' => isset($post['patient']) ? $post['patient'] : "",
                 'date' => isset($post['date']) ? $post['date'] : "",
-                'time' => isset($post['time']) ? $post['time'] : "",
+                'time' => $appointmentTime,
                 'status' => isset($post['status']) ? $post['status'] : "",
             ];
             $id = isset($post['hid']) ? intval($post['hid']) : null;
@@ -109,10 +184,15 @@ class AppointmentsController extends Controller
     }
     public function appointmentslist()
     {
-        $appointment_data = appointments::select('appointments.*', 'doctors.name as doctor_name', 'doctors.image as doctor_image', 'patients.name as patient_name', 'specialities.name as specialization_name')
+        $appointment_data = appointments::select
+                    ('appointments.*', 'doctors.name as doctor_name', 
+                    'doctors.image as doctor_image', 'patients.name as patient_name', 
+                    'specialities.name as specialization_name')
             ->leftjoin('doctors', 'doctors.id', '=', 'appointments.doctor')
             ->leftjoin('patients', 'patients.patient_id', '=', 'appointments.patient')
             ->leftJoin('specialities', 'specialities.id', '=', 'appointments.specialization')
+            ->orderBy('appointments.date', 'ASC') // Order by date ascending
+            ->orderBy('appointments.time', 'ASC')
             ->get();
         return Datatables::of($appointment_data)
             ->addIndexColumn()
@@ -150,7 +230,7 @@ class AppointmentsController extends Controller
             })
             ->addColumn('appointment_time', function ($row) {
                 $formattedDate = Carbon::parse($row->date)->format('j M Y');
-                $formattedTime = Carbon::parse($row->time)->format('h A');
+                $formattedTime = Carbon::parse($row->time)->format('h:i A');
                 return $formattedDate . "<br>" . $formattedTime;
             })
 

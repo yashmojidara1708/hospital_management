@@ -78,6 +78,7 @@ $('form[id="roleForm"]').validate({
                         $('#Add_Role_details').modal('hide');
                     } else {
                         toastr.error(data.message);
+                        $('#Add_Role_details').modal('hide');
                         $('#loader-container').hide();
                     }
                 }

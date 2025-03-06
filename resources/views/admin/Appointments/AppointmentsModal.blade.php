@@ -62,7 +62,9 @@
                     <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Time</label>
                         <div class="col-lg-9">
-                            <input type="time" name="time" id="time" class="form-control">
+                            <select name="time" id="time" class="form-control">
+                                <option value="">Select Time Slot</option>
+                            </select>        
                         </div>
                     </div>
                     <div class="form-group row">

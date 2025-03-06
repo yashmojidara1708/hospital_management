@@ -75,6 +75,9 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/appointments/edit', [App\Http\Controllers\Admin\AppointmentsController::class, 'edit'])->name('edit.appointments');
     Route::post('/appointments/delete', [App\Http\Controllers\Admin\AppointmentsController::class, 'delete'])->name('delete.appointments');
     Route::post('/appointments/toggle-status', [App\Http\Controllers\Admin\AppointmentsController::class, 'toggleStatus'])->name('appointments.toggleStatus');
+    Route::get('/appointments/getTimeSlots', [App\Http\Controllers\Admin\AppointmentsController::class, 'getTimeSlots'])->name('appointments.getTimeSlots');
+    Route::GET('/appointments/checkAvailability', [App\Http\Controllers\Admin\AppointmentsController::class, 'checkAvailability'])->name('appointments.checkAvailability');
+
 });
 
 Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
