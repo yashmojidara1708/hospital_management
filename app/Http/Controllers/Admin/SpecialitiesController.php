@@ -95,7 +95,7 @@ class SpecialitiesController extends Controller
     // List Show
     public function specialitieslist()
     {
-        $specialities_data = Specialities::select('*')->where('status', '!=', -1)->get();
+        $specialities_data = Specialities::select('*')->where('isdeleted', '!=', 1)->get();
         return Datatables::of($specialities_data)
             ->addIndexColumn()
             ->addColumn('status', function ($row) {
