@@ -37,6 +37,24 @@ class StaffTableSeeder extends Seeder
                     'updated_at' => now(),
                 ]);
             echo "Existing record updated successfully.\n";
+        } else {
+            DB::table('staff')->insert([
+                'name' => 'Global Admin',
+                'email' => 'admin@doctor.com',
+                'roles' => json_encode(["1"]),
+                'date_of_birth' => '1990-01-01',
+                'phone' => '1234567890',
+                'password' => Hash::make('Admin@123'),
+                'address' => '123 Admin St, Admin City',
+                'country' => '101',
+                'state' => '12',
+                'city' => '19',
+                'zip' => '123456',
+                'isdeleted' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            echo "New record created successfully.\n";
         }
     }
 }
