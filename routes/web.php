@@ -16,6 +16,8 @@ Route::any('/admin/logout', [App\Http\Controllers\Auth\LoginController::class, '
 
 Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('admin.home');
+    Route::get('/change-password', [App\Http\Controllers\Admin\ChangePasswordController::class, 'index'])->name('admin.changePassword');
+    Route::POST('/updatepassword', [App\Http\Controllers\Admin\ChangePasswordController::class, 'updatePassword'])->name('admin.updatePassword');
 
     Route::get('/get-states/{country_id}', function ($country_id) {
         return response()->json(GlobalHelper::getStatesByCountry($country_id));
@@ -60,7 +62,7 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::post('/staff/save', [App\Http\Controllers\Admin\StaffController::class, 'save'])->name('save.staff');
     Route::get('/staff/edit', [App\Http\Controllers\Admin\StaffController::class, 'edit'])->name('edit.staff');
     Route::post('/staff/delete', [App\Http\Controllers\Admin\StaffController::class, 'delete'])->name('delete.staff');
-
+   
     // Doctor
     Route::get('/doctors', [App\Http\Controllers\Admin\DoctorsController::class, 'index'])->name('admin.doctors');
     Route::post('/doctorslist', [App\Http\Controllers\Admin\DoctorsController::class, 'doctorslist'])->name('admin.doctorslist');
