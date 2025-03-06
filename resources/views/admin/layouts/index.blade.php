@@ -92,11 +92,11 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
-                                @if ($currentRouteName != 'admin.home')
+                                {{-- @if ($currentRouteName != 'admin.home')
                                     <div id="loader-container">
                                         <div class="loader"></div>
                                     </div>
-                                @endif
+                                @endif --}}
                                 @yield('admin-content')
                             </div>
                         </div>
