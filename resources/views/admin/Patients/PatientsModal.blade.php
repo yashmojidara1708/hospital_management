@@ -38,16 +38,13 @@
                                         <select name="country" class="form-control" id="country">
                                             <option value="">Select Country</option>
                                             @foreach ($countries as $country)
-                                                <option value="{{ $country->code }}">{{ $country->name }}</option>
+                                                <option value="{{ $country->id }}">{{ $country->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <select name="city" class="form-control" id="city">
                                             <option value="">Select City</option>
-                                            @foreach ($cities as $city)
-                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -55,9 +52,6 @@
                                     <div class="form-group">
                                         <select name="state" class="form-control" id="state">
                                             <option value="">Select State</option>
-                                            @foreach ($states as $state)
-                                                <option value="{{ $state->id }}">{{ $state->name }}</option>
-                                            @endforeach
                                         </select>
                                     </div>
                                     

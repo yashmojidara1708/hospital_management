@@ -143,7 +143,12 @@ class PatientsController extends Controller
     // // List Show
     public function patientslist()
     {
-        $patients_data = Patients::select('*')->where('isdeleted', '!=', 1)->get();
+        $patients_data = Patients::select('patients.*','countries.name as country', 'states.name as state', 'cities.name as city')
+                         ->where('isdeleted', '!=', 1)
+                        ->leftJoin('countries', 'patients.country', '=', 'countries.id')
+                        ->leftJoin('states', 'patients.state', '=', 'states.id')
+                        ->leftJoin('cities', 'patients.city', '=', 'cities.id')
+                        ->get();
         return Datatables::of($patients_data)
             ->addIndexColumn()
             ->addColumn('name', function ($row) {

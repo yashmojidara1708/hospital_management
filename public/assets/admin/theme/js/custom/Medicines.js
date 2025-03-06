@@ -112,6 +112,7 @@ $('form[id="MedicinesForm"]').validate({
                         $('#Add_Medicines_details').modal('hide');
                     } else {
                         toastr.error(data.message);
+                        $('#Add_Medicines_details').modal('hide');
                         $('#loader-container').hide();
                     }
                 }

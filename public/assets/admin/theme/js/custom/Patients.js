@@ -60,6 +60,49 @@ $(document).ready(function() {
     });
     $('#loader-container').hide();
 })
+$('#country').on('change', function() {
+    var countryId = $(this).val();
+    $('#state').html('<option value="">Loading...</option>'); // Show loading text
+    $('#city').html('<option value="">Select City</option>'); // Reset city
+
+    if (countryId) {
+        $.ajax({
+            url: 'get-states/' + countryId,
+            type: 'GET',
+            dataType: 'json',
+            success: function(states) {
+                $('#state').html('<option value="">Select State</option>');
+                $.each(states, function(index, state) {
+                    $('#state').append('<option value="' + state.id + '">' + state.name + '</option>');
+                });
+            }
+        });
+    } else {
+        $('#state').html('<option value="">Select State</option>'); // Reset state if no country selected
+    }
+});
+
+// When State is changed, fetch cities
+$('#state').on('change', function() {
+    var stateId = $(this).val();
+    $('#city').html('<option value="">Loading...</option>'); // Show loading text
+
+    if (stateId) {
+        $.ajax({
+            url: 'get-cities/' + stateId,
+            type: 'GET',
+            dataType: 'json',
+            success: function(cities) {
+                $('#city').html('<option value="">Select City</option>');
+                $.each(cities, function(index, city) {
+                    $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                });
+            }
+        });
+    } else {
+        $('#city').html('<option value="">Select City</option>'); // Reset city if no state selected
+    }
+});
 
 $(document).on('click', '#Add_Patients', function() {
     $('#Add_Patients_details').modal('show');
@@ -227,10 +270,44 @@ $(document).on('click', '#patientsEdit', function() {
                     $('#email').val(patientsdata.email);
                     $('#last_visit').val(patientsdata.last_visit);
                     $('#paid').val(patientsdata.paid);
-                    $('#city').val(patientsdata.city);
-                    $('#state').val(patientsdata.state);
+                    //  $('#city').val(patientsdata.city);
+                    //$('#state').val(patientsdata.state);
                     $("#zip").val(patientsdata.zip);
-                    $("#country").val(patientsdata.country).change();
+                    console.log(patientsdata.state);
+                    console.log(patientsdata.city);
+                    console.log(patientsdata.country);
+                    $('#country').val(patientsdata.country).trigger('change');
+                    $.ajax({
+                        url: 'get-states/' + patientsdata.country,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(states) {
+                            $('#state').html('<option value="">Select State</option>');
+                            $.each(states, function(index, state) {
+                                $('#state').append('<option value="' + state.id + '">' + state.name + '</option>');
+                            });
+
+                            // Set the state value and trigger change to load cities
+                            $('#state').val(patientsdata.state).trigger('change');
+
+                            // Load cities based on selected state
+                            $.ajax({
+                                url: 'get-cities/' + patientsdata.state,
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(cities) {
+                                    $('#city').html('<option value="">Select City</option>');
+                                    $.each(cities, function(index, city) {
+                                        $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                                    });
+
+                                    // Set the city value once the cities are loaded
+                                    $('#city').val(patientsdata.city);
+                                }
+                            });
+                        }
+                    });
+
                 }
             }
         },
