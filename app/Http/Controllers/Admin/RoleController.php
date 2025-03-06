@@ -28,7 +28,7 @@ class RoleController extends Controller
 }
     public function rolelist(Request $request)
     {
-        $role_data = role::select('*')->where('status', '!=', -1)->get();
+        $role_data = role::select('*')->where('isdeleted', '!=', 1)->get();
         return Datatables::of($role_data)
             ->addIndexColumn()
             ->addColumn('status', function ($row) {
@@ -74,6 +74,7 @@ class RoleController extends Controller
     public function save(Request $request)
     {
         $post = $request->post();
+        $hid = isset($post['hid']) ? intval($post['hid']) : null;
         $response['status'] = 0;
         $response['message'] = "Somthing Gose Wrong!";
         $feilds =   [
@@ -81,11 +82,12 @@ class RoleController extends Controller
         ];
 
         $rules = [
-            'name' => ['required'],
+             'name' => 'required',
         ];
 
         $msg = [
             'name.required' => 'Please enter role name',
+          //  'name.unique' => 'This role name is already taken. Please choose a different name.'
         ];
 
         $validator = Validator::make(
@@ -94,14 +96,39 @@ class RoleController extends Controller
             $msg
         );
         if (!$validator->fails()) {
+            $existingRole =role::where('name', $request->name)->where('isdeleted', 0);
+    
+            if ($hid) {
+                $existingRole->where('id', '!=', $hid); // Exclude current record during update
+            }
+        
+            if ($existingRole->exists()) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'This role name is already taken. Please choose a different name.',
+                ]);
+            }
+        
+            // Check if a soft-deleted role exists with the same name
+            // $deletedRole =role::where('name', $request->name)->where('isdeleted', 1)->first();
+        
+            // if ($deletedRole) {
+            //     // Restore the deleted role instead of creating a new one
+            //     $deletedRole->update(['isdeleted' => 0, 'status' => $post['status'] ?? 1]);
+        
+            //     return response()->json([
+            //         'status' => 1,
+            //         'message' => "Role restored successfully!",
+            //     ]);
+            // }
+            
             $insert_team_data = [
                 'name' => isset($post['name']) ? $post['name'] : "",
                 'status' => isset($post['status']) ? $post['status'] : "",
             ];
-            $id = isset($post['hid']) ? intval($post['hid']) : null;
-            if ($id) {
+            if ($hid) {
                 // Update existing record
-                $role = role::find($id);
+                $role = role::find($hid);
                 if ($role) {
                     $role->update($insert_team_data);
                     $response['status'] = 1;
@@ -129,7 +156,7 @@ class RoleController extends Controller
         $response['status']  = 0;
         $response['message']  = "Somthing Goes Wrong!";
         if (is_numeric($id)) {
-            $delete_role = role::where('id', $id)->update(['status' => -1]);
+            $delete_role = role::where('id', $id)->update(['isdeleted' => 1]);
             if ($delete_role) {
                 $response['status'] = 1;
                 $response['message'] = 'Role deleted successfully.';

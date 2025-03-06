@@ -57,7 +57,59 @@ $(document).on('click', '#Add_Appointments', function() {
     $("#modal_title").html("");
     $("#modal_title").html("Add Appointments");
     $("#modal_title").html("Add Appointments");
+    $.ajax({
+        url: 'appointments/getTimeSlots/',
+        type: 'GET',
+        data: {
+            doctor_id: $("#doctor").val(), // Pass selected doctor ID
+            date: $("#date").val() // Pass selected date
+        },
+        success: function(response) {
+            $("#time").html("");
+            if (response.timeSlots) {
+                $.each(response.timeSlots, function(index, time) {
+                    $("#time").append(`<option value="${time}">${time}</option>`);
+                });
+            }
+        }
+    });
 });
+$(document).on('change', '#doctor, #specialization, #date, #time', function() {
+    let doctorId = $('#doctor').val();
+    let specializationId = $('#specialization').val();
+    let patientId = $('#patient').val();
+    let selectedDate = $('#date').val();
+    let selectedTime = $('#time').val();
+
+    if (doctorId && selectedDate && selectedTime) {
+        $.ajax({
+            url: 'appointments/checkAvailability',
+            type: 'GET',
+            data: {
+                doctor_id: doctorId,
+                specialization_id: specializationId,
+                patient_id: patientId,
+                date: selectedDate,
+                time: selectedTime
+            },
+            success: function(response) {
+                toastr.success(response.message);
+            },
+            error: function(xhr) {
+                let response = JSON.parse(xhr.responseText);
+                toastr.error(response.message);
+            }
+        });
+    }
+});
+
+
+let today = new Date();
+today.setDate(today.getDate() + 1); // Set to tomorrow (future date)
+
+let formattedDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+$("#date").attr("min", formattedDate);
+
 var validationRules = {
     doctor: "required",
     specialization: "required",
@@ -111,6 +163,7 @@ $('form[id="AppointmentsForm"]').validate({
 });
 $(document).on('click', '#edit_appointment', function() {
     var id = $(this).data("id");
+    $("#time").html("");
     $.ajax({
         type: "GET",
         url: "/admin/appointments/edit",
@@ -130,7 +183,30 @@ $(document).on('click', '#edit_appointment', function() {
                     $('#specialization').val(appointmentsdata.specialization);
                     $('#patient').val(appointmentsdata.patient);
                     $('#date').val(appointmentsdata.date);
-                    $('#time').val(appointmentsdata.time);
+                    //  $('#time').val(appointmentsdata.time);
+
+                    console.log(appointmentsdata.time);
+                    $.ajax({
+                        url: 'appointments/getTimeSlots/',
+                        type: 'GET',
+                        data: {
+                            doctor_id: appointmentsdata.doctor,
+                            date: appointmentsdata.date,
+                            appointment_id: appointmentsdata.id // Pass current appointment ID to allow its slot
+                        },
+                        success: function(response) {
+                            let selectedTime = response.selectedTime.trim(); // Ensure no extra spaces
+                            console.log("Selected Time:", selectedTime); // Debugging
+
+                            if (response.timeSlots) {
+                                $.each(response.timeSlots, function(index, time) {
+                                    var formattedTime = time.trim();
+                                    var selected = (formattedTime === selectedTime) ? "selected" : "";
+                                    $("#time").append(`<option value="${formattedTime}" ${selected}>${formattedTime}</option>`);
+                                });
+                            }
+                        }
+                    });
                     $("#status").val(appointmentsdata.status).change();
                 }
             }

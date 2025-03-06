@@ -59,6 +59,7 @@ class GlobalHelper
     {
         return DB::table('specialities')
             ->select('id', 'name')
+            ->where('status', '=',1)
             ->orderBy('name')
             ->get();
     }
