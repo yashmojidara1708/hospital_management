@@ -36,6 +36,7 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::post('/specialities/save', [App\Http\Controllers\Admin\SpecialitiesController::class, 'save'])->name('save.specialities');
     Route::get('/specialities/edit', [App\Http\Controllers\Admin\SpecialitiesController::class, 'edit'])->name('edit.specialities');
     Route::post('/specialities/delete', [App\Http\Controllers\Admin\SpecialitiesController::class, 'delete'])->name('delete.specialities');
+    Route::post('/specialities/toggle-status', [App\Http\Controllers\Admin\SpecialitiesController::class, 'toggleStatus'])->name('specialities.toggleStatus');
 
     // Patient
     Route::get('/patients', [App\Http\Controllers\Admin\PatientsController::class, 'index'])->name('admin.patients');
