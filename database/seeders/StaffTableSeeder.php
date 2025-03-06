@@ -16,12 +16,12 @@ class StaffTableSeeder extends Seeder
     public function run()
     {
         $existingStaff = DB::table('staff')
-            ->where('email', 'admin@doctor.com')
+            ->where('email', 'admin@hms.com')
             ->first();
 
         if ($existingStaff && $existingStaff->isdeleted == 1) {
             DB::table('staff')
-                ->where('email', 'admin@doctor.com')
+                ->where('email', 'admin@hms.com')
                 ->update([
                     'name' => 'Global Admin',
                     'roles' => json_encode(["1"]),
@@ -40,7 +40,7 @@ class StaffTableSeeder extends Seeder
         } else {
             DB::table('staff')->insert([
                 'name' => 'Global Admin',
-                'email' => 'admin@doctor.com',
+                'email' => 'admin@hms.com',
                 'roles' => json_encode(["1"]),
                 'date_of_birth' => '1990-01-01',
                 'phone' => '1234567890',

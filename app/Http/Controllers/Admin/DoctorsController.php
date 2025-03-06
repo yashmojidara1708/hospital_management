@@ -223,10 +223,14 @@ class DoctorsController extends Controller
             $doctor_data = Doctor::where('id', $id)->get()->toArray();
 
             $img_for_delete = $doctor_data[0]['image'] != "" ? $doctor_data[0]['image'] : "";
-            $delete_img_path = public_path("assets/admin/theme/img/doctors/") . $img_for_delete;
-            if (file_exists($delete_img_path)) {
-                unlink($delete_img_path);
+            // Only try to delete if image exists
+            if (!empty($img_for_delete)) {
+                $delete_img_path = public_path("assets/admin/theme/img/doctors/") . $img_for_delete;
+                if (file_exists($delete_img_path) && is_file($delete_img_path)) {
+                    unlink($delete_img_path);
+                }
             }
+
             $delete_patients = Doctor::where('id', $id)->update(['isdeleted' => 1]);
             if ($delete_patients) {
                 $response['status'] = 1;

@@ -9,7 +9,7 @@
             'route' => 'admin.home',
             'icon' => 'fa-solid fa-home',
             'label' => 'Dashboard',
-            'roles' => ['Admin', 'Staff'],
+            'roles' => null,
         ],
         [
             'route' => 'admin.role',
@@ -54,6 +54,16 @@
             'roles' => ['Medical', 'Nurse', 'Admin'],
         ],
     ];
+
+    // Separate the "Dashboard" menu item
+    $dashboardItem = array_filter($menuItems, fn($item) => $item['label'] === 'Dashboard');
+    $otherItems = array_filter($menuItems, fn($item) => $item['label'] !== 'Dashboard');
+
+    // Sort the remaining items alphabetically by 'label'
+    usort($otherItems, fn($a, $b) => strcmp($a['label'], $b['label']));
+
+    // Merge Dashboard first, then the sorted items
+    $menuItems = array_merge($dashboardItem, $otherItems);
 @endphp
 
 
@@ -64,7 +74,7 @@
             <ul>
                 <!--admin sidebar-->
                 @foreach ($menuItems as $item)
-                    @if (!empty(array_intersect((array) $currentloginRoles, $item['roles'])))
+                    @if ($item['roles'] === null || !empty(array_intersect((array) $currentloginRoles, $item['roles'])))
                         <li class="{{ $currentRouteName == $item['route'] ? 'active' : '' }}">
                             <a href="{{ route($item['route']) }}">
                                 <i class="{{ $item['icon'] }}"></i>
