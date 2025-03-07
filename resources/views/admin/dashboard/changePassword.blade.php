@@ -10,20 +10,21 @@
             <div class="row align-items-center">
                 <div class="col-auto profile-image">
                     <a href="#">
-                        <img class="rounded-circle" alt="User Image" src="assets/img/profiles/avatar-01.jpg">
+                        <img class="rounded-circle" alt="User Image" src="assets/img/profiles/avatar-01.jpg" id="profileImage">
                     </a>
                 </div>
                 <div class="col ml-md-n2 profile-user-info">
-                    <h4 class="user-name mb-0">Ryan Taylor</h4>
-                    <h6 class="text-muted">ryantaylor@admin.com</h6>
-                    <div class="user-Location"><i class="fa fa-map-marker"></i> Florida, United States</div>
-                    <div class="about-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
-                </div>
+                    <h4 class="user-name mb-0" id="profileName"></h4>
+                    <h6 class="text-muted" id="profileEmail"></h6>
+                    <h6 class="text-muted" id="profilePhone"></h6>
+                    <div class="user-Location" id="profileAddress"><i class="fa fa-map-marker"></i></div>
+                    <div class="about-text" id="profileCity">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+					</div>
                 <div class="col-auto profile-btn">
-                    
-                    <a href="#" class="btn btn-primary">
+
+                   {{--<a href="{{route('edit.staff')}}" class="btn btn-primary">
                         Edit
-                    </a>
+                    </a>--}}
                 </div>
             </div>
         </div>

@@ -1,4 +1,25 @@
 $(document).ready(function() {
+
+    $.ajax({
+        url: "getProfile",
+        type: "GET",
+        dataType: "json",
+        success: function(response) {
+            if (response.status === 1) {
+                $('#profileName').text(response.data.name);
+                $('#profileEmail').text(response.data.email);
+                $('#profileAddress').text(response.data.address);
+                $('#profilePhone').text(response.data.phone);
+                $('#profileCity').text(response.data.city);
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function(xhr) {
+            alert("Error fetching profile data.");
+        }
+    });
+
     var validationRules = {
         oldpassword: "required",
         newpassword: {

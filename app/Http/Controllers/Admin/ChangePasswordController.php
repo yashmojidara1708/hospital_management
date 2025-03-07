@@ -15,6 +15,39 @@ class ChangePasswordController extends Controller
     {
         return view('admin.dashboard.changePassword');
     }
+    public function getProfile()
+    {
+        $staff = DB::table('staff')
+                ->leftJoin('countries', 'staff.country', '=', 'countries.id')
+                ->leftJoin('states', 'staff.state', '=', 'states.id')
+                ->leftJoin('cities', 'staff.city', '=', 'cities.id')
+                ->where('staff.id', Auth::id())
+                ->select(
+                    'staff.name',
+                    'staff.email',
+                    'staff.phone',
+                    'staff.address',    
+                    'countries.name as country_name',
+                    'states.name as state_name',
+                    'cities.name as city_name')
+                ->first();
+
+        if (!$staff) {
+            return response()->json(['status' => 0, 'message' => 'User not found.']);
+        }
+
+        return response()->json([
+            'status' => 1,
+            'data' => [
+                'name' => $staff->name,
+                'email' => $staff->email,
+                'phone' => $staff->phone,
+                'address' => $staff->address,
+                'city'=>$staff->city_name . ', ' . $staff->state_name . ', ' . $staff->country_name,
+            ]
+        ]);
+    
+    }
     public function updatepassword(Request $request)
     {
         $post = $request->post();

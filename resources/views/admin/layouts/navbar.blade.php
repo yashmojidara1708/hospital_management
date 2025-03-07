@@ -128,6 +128,8 @@
                 </div>
             </div>
             {{-- <a class="dropdown-item" href="profile.html">My Profile</a> --}}
+            <a class="dropdown-item" href="{{route('admin.generalSettings')}}"><i class="fa-solid fa-tools"></i>
+                <span style="margin-left: 2%">General Settings</span></a>
             <a class="dropdown-item" href="{{route('admin.changePassword')}}"><i class="fa-solid fa-key"></i>
                 <span style="margin-left: 2%">Change Password</span></a>
             <a class="dropdown-item" href="{{ route('admin.logout') }}"> <i class="fa-solid fa-right-from-bracket"></i>

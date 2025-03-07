@@ -16,8 +16,11 @@ Route::any('/admin/logout', [App\Http\Controllers\Auth\LoginController::class, '
 Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('admin.home');
     Route::get('/change-password', [App\Http\Controllers\Admin\ChangePasswordController::class, 'index'])->name('admin.changePassword');
+    Route::get('/getProfile', [App\Http\Controllers\Admin\ChangePasswordController::class, 'getProfile'])->name('admin.getProfile');
     Route::POST('/updatepassword', [App\Http\Controllers\Admin\ChangePasswordController::class, 'updatePassword'])->name('admin.updatePassword');
 
+    Route::get('/general-settings', [App\Http\Controllers\Admin\GeneralSettingsController::class, 'index'])->name('admin.generalSettings');
+  
     Route::get('/get-states/{country_id}', function ($country_id) {
         return response()->json(GlobalHelper::getStatesByCountry($country_id));
     });
