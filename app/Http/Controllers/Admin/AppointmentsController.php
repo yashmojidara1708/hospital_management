@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Events\PatientAssignedToDoctor;
 use Illuminate\Support\Facades\File;
 
 use App\Helpers\GlobalHelper;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Pusher\Pusher;
 
 class AppointmentsController extends Controller
 {
@@ -110,6 +112,33 @@ class AppointmentsController extends Controller
         }
         return response()->json(['message' => 'Appointment not found!'], 404);
     }
+    public function sendPusher($post)
+    {
+        $options = [
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'useTLS' => false 
+        ];
+
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+        );
+ 
+        $patientName = Patients::where('patient_id', $post['patient'])
+            ->where('isdeleted', '!=', 1)
+            ->value('name'); 
+
+        $post['patient_name'] = isset($patientName) ? $patientName : 'Unknown Patient';
+
+        $data = [
+            'message' => 'A new patient has been assigned!',
+            'appointment' => isset($post) ? $post : '', 
+        ];
+        $pusher->trigger('doctor-channel', 'patient-assigned', $data);
+    }
+
     
     public function save(Request $request)
     {
@@ -174,6 +203,8 @@ class AppointmentsController extends Controller
                 if (appointments::create($insert_team_data)) {
                     $response['status'] = 1;
                     $response['message'] = "Appointments added successfully!";
+                    // event(new PatientAssignedToDoctor());
+                    $this->sendPusher($post);
                 } else {
                     $response['message'] = "Failed to add Appointment!";
                 }
