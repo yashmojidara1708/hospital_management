@@ -28,7 +28,10 @@
 		
 		<!-- Main CSS -->
 		<link rel="stylesheet" href="{{ asset('assets/doctor/theme/css/style.css') }}">
-		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
 			<script src="assets/js/html5shiv.min.js"></script>
@@ -58,7 +61,7 @@
 									<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
 								</ol>
 							</nav>
-							<h2 class="breadcrumb-title">Dashboard</h2>
+							<h2 class="breadcrumb-title">@yield('page')</h2>
 						</div>
 					</div>
 				</div>
@@ -96,19 +99,32 @@
 		<!-- Sticky Sidebar JS -->
         <script src="{{ asset('assets/doctor/theme/plugins/theia-sticky-sidebar/ResizeSensor.js') }}"></script>
         <script src="{{ asset('assets/doctor/theme/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js')}}"></script>
-		
+		 {{-- toastr --}}
+		 <link rel="stylesheet" href="{{ asset('assets/admin/theme/cdnFiles/toastr.css') }}" />
+		 <script src="{{ asset('assets/admin/theme/cdnFiles/toastr.min.js') }}"></script>
+	 
+		  {{-- validate JS  --}}
+		  <script src="{{ asset('assets/admin/theme/cdnFiles/validate.min.js') }}"></script>
+		  <script src="{{ asset('assets/admin/theme/cdnFiles/additional-methods.min.js') }}"></script>
+	  
+		   <!-- Slimscroll JS -->
+		   <script src="{{ asset('assets/admin/theme/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+		   <script src="{{ asset('assets/admin/theme/plugins/raphael/raphael.min.js') }}"></script>
+		   <script src="{{ asset('assets/admin/theme/plugins/morris/morris.min.js') }}"></script>
+		   <script src="{{ asset('assets/admin/theme/js/chart.morris.js') }}"></script>
+		 
 		<!-- Circle Progress JS -->
 		<script src="{{ asset('assets/doctor/theme/js/circle-progress.min.js') }}"></script>
 		<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 		
 		<!-- Custom JS -->
 		<script src="{{ asset('assets/doctor/theme/js/script.js')}}"></script>
+
 		<!-- SweetAlert2 CSS -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 		<!-- SweetAlert2 JS -->
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 		@yield('doctor-js')
 	</body>
