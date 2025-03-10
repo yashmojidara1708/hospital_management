@@ -16,19 +16,19 @@
     <div class="dashboard-widget">
         <nav class="dashboard-menu">
             <ul>
-                <li class="active">
-                    <a href="doctor-dashboard.html">
+                <li class="{{ request()->routeIs('doctor.home') ? 'active' : '' }}">
+                    <a href="{{route('doctor.home')}}">
                         <i class="fas fa-columns"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                {{-- <li>
-                    <a href="appointments.html">
+                 <li class="{{ request()->routeIs('doctor.appointments') ? 'active' : '' }}">
+                    <a href="{{route('doctor.appointments')}}">
                         <i class="fas fa-calendar-check"></i>
                         <span>Appointments</span>
                     </a>
                 </li>
-                <li>
+               {{-- <li>
                     <a href="my-patients.html">
                         <i class="fas fa-user-injured"></i>
                         <span>My Patients</span>
@@ -59,25 +59,26 @@
                         <small class="unread-msg">23</small>
                     </a>
                 </li>
-                <li>
-                    <a href="doctor-profile-settings.html">
-                        <i class="fas fa-user-cog"></i>
-                        <span>Profile Settings</span>
-                    </a>
-                </li>
+               
                 <li>
                     <a href="social-media.html">
                         <i class="fas fa-share-alt"></i>
                         <span>Social Media</span>
                     </a>
+                </li>--}}
+                <li class="{{ request()->routeIs('doctor.profile') ? 'active' : '' }}">
+                    <a href="{{route('doctor.profile')}}">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Profile Settings</span>
+                    </a>
                 </li>
-                <li>
-                    <a href="doctor-change-password.html">
+                <li class="{{ request()->routeIs('doctor-change-password') ? 'active' : '' }}">
+                    <a href="{{route('doctor-change-password')}}">
                         <i class="fas fa-lock"></i>
                         <span>Change Password</span>
                     </a>
-                </li> --}}
-                <li>
+                </li> 
+                <li class="{{ request()->routeIs('doctor.logout') ? 'active' : '' }}">
                     <a href="{{ route('doctor.logout') }}">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Logout</span>
