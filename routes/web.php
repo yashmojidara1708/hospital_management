@@ -80,9 +80,20 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::post('/appointments/toggle-status', [App\Http\Controllers\Admin\AppointmentsController::class, 'toggleStatus'])->name('appointments.toggleStatus');
     Route::get('/appointments/getTimeSlots', [App\Http\Controllers\Admin\AppointmentsController::class, 'getTimeSlots'])->name('appointments.getTimeSlots');
     Route::GET('/appointments/checkAvailability', [App\Http\Controllers\Admin\AppointmentsController::class, 'checkAvailability'])->name('appointments.checkAvailability');
+
+  //  Route::get('/doctor/changePassword',[App\Http\Controllers\Doctor\DashboardController::class, 'changepassword'])->name('doctor-change-password');
+    //Route::POST('/doctor/updatePassword',[App\Http\Controllers\Doctor\DashboardController::class, 'doctorUpdatePassword'])->name('doctor-update-password');
+
 });
 
 Route::any('/doctor/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('doctor.logout');
 Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
-    Route::get('/home', [App\Http\Controllers\Doctor\DashboardController::class, 'index'])->name('doctor.home');
+    Route::GET('/home', [App\Http\Controllers\Doctor\DashboardController::class, 'index'])->name('doctor.home');
+    Route::GET('/appointments', [App\Http\Controllers\Doctor\DashboardController::class, 'appointments'])->name('doctor.appointments');
+   //change Password
+    Route::GET('/changePassword',[App\Http\Controllers\Doctor\DashboardController::class, 'changepassword'])->name('doctor-change-password');
+    Route::POST('/updatePassword',[App\Http\Controllers\Doctor\DashboardController::class, 'doctorUpdatePassword'])->name('doctor-update-password');
+
+    //profile
+    Route::get('/profile',[App\Http\Controllers\Doctor\ProfileController::class, 'index'])->name('doctor.profile');
 });

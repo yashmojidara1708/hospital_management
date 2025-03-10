@@ -1,9 +1,5 @@
 $(document).ready(function() {
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+    console.log('script is running');
     var validationRules = {
         oldpassword: "required",
         newpassword: {
@@ -28,19 +24,22 @@ $(document).ready(function() {
         }
     };
 
-    $('form[id="changepasswordForm"]').validate({
+    $('form[id="changePasswordForm"]').validate({
         rules: validationRules,
         messages: validationMessages,
         submitHandler: function() {
-            var formData = new FormData($("#changepasswordForm")[0]);
+            var formData = new FormData($("#changePasswordForm")[0]);
             $('#loader-container').show();
             $.ajax({
-                url: 'updatepassword',
-                type: 'POST',
+                url: "updatePassword", // Ensure correct route
+                type: "POST",
                 data: formData,
                 processData: false,
                 contentType: false,
                 cache: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 success: function(data) {
                     if (data && Object.keys(data).length > 0) {
                         if (data.status == 1) {
@@ -52,11 +51,14 @@ $(document).ready(function() {
                             $('#loader-container').hide();
                         }
                     }
-                    $("#changepasswordForm")[0].reset();
-                    $("#changepasswordForm").validate().resetForm();
-                    $("#changepasswordForm").find('.error').removeClass('error');
+                    $("#changePasswordForm")[0].reset();
+                    $("#changePasswordForm").validate().resetForm();
+                    $("#changePasswordForm").find('.error').removeClass('error');
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON.message);
                 }
             });
-        },
+        }
     });
 });
