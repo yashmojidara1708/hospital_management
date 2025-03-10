@@ -15,6 +15,7 @@ class ChangePasswordController extends Controller
     {
         return view('admin.dashboard.changePassword');
     }
+
     public function updatepassword(Request $request)
     {
         $post = $request->post();
