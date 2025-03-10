@@ -4,6 +4,8 @@
     $DoctorRole = isset($DoctorData['role']) ? $DoctorData['role'] : '';
     $DoctorName = isset($DoctorData['name']) ? $DoctorData['name'] : '';
     $DoctorEmail = isset($DoctorData['email']) ? $DoctorData['email'] : '';
+	$DrId = isset($DoctorData['id']) ? $DoctorData['id'] : '';
+
 @endphp
 <!DOCTYPE html> 
 <html lang="en">
@@ -97,9 +99,17 @@
 		
 		<!-- Circle Progress JS -->
 		<script src="{{ asset('assets/doctor/theme/js/circle-progress.min.js') }}"></script>
+		<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 		
 		<!-- Custom JS -->
 		<script src="{{ asset('assets/doctor/theme/js/script.js')}}"></script>
+		<!-- SweetAlert2 CSS -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+		<!-- SweetAlert2 JS -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 		@yield('doctor-js')
 	</body>
 

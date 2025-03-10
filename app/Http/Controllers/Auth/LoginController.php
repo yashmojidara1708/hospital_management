@@ -164,6 +164,7 @@ class LoginController extends Controller
             // Combine staff data with the role name
             $DoctorData = [
                 'role' => $Doctor->role,
+                'id' => $Doctor->id,
                 'email' => $Doctor->email,
                 'name' => $Doctor->name,
                 'image' => $Doctor->image,
