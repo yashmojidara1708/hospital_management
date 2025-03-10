@@ -11,6 +11,7 @@
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.6",
         "php-flasher/flasher-toastr-laravel": "^2.1",
+        "pusher/pusher-php-server": "^7.2",
         "yajra/laravel-datatables-oracle": "^11.1",
         "yoeunes/toastr": "^3.1"
     },
@@ -31,7 +32,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/CountryHelper.php"
+            "app/Helpers/GlobalHelper.php"
         ]
     },
     "autoload-dev": {
