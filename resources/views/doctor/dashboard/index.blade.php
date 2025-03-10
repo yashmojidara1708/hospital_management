@@ -1,6 +1,6 @@
 @php
     $DoctorDatas = session('doctors_data');
-	$DrIds = isset($DoctorDatas['id']) ? $DoctorDatas['id'] : '';
+    $DrIds = isset($DoctorDatas['id']) ? $DoctorDatas['id'] : '';
 @endphp
 
 @extends('doctor.layouts.index')
@@ -80,7 +80,7 @@
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="appointment-table-body">
                                             @if (!empty($appointments) && count($appointments) > 0)
                                                 @foreach ($appointments as $appointment)
                                                     <tr>
@@ -144,12 +144,13 @@
     <script>
         Pusher.logToConsole = true;
         var loggedInDoctorId = "{{ $DrIds }}";
-
-        var pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
-            cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+        var pusher = new Pusher('a64fd3494d4e33ee738a', {
+            cluster: 'ap2',
             encrypted: false
         });
-        
+        console.log("loggedInDoctorId", loggedInDoctorId);
+
+
         var channel = pusher.subscribe('doctor-channel');
         channel.bind('patient-assigned', function(data) {
             const patientName = data?.appointment?.patient_name || "Unknown";
@@ -174,5 +175,11 @@
                 });
             }
         });
+
+        function refreshAppointmentTable() {
+            $('#appointment-table-body').load(window.location.href + ' #appointment-table-body > *');
+        }
+
+        refreshAppointmentTable();
     </script>
 @endsection

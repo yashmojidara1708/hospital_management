@@ -34,28 +34,28 @@ class AppointmentsController extends Controller
         $startTime = strtotime('10:00 AM');
         $endTime = strtotime('6:00 PM');
         $timeSlots = [];
-    
+
         $selectedTime = null;
-    
+
         if ($request->has('appointment_id')) {
             $currentAppointment = appointments::find($request->appointment_id);
-            
+
             if ($currentAppointment && !empty($currentAppointment->time)) {
                 $selectedTime = date("h:i A", strtotime($currentAppointment->time)); // Convert to 12-hour format
             }
         }
-    
+
         while ($startTime < $endTime) {
             $slot = date("h:i A", $startTime);
-    
+
             // Exclude Lunch Break (1:00 PM - 2:00 PM)
             if ($slot !== "01:00 PM" && $slot !== "01:30 PM") {
                 $timeSlots[] = $slot;
             }
-    
+
             $startTime = strtotime('+30 minutes', $startTime);
         }
-    
+
         return response()->json([
             'timeSlots' => $timeSlots,
             'selectedTime' => $selectedTime
@@ -69,39 +69,39 @@ class AppointmentsController extends Controller
         $specializationId = $request->specialization_id;
         $selectedTime = date("H:i:s", strtotime($request->time)); // Convert to 24-hour format
 
-    // Check if an appointment exists for the doctor at the given date and time
-    $appointmentExists = appointments::where('doctor', $doctorId)
-        ->where('specialization', $specializationId)
-        ->where('date', $selectedDate)
-        ->where('time', $selectedTime)
-        ->exists();
+        // Check if an appointment exists for the doctor at the given date and time
+        $appointmentExists = appointments::where('doctor', $doctorId)
+            ->where('specialization', $specializationId)
+            ->where('date', $selectedDate)
+            ->where('time', $selectedTime)
+            ->exists();
 
         // Check if the patient already has an appointment with the same doctor at this time
-    $patientBooked = appointments::where('patient', $patientId)
-    ->where('specialization', $specializationId)
-    ->where('doctor', $doctorId)
-    ->where('date', $selectedDate)
-    ->where('time', $selectedTime)
-    ->exists();
-    if ($appointmentExists) {
-        return response()->json([
-            'available' => false,
-            'message' => 'This time slot is already booked for the selected doctor!'
-        ], 400);
-    }
+        $patientBooked = appointments::where('patient', $patientId)
+            ->where('specialization', $specializationId)
+            ->where('doctor', $doctorId)
+            ->where('date', $selectedDate)
+            ->where('time', $selectedTime)
+            ->exists();
+        if ($appointmentExists) {
+            return response()->json([
+                'available' => false,
+                'message' => 'This time slot is already booked for the selected doctor!'
+            ], 400);
+        }
 
-    if ($patientBooked) {
-        return response()->json([
-            'available' => false,
-            'message' => 'You have already booked an appointment with this doctor at this time!'
-        ], 400);
-    }
+        if ($patientBooked) {
+            return response()->json([
+                'available' => false,
+                'message' => 'You have already booked an appointment with this doctor at this time!'
+            ], 400);
+        }
 
-    return response()->json([
-        'available' => true,
-        'message' => 'This time slot is available!'
-    ]);
-}
+        return response()->json([
+            'available' => true,
+            'message' => 'This time slot is available!'
+        ]);
+    }
     public function toggleStatus(Request $request)
     {
         $appointments = appointments::find($request->id);
@@ -115,31 +115,30 @@ class AppointmentsController extends Controller
     public function sendPusher($post)
     {
         $options = [
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'useTLS' => false 
+            'cluster' => 'ap2',
+            'useTLS' => false
         ];
 
         $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
+            'a64fd3494d4e33ee738a',
+            '0400b0e5b7c276fd1a7e',
+            '1953746',
             $options
         );
- 
         $patientName = Patients::where('patient_id', $post['patient'])
             ->where('isdeleted', '!=', 1)
-            ->value('name'); 
+            ->value('name');
 
         $post['patient_name'] = isset($patientName) ? $patientName : 'Unknown Patient';
 
         $data = [
             'message' => 'A new patient has been assigned!',
-            'appointment' => isset($post) ? $post : '', 
+            'appointment' => isset($post) ? $post : '',
         ];
         $pusher->trigger('doctor-channel', 'patient-assigned', $data);
     }
 
-    
+
     public function save(Request $request)
     {
         $post = $request->post();
@@ -215,10 +214,13 @@ class AppointmentsController extends Controller
     }
     public function appointmentslist()
     {
-        $appointment_data = appointments::select
-                    ('appointments.*', 'doctors.name as doctor_name', 
-                    'doctors.image as doctor_image', 'patients.name as patient_name', 
-                    'specialities.name as specialization_name')
+        $appointment_data = appointments::select(
+            'appointments.*',
+            'doctors.name as doctor_name',
+            'doctors.image as doctor_image',
+            'patients.name as patient_name',
+            'specialities.name as specialization_name'
+        )
             ->leftjoin('doctors', 'doctors.id', '=', 'appointments.doctor')
             ->leftjoin('patients', 'patients.patient_id', '=', 'appointments.patient')
             ->leftJoin('specialities', 'specialities.id', '=', 'appointments.specialization')
