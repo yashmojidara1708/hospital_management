@@ -49,9 +49,9 @@ $(document).ready(function() {
             {
                 data: "last_visit",
             },
-            {
-                data: "paid",
-            },
+            /* {
+                 data: "paid",
+             },*/
             {
                 data: "action",
                 orderable: false
@@ -135,12 +135,12 @@ var validationRules = {
         email: true,
     },
     last_visit: "required",
-    paid: {
+    /*paid: {
         required: true,
         digits: true, // Ensures only numbers
         minlength: 1,
         maxlength: 5,
-    },
+    },*/
 };
 
 var validationMessages = {
@@ -167,12 +167,12 @@ var validationMessages = {
         email: "Please enter a valid email address",
     },
     last_visit: "Please select the last visit date",
-    paid: {
-        required: "Please enter the Paid Amount",
-        maxlength: "Paid amount cannot be more than 5 digits",
-        minlength: "Paid amount must be at least 3 digits",
-        digits: "Paid amount must contain only numbers",
-    },
+    /* paid: {
+         required: "Please enter the Paid Amount",
+         maxlength: "Paid amount cannot be more than 5 digits",
+         minlength: "Paid amount must be at least 3 digits",
+         digits: "Paid amount must contain only numbers",
+     },*/
 };
 let yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1); // Set to previous date
@@ -269,7 +269,7 @@ $(document).on('click', '#patientsEdit', function() {
                     $('#phone').val(patientsdata.phone);
                     $('#email').val(patientsdata.email);
                     $('#last_visit').val(patientsdata.last_visit);
-                    $('#paid').val(patientsdata.paid);
+                    // $('#paid').val(patientsdata.paid);
                     //  $('#city').val(patientsdata.city);
                     //$('#state').val(patientsdata.state);
                     $("#zip").val(patientsdata.zip);

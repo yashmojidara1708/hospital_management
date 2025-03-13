@@ -19,7 +19,6 @@
                     <th>Phone</th>
                     <th>Email</th>
                     <th>Last Visit</th>
-                    <th>Paid</th>
                     <th>Action</th>
                 </tr>
             </thead>

@@ -28,19 +28,19 @@
                         <span>Appointments</span>
                     </a>
                 </li>
-               {{-- <li>
-                    <a href="my-patients.html">
+               <li class="{{ request()->routeIs('doctor.patients') ? 'active' : '' }}">
+                    <a href="{{route('doctor.patients')}}">
                         <i class="fas fa-user-injured"></i>
                         <span>My Patients</span>
                     </a>
                 </li>
-                <li>
-                    <a href="schedule-timings.html">
-                        <i class="fas fa-hourglass-start"></i>
-                        <span>Schedule Timings</span>
+               <li class="{{ request()->routeIs('doctor.prescription') ? 'active' : '' }}">
+                    <a href="{{route('doctor.prescription')}}">
+                        <i class="fas fa-prescription"></i>
+                        <span>Prescription</span>
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="invoices.html">
                         <i class="fas fa-file-invoice"></i>
                         <span>Invoices</span>
@@ -59,19 +59,19 @@
                         <small class="unread-msg">23</small>
                     </a>
                 </li>
-               
-                <li>
-                    <a href="social-media.html">
-                        <i class="fas fa-share-alt"></i>
-                        <span>Social Media</span>
-                    </a>
-                </li>--}}
                 <li class="{{ request()->routeIs('doctor.profile') ? 'active' : '' }}">
                     <a href="{{route('doctor.profile')}}">
                         <i class="fas fa-user-cog"></i>
                         <span>Profile Settings</span>
                     </a>
                 </li>
+                <li>
+                    <a href="social-media.html">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Social Media</span>
+                    </a>
+                </li>--}}
+                
                 <li class="{{ request()->routeIs('doctor-change-password') ? 'active' : '' }}">
                     <a href="{{route('doctor-change-password')}}">
                         <i class="fas fa-lock"></i>

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Doctor;
-
+use Yajra\DataTables\DataTables;
 use App\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Models\Appointments;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 class DashboardController extends Controller
 {
     public function index()
@@ -27,7 +27,6 @@ class DashboardController extends Controller
                 'appointments.time',
                 'appointments.status',
                 'Patients.name as patient_name',
-                'Patients.paid as amount',
                 'Patients.phone as phone',
                 'Patients.last_visit as last_visit',
                 'Patients.patient_id',
@@ -41,7 +40,18 @@ class DashboardController extends Controller
             ->orderBy('appointments.date', 'asc')
             ->get();
         // Pass the data to the view
-        return view('doctor.dashboard.index', compact('appointments'));
+        $totalAppointments = Appointments::join('doctors', 'appointments.doctor', '=', 'doctors.id')
+        ->where('doctors.email', $DoctorEmail)
+        ->count();
+        $totalPatientCount = Appointments::where('doctor', Auth::user()->id)
+                            ->distinct('patient')
+                            ->count('patient');
+        $todayPatients = Appointments::where('doctor', Auth::user()->id)
+        ->whereDate('date', Carbon::today())
+        ->distinct('patient')
+        ->count('patient');
+
+        return view('doctor.dashboard.index', compact('appointments','totalAppointments','totalPatientCount','todayPatients'));
     }
     public function appointments()
     {
@@ -64,50 +74,30 @@ class DashboardController extends Controller
                             'states.name as state_name',
                             'countries.name as country_name'
                         )
+                        ->orderBy('date', 'asc')
                         ->get();
 
-        return view('doctor.dashboard.appointments',compact('appointments'));
+        return view('doctor.Appointments.appointments',compact('appointments'));
     }
-    public function changepassword()
+    
+    public function getAppointmentDetails(Request $request)
     {
-        return view('doctor.dashboard.ChangePassword');
-    }
-    public function doctorUpdatePassword(Request $request)
-    {
-        $post = $request->post();
-        $hid = isset($post['hid']) ? intval($post['hid']) : null;
-        $request->validate([
-            'oldpassword' => 'required',
-            'newpassword' => 'required|min:8',
-            'confirmpassword' => 'required|same:newpassword',
-        ],
-        $messages = [
-            'oldpassword.required' => 'This field is required',
-            'newpassword.required' => 'This field is required',
-            'newpassword.min' => 'Password must be at least 8 characters long',
-           // 'newpassword.different' => 'New password cannot be the same as the old password.',
-            'confirmpassword.required' => 'This field is required',
-            'confirmpassword.same' => 'Confirm password must match the new password',
-        ]);
-        $doctor = DB::table('doctors')->where('id', Auth::id())->first();
-       // dd($staff);
-    if (!$doctor) {
-        return response()->json(['status' => 0, 'message' => 'User not found.']);
-    }
-
-    if (!Hash::check($request->oldpassword, $doctor->password)) {
-        return response()->json(['status' => 0, 'message' => 'The current password is incorrect.']);
-    }
-     // Ensure old password and new password are not the same
-     if (Hash::check($request->newpassword, $doctor->password)) {
-        return response()->json(['status' => 0, 'message' => 'New password cannot be the same as the old password.']);
-    }
-
-    DB::table('doctors')->where('id', Auth::id())->update([
-        'password' => Hash::make($request->newpassword),
-    ]);
-
-    return response()->json(['status' => 1, 'message' => 'Password changed successfully.']);
-
-    }
+            $id = $request->id;
+        
+            // Fetch the appointment details
+            $appointment = DB::table('appointments')->where('id', $id)->first();
+        
+            if ($appointment) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $appointment
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Appointment not found'
+                ]);
+            }
+        }
+  
 }

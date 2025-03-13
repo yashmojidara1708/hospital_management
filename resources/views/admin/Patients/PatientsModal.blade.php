@@ -87,14 +87,14 @@
                                 placeholder="Please enter Last Visit">
                         </div>
                     </div>
-                    <div class="form-group
+                <!--    <div class="form-group
                         row">
                         <label class="col-lg-3 col-form-label">Paid</label>
                         <div class="col-lg-9">
                             <input type="text" id="paid" name="paid" class="form-control"
                                 placeholder="Please enter Paid">
                         </div>
-                    </div>
+                    </div>-->
                     <div class="text-right">
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>

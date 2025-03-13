@@ -40,7 +40,7 @@ class PatientsController extends Controller
             'phone' => $request->phone,
             'email' => $request->email,
             'last_visit' => $request->last_visit,
-            'paid' => $request->paid,
+            //'paid' => $request->paid,
         ];
 
         // Validation rules
@@ -58,7 +58,7 @@ class PatientsController extends Controller
                 'email',
             ],
             'last_visit' => 'required|date',
-            'paid' => 'required|numeric',
+            //'paid' => 'required|numeric',
         ];
         // Custom error messages
         $msg = [
@@ -75,8 +75,8 @@ class PatientsController extends Controller
             'email.email' => 'Please enter a valid email address',
             'last_visit.required' => 'Please select the last visit date',
             'last_visit.date' => 'Please enter a valid date',
-            'paid.required' => 'Please enter the amount paid',
-            'paid.numeric' => 'Paid amount must be a number',
+            //'paid.required' => 'Please enter the amount paid',
+            //'paid.numeric' => 'Paid amount must be a number',
         ];
 
         $validator = Validator::make(
@@ -113,7 +113,7 @@ class PatientsController extends Controller
                 'phone' => isset($post['phone']) ? $post['phone'] : "",
                 'email' => isset($post['email']) ? $post['email'] : "",
                 'last_visit' => isset($post['last_visit']) ? $post['last_visit'] : "",
-                'paid' => isset($post['paid']) ? $post['paid'] : "",
+              //  'paid' => isset($post['paid']) ? $post['paid'] : "",
             ];
 
             if ($hid) {

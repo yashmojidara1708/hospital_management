@@ -89,7 +89,6 @@
             var BASE_URL = "{{ url('/') }}";
         </script>
 		<script src="{{ asset('assets/doctor/theme/js/jquery.min.js') }}"></script>
-		
 		<!-- Bootstrap Core JS -->
 		<script src="{{ asset('assets/doctor/theme/js/popper.min.js')}}"></script>
 		<script src="{{ asset('assets/doctor/theme/js/bootstrap.min.js')}}"></script>
@@ -105,12 +104,10 @@
 		  <script src="{{ asset('assets/admin/theme/cdnFiles/validate.min.js') }}"></script>
 		  <script src="{{ asset('assets/admin/theme/cdnFiles/additional-methods.min.js') }}"></script>
 	  
-		   <!-- Slimscroll JS -->
-		   <script src="{{ asset('assets/admin/theme/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
-		   <script src="{{ asset('assets/admin/theme/plugins/raphael/raphael.min.js') }}"></script>
-		   <script src="{{ asset('assets/admin/theme/plugins/morris/morris.min.js') }}"></script>
-		   <script src="{{ asset('assets/admin/theme/js/chart.morris.js') }}"></script>
-		 
+			<!-- Datatables JS -->
+			<script src="{{ asset('assets/admin/theme/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+			<script src="{{ asset('assets/admin/theme/plugins/datatables/datatables.min.js') }}"></script>
+			
 		<!-- Circle Progress JS -->
 		<script src="{{ asset('assets/doctor/theme/js/circle-progress.min.js') }}"></script>
 		
