@@ -95,7 +95,10 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
     Route::GET('/patientslist', [App\Http\Controllers\Doctor\PatientController::class, 'patientslist'])->name('doctor.patientslist');  
     Route::GET('/patientprofile/{id}', [App\Http\Controllers\Doctor\PatientController::class, 'patientprofile'])->name('doctor.patientprofile');  
     Route::GET('/patientprofile/{id}/appointments', [App\Http\Controllers\Doctor\PatientController::class, 'fetchAppointments'])->name('doctor.patient.fetchAppointments');  
-    
+    //medicine
+    Route::GET('/getmedicine', [App\Http\Controllers\Doctor\MedicineController::class, 'getmedicine'])->name('doctor.getmedicine');  
+    Route::GET('/save-prescription', [App\Http\Controllers\Doctor\MedicineController::class, 'saveprescription'])->name('doctor.save.prescription');   
+
     //change Password
     Route::GET('/changePassword',[App\Http\Controllers\Doctor\ChangepasswordController::class, 'changepassword'])->name('doctor-change-password');
     Route::POST('/updatePassword',[App\Http\Controllers\Doctor\ChangepasswordController::class, 'doctorUpdatePassword'])->name('doctor-update-password');

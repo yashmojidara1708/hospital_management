@@ -66,6 +66,7 @@ class DashboardController extends Controller
                         ->join('countries', 'states.country_id', '=', 'countries.id')    
                         ->select(
                             'appointments.*',
+                            'patients.name as patient_id',
                             'patients.name as patient_name',
                             'patients.email as patient_email',
                             'patients.phone as patient_phone',

@@ -1,5 +1,14 @@
 $(document).ready(function() {
     console.log('script running');
+    $(document).on('click', '.view-patient-profile', function() {
+        let patientId = $(this).data('id'); // Get patient ID from `data-id`
+
+        if (patientId) {
+            window.location.href = `/doctor/patientprofile/${patientId}`; // Redirect to Patient Profile page
+        } else {
+            alert('Invalid patient ID');
+        }
+    });
     $('a[href="#pat_appointments"]').on('click', function() {
         let patientId = $(this).data('id'); // Get the patient ID from data-id
         console.log(patientId);
@@ -21,13 +30,7 @@ $(document).ready(function() {
             // fetchAppointments(patientId); // Call function to fetch appointments
         }
     });
-    $('a[href="#billing"]').on('click', function() {
-        let patientId = $(this).data('id'); // Get the patient ID from data-id
-        console.log(patientId);
-        if (patientId) {
-            // fetchAppointments(patientId); // Call function to fetch appointments
-        }
-    });
+
     if ($.fn.DataTable.isDataTable('#PatientsTable')) {
         $('#PatientsTable').DataTable().destroy();
     }
