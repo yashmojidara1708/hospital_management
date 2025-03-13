@@ -1,3 +1,8 @@
+@php
+    $DoctorDatas = session('doctors_data');
+	$DrIds = isset($DoctorDatas['id']) ? $DoctorDatas['id'] : '';
+@endphp
+
 @extends('doctor.layouts.index')
 @section('doctor-page-title', 'Dashboard')
 @section('page-title', 'Dashboard')
@@ -56,7 +61,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <h4 class="mb-4">Upcomming Patient Appoinment</h4>
+            <h4 class="mb-4">Upcomming Patient Appoinment </h4>
             <div class="appointment-tab">
                 <div class="tab-content">
                     <!-- Upcoming Appointment Tab -->
@@ -129,4 +134,41 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('doctor-js')
+    <script>
+        Pusher.logToConsole = true;
+        var loggedInDoctorId = "{{ $DrIds }}";
+
+        var pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
+            cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+            encrypted: false
+        });
+        
+        var channel = pusher.subscribe('doctor-channel');
+        channel.bind('patient-assigned', function(data) {
+            const patientName = data?.appointment?.patient_name || "Unknown";
+            const date = data?.appointment?.date || "N/A";
+            const time = data?.appointment?.time || "N/A";
+
+            if (data?.appointment && data?.appointment?.doctor == loggedInDoctorId) {
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "info",
+                    title: `📢 New Patient Assigned!`,
+                    html: `<b>👤 ${patientName} | 📅 ${date} | ⏰ ${time}</b>`,
+                    showConfirmButton: false,
+                    timer: 10000,
+                    timerProgressBar: true,
+                    background: "#f0f9ff",
+                    color: "#1e293b",
+                    customClass: {
+                        popup: "swal2-toast-custom"
+                    }
+                });
+            }
+        });
+    </script>
 @endsection
