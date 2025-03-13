@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\doctor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,15 +8,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
-class ChangePasswordController extends Controller
+class ChangepasswordController extends Controller
 {
     //
-    public function index()
+    public function changepassword()
     {
-        return view('admin.dashboard.changePassword');
+        return view('doctor.dashboard.ChangePassword');
     }
-
-    public function updatepassword(Request $request)
+    public function doctorUpdatePassword(Request $request)
     {
         $post = $request->post();
         $hid = isset($post['hid']) ? intval($post['hid']) : null;
@@ -33,21 +32,21 @@ class ChangePasswordController extends Controller
             'confirmpassword.required' => 'This field is required',
             'confirmpassword.same' => 'Confirm password must match the new password',
         ]);
-        $staff = DB::table('staff')->where('id', Auth::id())->first();
+        $doctor = DB::table('doctors')->where('id', Auth::id())->first();
        // dd($staff);
-    if (!$staff) {
+    if (!$doctor) {
         return response()->json(['status' => 0, 'message' => 'User not found.']);
     }
 
-    if (!Hash::check($request->oldpassword, $staff->password)) {
+    if (!Hash::check($request->oldpassword, $doctor->password)) {
         return response()->json(['status' => 0, 'message' => 'The current password is incorrect.']);
     }
      // Ensure old password and new password are not the same
-     if (Hash::check($request->newpassword, $staff->password)) {
+     if (Hash::check($request->newpassword, $doctor->password)) {
         return response()->json(['status' => 0, 'message' => 'New password cannot be the same as the old password.']);
     }
 
-    DB::table('staff')->where('id', Auth::id())->update([
+    DB::table('doctors')->where('id', Auth::id())->update([
         'password' => Hash::make($request->newpassword),
     ]);
 

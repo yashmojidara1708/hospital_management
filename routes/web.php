@@ -14,6 +14,8 @@ Route::any('/check/login', [LoginController::class, 'login']);
 Route::any('/check/doctorlogin', [LoginController::class, 'doctorloginlogin']);
 Route::any('/admin/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('admin.logout');
 
+//forgot-password
+//Route::get('/forgotpassword',[App\Http\Controllers\Auth\ForgotPasswordController::class, 'forgotpassword'])->name('admin.forgotpassword');
 Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('admin.home');
     Route::get('/change-password', [App\Http\Controllers\Admin\ChangePasswordController::class, 'index'])->name('admin.changePassword');
@@ -81,19 +83,25 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/appointments/getTimeSlots', [App\Http\Controllers\Admin\AppointmentsController::class, 'getTimeSlots'])->name('appointments.getTimeSlots');
     Route::GET('/appointments/checkAvailability', [App\Http\Controllers\Admin\AppointmentsController::class, 'checkAvailability'])->name('appointments.checkAvailability');
 
-  //  Route::get('/doctor/changePassword',[App\Http\Controllers\Doctor\DashboardController::class, 'changepassword'])->name('doctor-change-password');
-    //Route::POST('/doctor/updatePassword',[App\Http\Controllers\Doctor\DashboardController::class, 'doctorUpdatePassword'])->name('doctor-update-password');
-
 });
 
 Route::any('/doctor/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('doctor.logout');
 Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
     Route::GET('/home', [App\Http\Controllers\Doctor\DashboardController::class, 'index'])->name('doctor.home');
     Route::GET('/appointments', [App\Http\Controllers\Doctor\DashboardController::class, 'appointments'])->name('doctor.appointments');
-   //change Password
-    Route::GET('/changePassword',[App\Http\Controllers\Doctor\DashboardController::class, 'changepassword'])->name('doctor-change-password');
-    Route::POST('/updatePassword',[App\Http\Controllers\Doctor\DashboardController::class, 'doctorUpdatePassword'])->name('doctor-update-password');
-
+    Route::GET('/getAppointmentDetails', [App\Http\Controllers\Doctor\DashboardController::class, 'getAppointmentDetails'])->name('doctor.getappointmentdetails');
+    //patients
+    Route::GET('/patients', [App\Http\Controllers\Doctor\PatientController::class, 'patients'])->name('doctor.patients');
+    Route::GET('/patientslist', [App\Http\Controllers\Doctor\PatientController::class, 'patientslist'])->name('doctor.patientslist');  
+    Route::GET('/patientprofile/{id}', [App\Http\Controllers\Doctor\PatientController::class, 'patientprofile'])->name('doctor.patientprofile');  
+    Route::GET('/patientprofile/{id}/appointments', [App\Http\Controllers\Doctor\PatientController::class, 'fetchAppointments'])->name('doctor.patient.fetchAppointments');  
+    
+    //change Password
+    Route::GET('/changePassword',[App\Http\Controllers\Doctor\ChangepasswordController::class, 'changepassword'])->name('doctor-change-password');
+    Route::POST('/updatePassword',[App\Http\Controllers\Doctor\ChangepasswordController::class, 'doctorUpdatePassword'])->name('doctor-update-password');
     //profile
     Route::get('/profile',[App\Http\Controllers\Doctor\ProfileController::class, 'index'])->name('doctor.profile');
+    //prescription
+    Route::get('/prescription',[App\Http\Controllers\Doctor\PrescriptionController::class, 'index'])->name('doctor.prescription');
+ 
 });

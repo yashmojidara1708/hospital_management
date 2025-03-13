@@ -20,7 +20,7 @@
                             </div>
                             <div class="dash-widget-info">
                                 <h6>Total Patient</h6>
-                                <h3>1500</h3>
+                                <h3>{{$totalPatientCount}}</h3>
                                 <p class="text-muted">Till Today</p>
                             </div>
                         </div>
@@ -34,9 +34,9 @@
                                 </div>
                             </div>
                             <div class="dash-widget-info">
-                                <h6>Today Patient</h6>
-                                <h3>160</h3>
-                                <p class="text-muted">06, Nov 2019</p>
+                                <h6>Today's Patient</h6>
+                                <h3>{{$todayPatients}}</h3>
+                                <p class="text-muted">{{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
                             </div>
                         </div>
                     </div>
@@ -49,9 +49,9 @@
                                 </div>
                             </div>
                             <div class="dash-widget-info">
-                                <h6>Appoinments</h6>
-                                <h3>85</h3>
-                                <p class="text-muted">06, Apr 2019</p>
+                                <h6>Total Appoinments</h6>
+                                <h3>{{$totalAppointments}}</h3>
+                                <p class="text-muted">{{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
                             </div>
                         </div>
                     </div>
@@ -76,7 +76,6 @@
                                                 <th>Appt Date</th>
                                                 <th>Phone</th>
                                                 <th>Last visit Date</th>
-                                                <th class="text-center">Paid Amount</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -98,9 +97,6 @@
                                                         <td>{{ isset($appointment->phone) ? $appointment->phone : 'N|A' }}
                                                         </td>
                                                         <td>{{ isset($appointment->last_visit) ? $appointment->last_visit : '' }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{ isset($appointment->amount) ? $appointment->amount : '' }}
                                                         </td>
                                                         <td class="text-right">
                                                             <div class="table-action">
