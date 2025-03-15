@@ -89,11 +89,16 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
     Route::GET('/home', [App\Http\Controllers\Doctor\DashboardController::class, 'index'])->name('doctor.home');
     Route::GET('/appointments', [App\Http\Controllers\Doctor\DashboardController::class, 'appointments'])->name('doctor.appointments');
     Route::GET('/getAppointmentDetails', [App\Http\Controllers\Doctor\DashboardController::class, 'getAppointmentDetails'])->name('doctor.getappointmentdetails');
+
     //patients
     Route::GET('/patients', [App\Http\Controllers\Doctor\PatientController::class, 'patients'])->name('doctor.patients');
     Route::GET('/patientslist', [App\Http\Controllers\Doctor\PatientController::class, 'patientslist'])->name('doctor.patientslist');
     Route::GET('/patientprofile/{id}', [App\Http\Controllers\Doctor\PatientController::class, 'patientprofile'])->name('doctor.patientprofile');
     Route::GET('/patientprofile/{id}/appointments', [App\Http\Controllers\Doctor\PatientController::class, 'fetchAppointments'])->name('doctor.patient.fetchAppointments');
+
+    //prescription
+    Route::get('/prescription', [App\Http\Controllers\Doctor\PrescriptionController::class, 'index'])->name('doctor.prescription');
+
     //medicine
     Route::GET('/getmedicine', [App\Http\Controllers\Doctor\MedicineController::class, 'getmedicine'])->name('doctor.getmedicine');
     Route::GET('/save-prescription', [App\Http\Controllers\Doctor\MedicineController::class, 'saveprescription'])->name('doctor.save.prescription');
@@ -103,6 +108,4 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
     Route::POST('/updatePassword', [App\Http\Controllers\Doctor\ChangepasswordController::class, 'doctorUpdatePassword'])->name('doctor-update-password');
     //profile
     Route::get('/profile', [App\Http\Controllers\Doctor\ProfileController::class, 'index'])->name('doctor.profile');
-    //prescription
-    Route::get('/prescription', [App\Http\Controllers\Doctor\PrescriptionController::class, 'index'])->name('doctor.prescription');
 });

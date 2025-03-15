@@ -33,6 +33,13 @@ $(document).ready(function() {
         }
     });
 
+    $('a[href="#pat_appointments"]').on('click', function() {
+        let patientId = $(this).data('id'); // Get the patient ID
+        if (patientId) {
+            $('#add-prescription-btn').attr('href', `/doctor/prescription?patient_id=${patientId}`);
+        }
+    });
+
     if ($.fn.DataTable.isDataTable('#PatientsTable')) {
         $('#PatientsTable').DataTable().destroy();
     }

@@ -15,7 +15,7 @@ class GlobalHelper
      */
     public static function getAllCountries()
     {
-        return DB::table('countries')->select('id','code', 'name')->orderBy('name')->get();
+        return DB::table('countries')->select('id', 'code', 'name')->orderBy('name')->get();
     }
 
 
@@ -34,9 +34,9 @@ class GlobalHelper
     public static function getAllCities()
     {
         return DB::table('cities')
-        ->select('id', 'name','state_id','country_id')
-        ->orderBy('name')
-        ->get();
+            ->select('id', 'name', 'state_id', 'country_id')
+            ->orderBy('name')
+            ->get();
     }
     /**
      * Get all states from the 'roles' table.
@@ -47,7 +47,7 @@ class GlobalHelper
     {
         return DB::table('roles')
             ->select('id', 'name')
-            ->where('isdeleted', '!=',1)
+            ->where('isdeleted', '!=', 1)
             ->orderBy('name')
             ->get();
     }
@@ -60,8 +60,8 @@ class GlobalHelper
     {
         return DB::table('specialities')
             ->select('id', 'name')
-            ->where('isdeleted', '!=',1)
-               ->orderBy('name')
+            ->where('isdeleted', '!=', 1)
+            ->orderBy('name')
             ->get();
     }
 
@@ -91,20 +91,20 @@ class GlobalHelper
      */
     public static  function getStatesByCountry($country_id)
     {
-      return DB::table('states')
-                ->where('country_id', $country_id)
-                ->get();
+        return DB::table('states')
+            ->where('country_id', $country_id)
+            ->get();
     }
     public static function getCitiesByState($state_id)
     {
-         return DB::table('cities')
-                ->where('state_id', $state_id)
-                ->get();
+        return DB::table('cities')
+            ->where('state_id', $state_id)
+            ->get();
     }
     public static function getPatientById($patientId)
     {
-        return Patients::select('patients.*','countries.name as country', 'states.name as state', 'cities.name as city')
-        ->where('patient_id', $patientId)
+        return Patients::select('patients.*', 'countries.name as country', 'states.name as state', 'cities.name as city')
+            ->where('patient_id', $patientId)
             ->where('isdeleted', '!=', 1)
             ->leftJoin('countries', 'patients.country', '=', 'countries.id')
             ->leftJoin('states', 'patients.state', '=', 'states.id')
