@@ -57,7 +57,8 @@ class MedicineController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Prescription saved successfully!'
+            'message' => 'Prescription saved successfully!',
+            'patient_id' => $request->patient_id
         ]);
     }
 }

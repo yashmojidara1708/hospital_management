@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -7,27 +7,23 @@ $(document).ready(function() {
     initializeSelect2();
     // Form validation rules
     $("#prescription-form").validate({
-        submitHandler: function(form) {
+        submitHandler: function (form) {
             let formData = {
                 patient_id: $("input[name='patient_id']").val(),
                 instructions: $("#instructions").val(),
                 medicines: []
             };
 
-            // Collect prescription items, including dynamically added rows
-            $("#prescription-items tr").each(function() {
+            $("#prescription-items tr").each(function () {
                 let medicine_name = $(this).find(".medicine-select").val();
-                // let medicineData = $(this).find(".medicine-select").select2('data')[0];
-                // console.log("medicineData", medicineData);
                 let quantity = $(this).find("input[name='quantity[]']").val();
                 let days = $(this).find("input[name='days[]']").val();
 
                 let time = [];
-                $(this).find("input[type='checkbox']:checked").each(function() {
+                $(this).find("input[type='checkbox']:checked").each(function () {
                     time.push($(this).attr("name").replace("time[", "").replace("][]", ""));
                 });
 
-                // Only add valid data
                 if (medicine_name && quantity && days) {
                     formData.medicines.push({
                         medicine_name: medicine_name,
@@ -40,11 +36,15 @@ $(document).ready(function() {
 
             // Check if at least one medicine is added
             if (formData.medicines.length === 0) {
-                alert("Please add at least one medicine.");
+                Swal.fire({
+                    icon: "warning",
+                    title: "Oops...",
+                    text: "Please add at least one medicine.",
+                    confirmButtonColor: "#d33"
+                });
                 return false;
             }
 
-            console.log("formData", formData); // Debugging
             // AJAX request
             $.ajax({
                 url: "/doctor/save-prescription",
@@ -53,21 +53,34 @@ $(document).ready(function() {
                 processData: false,
                 contentType: "application/json",
                 cache: false,
-                success: function(response) {
-                    alert("Prescription saved successfully!");
-                    $("#prescription-form")[0].reset();
-                    $("#prescription-items").html(""); // Clear the table
+                success: function (response) {
+                    console.log("response:::", response)
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Prescription saved successfully!",
+                        confirmButtonColor: "#3085d6"
+                    }).then(() => {
+                        $("#prescription-form")[0].reset();
+                        $("#prescription-items").html("");
+                        window.location.href = "/doctor/patientprofile/" + response?.patient_id + "#pres";
+                    });
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     console.error(xhr.responseText);
-                    alert("Failed to save prescription. Please try again.");
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: "Failed to save prescription. Please try again.",
+                        confirmButtonColor: "#d33"
+                    });
                 }
             });
         }
     });
 
     // Add new medicine row
-    $(document).on("click", ".add-more-item", function() {
+    $(document).on("click", ".add-more-item", function () {
         let newRow = `
                         <tr>
                             <td>
@@ -106,9 +119,9 @@ $(document).ready(function() {
                 url: '/doctor/getmedicine',
                 dataType: "json",
                 delay: 250,
-                processResults: function(data) {
+                processResults: function (data) {
                     return {
-                        results: $.map(data, function(item) {
+                        results: $.map(data, function (item) {
                             return { id: item.name, text: item.name };
                         }),
                     };
@@ -119,7 +132,7 @@ $(document).ready(function() {
     });
 
     // Remove medicine row
-    $(document).on("click", ".remove-medicine", function() {
+    $(document).on("click", ".remove-medicine", function () {
         $(this).closest("tr").remove();
     });
 });
@@ -133,9 +146,9 @@ function initializeSelect2() {
             url: '/doctor/getmedicine', // Laravel Route to fetch medicines
             dataType: 'json',
             delay: 250,
-            processResults: function(data) {
+            processResults: function (data) {
                 return {
-                    results: $.map(data, function(item) {
+                    results: $.map(data, function (item) {
                         return { id: item.id, text: item.name };
                     })
                 };
