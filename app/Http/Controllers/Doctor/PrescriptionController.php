@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 
 class PrescriptionController extends Controller
 {
-    //
     public function index(Request $request)
     {
         $patient_id = $request->patient_id;

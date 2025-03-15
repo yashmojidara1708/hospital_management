@@ -73,6 +73,7 @@
                                                     </thead>
                                                     <tbody id="prescription-list">
 
+
                                                     </tbody>
                                                 </table>
                                             </div>

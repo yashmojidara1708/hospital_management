@@ -22,6 +22,7 @@ class PatientController extends Controller
         $globalHelper = new GlobalHelper();
         $countries = GlobalHelper::getAllCountries();
         $patient = $globalHelper->getPatientById($patientId);
+
         if (!$patient) {
             return redirect()->back()->with('error', 'Patient not found or deleted.');
         }
@@ -100,5 +101,12 @@ class PatientController extends Controller
             )
             ->get();
         return response()->json($appointments);
+    }
+    public function fetchprescriptions($id)
+    {
+        $patient_percriptions = GlobalHelper::getPatientPrescriptions($id);
+        $prescriptions_data = GlobalHelper::formatPrescriptionData($patient_percriptions);
+
+        return response()->json($prescriptions_data);
     }
 }

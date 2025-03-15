@@ -39,7 +39,10 @@
                 </div>
 
                 <!--prescription form-->
-                <form id="prescription-form">
+                <form onsubmit="return false" method="POST" id="prescription-form" name="prescription-form"
+                    enctype="multipart/form-data">
+                    <input type="hidden" name="patient_id" value="{{ $patient->patient_id }}">
+                    @csrf
                     <!-- Add Item -->
                     <div class="text-right">
                         <a href="javascript:void(0);" class="add-more-item" style="color: #0de0fe;"><i
@@ -63,11 +66,12 @@
                                     <tbody id="prescription-items">
                                         <tr>
                                             <td>
-                                                <select class="form-control medicine-select" name="medicine_name[]"
-                                                    required></select>
+                                                <select class="form-control medicine-select"
+                                                    name="medicine_name[]"></select>
                                             </td>
-                                            <td><input class="form-control" type="number" name="quantity[]" required></td>
-                                            <td><input class="form-control" type="number" name="days[]" required></td>
+                                            <td><input class="form-control" type="number" name="quantity[]">
+                                            </td>
+                                            <td><input class="form-control" type="number" name="days[]"></td>
                                             <td>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="checkbox" name="time[morning][]">
@@ -108,9 +112,8 @@
                     <!-- Submit Section -->
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="submit-section">
-                                <button type="submit" class="btn btn-primary submit-btn">Save</button>
-                                <button type="reset" class="btn btn-secondary submit-btn">Clear</button>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </div>

@@ -22,7 +22,7 @@ $(document).ready(function() {
         let patientId = $(this).data('id'); // Get the patient ID from data-id
         console.log(patientId);
         if (patientId) {
-            // fetchAppointments(patientId); // Call function to fetch appointments
+            fetchprescriptions(patientId); // Call function to fetch appointments
         }
     });
     $('a[href="#medical"]').on('click', function() {
@@ -124,6 +124,37 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching appointments:', xhr.responseText);
+            }
+        });
+    }
+
+    function fetchprescriptions(patientId) {
+        $.ajax({
+            url: `/doctor/patientprofile/${patientId}/prescriptions`, // Laravel route to get appointments
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                console.log('prescriptions Data:', response); // Debugging
+
+                let prescriptions = '';
+                if (response.length > 0) {
+                    response.forEach(prescription => {
+                        prescriptions += `
+                            <tr>
+                                <td>${prescription.created_at}</td>
+                                <td>${prescription.medicine_names.join(', ')}</td>
+                                <td>${prescription.doctor_name}</td>
+                            </tr>`;
+                    });
+
+                } else {
+                    prescriptions = `<tr><td colspan="4" class="text-center">No prescriptions found.</td></tr>`;
+                }
+
+                $('#prescription-list').html(prescriptions);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching prescriptions:', xhr.responseText);
             }
         });
     }

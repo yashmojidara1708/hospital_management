@@ -111,4 +111,46 @@ class GlobalHelper
             ->leftJoin('cities', 'patients.city', '=', 'cities.id')
             ->first();
     }
+
+    public static function getPatientPrescriptions($patientId)
+    {
+        return DB::table('prescriptions')
+            ->join('patients', 'patients.patient_id', '=', 'prescriptions.patient_id')
+            ->join('doctors', 'doctors.id', '=', 'prescriptions.doctor_id')
+            ->join('prescriptions_item', 'prescriptions_item.prescription_id', '=', 'prescriptions.id')
+            ->join('medicines', 'medicines.id', '=', 'prescriptions_item.medicine_name')
+            ->where('prescriptions.patient_id', $patientId)
+            ->select(
+                'prescriptions.id',
+                'prescriptions.instructions',
+                'prescriptions.created_at',
+                'doctors.name as doctor_name',
+                'patients.name as patient_name',
+                DB::raw('GROUP_CONCAT(medicines.name SEPARATOR ", ") as medicine_names'),
+                DB::raw('GROUP_CONCAT(prescriptions_item.quantity SEPARATOR ", ") as quantities'),
+                DB::raw('GROUP_CONCAT(prescriptions_item.days SEPARATOR ", ") as days'),
+                DB::raw('GROUP_CONCAT(prescriptions_item.time SEPARATOR ", ") as times')
+            )
+            ->groupBy(
+                'prescriptions.id',
+                'prescriptions.instructions',
+                'prescriptions.created_at',
+                'doctor_name',
+                'patient_name'
+            )
+            ->get();
+    }
+
+
+    public static function formatPrescriptionData($prescriptions)
+    {
+        return $prescriptions->map(function ($prescription) {
+            $prescription->medicine_names = explode(',', $prescription->medicine_names);
+            $prescription->quantities = explode(',', $prescription->quantities);
+            $prescription->days = explode(',', $prescription->days);
+            $prescription->times = explode(',', $prescription->times);
+
+            return $prescription;
+        });
+    }
 }

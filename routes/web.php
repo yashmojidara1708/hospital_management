@@ -95,13 +95,14 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
     Route::GET('/patientslist', [App\Http\Controllers\Doctor\PatientController::class, 'patientslist'])->name('doctor.patientslist');
     Route::GET('/patientprofile/{id}', [App\Http\Controllers\Doctor\PatientController::class, 'patientprofile'])->name('doctor.patientprofile');
     Route::GET('/patientprofile/{id}/appointments', [App\Http\Controllers\Doctor\PatientController::class, 'fetchAppointments'])->name('doctor.patient.fetchAppointments');
+    Route::GET('/patientprofile/{id}/prescriptions', [App\Http\Controllers\Doctor\PatientController::class, 'fetchprescriptions'])->name('doctor.patient.fetchprescriptions');
 
     //prescription
     Route::get('/prescription', [App\Http\Controllers\Doctor\PrescriptionController::class, 'index'])->name('doctor.prescription');
 
     //medicine
     Route::GET('/getmedicine', [App\Http\Controllers\Doctor\MedicineController::class, 'getmedicine'])->name('doctor.getmedicine');
-    Route::GET('/save-prescription', [App\Http\Controllers\Doctor\MedicineController::class, 'saveprescription'])->name('doctor.save.prescription');
+    Route::POST('/save-prescription', [App\Http\Controllers\Doctor\MedicineController::class, 'saveprescription'])->name('doctor.save.prescription');
 
     //change Password
     Route::GET('/changePassword', [App\Http\Controllers\Doctor\ChangepasswordController::class, 'changepassword'])->name('doctor-change-password');

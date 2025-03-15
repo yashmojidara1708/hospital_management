@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('prescriptions_medicines', function (Blueprint $table) {
+        Schema::create('prescriptions_item', function (Blueprint $table) {
             $table->id();
-            $table->string('prescription');
-            $table->string('medicine');
+            $table->unsignedBigInteger('prescription_id');
+            $table->string('medicine_name');
             $table->integer('quantity');
             $table->integer('days');
-            $table->string('time');
+            $table->string('time')->nullable();
             $table->integer('isdeleted')->default(0);
             $table->timestamps();
+            $table->foreign('prescription_id')->references('id')->on('prescriptions')->onDelete('cascade');
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('prescriptions_medicines');
+        Schema::dropIfExists('prescriptions_item');
     }
 };
