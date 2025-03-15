@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    console.log('script is running');
     initializeSelect2();
     $(document).on("click", ".add-more-item", function() {
         let newRow = `
@@ -28,9 +27,10 @@ $(document).ready(function() {
             </td>
         </tr>`;
 
-        $("#prescription-items").append(newRow);
-        $(".medicine-select").select2({ // Reinitialize Select2 for newly added row
+        let $newRow = $(newRow).appendTo("#prescription-items");
+        $newRow.find(".medicine-select").select2({ // Reinitialize Select2 for newly added row
             placeholder: "Select Medicine or Type New",
+            multiple: true,
             tags: true,
             ajax: {
                 url: '/doctor/getmedicine',
