@@ -12,8 +12,7 @@ class MedicineController extends Controller
     //
     public function getmedicine()
     {
-        $medicine=DB::table('medicines')
-                    ->get();
+        $medicine = DB::table('medicines')->get();
         return response()->json($medicine);
     }
     public function saveprescription()

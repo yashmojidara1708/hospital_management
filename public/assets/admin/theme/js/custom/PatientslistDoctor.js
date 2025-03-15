@@ -1,5 +1,7 @@
 $(document).ready(function() {
-    console.log('script running');
+    setTimeout(function() {
+        $('a[href="#pat_appointments"]').trigger('click'); // Simulate click instead of .tab('show')
+    }, 200);
     $(document).on('click', '.view-patient-profile', function() {
         let patientId = $(this).data('id'); // Get patient ID from `data-id`
 
