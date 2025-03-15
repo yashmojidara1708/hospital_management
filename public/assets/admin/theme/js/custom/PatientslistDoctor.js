@@ -128,6 +128,11 @@ $(document).ready(function() {
         });
     }
 
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB'); // Format: DD/MM/YYYY
+    }
+
     function fetchprescriptions(patientId) {
         $.ajax({
             url: `/doctor/patientprofile/${patientId}/prescriptions`, // Laravel route to get appointments
@@ -141,7 +146,7 @@ $(document).ready(function() {
                     response.forEach(prescription => {
                         prescriptions += `
                             <tr>
-                                <td>${prescription.created_at}</td>
+                                <td>${formatDate(prescription.created_at)}</td>
                                 <td>${prescription.medicine_names.join(', ')}</td>
                                 <td>${prescription.doctor_name}</td>
                             </tr>`;

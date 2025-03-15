@@ -20,11 +20,11 @@
                                         <a class="nav-link" href="#pres" data-toggle="tab"
                                             data-id="{{ $patient->patient_id }}"><span>Prescription</span></a>
                                     </li>
-                                    <li class="nav-item">
+                                    {{-- <li class="nav-item">
                                         <a class="nav-link" href="#medical" data-toggle="tab"
                                             data-id="{{ $patient->patient_id }}"><span class="med-records">Medical
                                                 Records</span></a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                             <div class="tab-content">
@@ -83,7 +83,7 @@
                                 <!-- /Prescription Tab -->
 
                                 <!-- Medical Records Tab -->
-                                <div class="tab-pane fade" id="medical">
+                                {{-- <div class="tab-pane fade" id="medical">
                                     <div class="text-right">
                                         <a href="#" class="add-new-btn" data-toggle="modal"
                                             data-target="#add_medical_records">Add Medical Records</a>
@@ -139,7 +139,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <!-- /Medical Records Tab -->
                             </div>
                         </div>
