@@ -7,9 +7,9 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="card-title mb-0">Add Prescription</h4>
-                {{-- <a href="" class="btn btn-secondary d-flex align-items-center">
-                    <i class="fas fa-arrow-left mr-2"></i>
-                </a> --}}
+                <a href="{{ url()->previous() }}" class="btn btn-outline-primary d-flex align-items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                </a>
             </div>
             <div class="card-body">
                 <div class="row">

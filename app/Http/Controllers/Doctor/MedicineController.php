@@ -24,7 +24,9 @@ class MedicineController extends Controller
         $prescription = Prescriptions::create([
             'doctor_id' => Auth::id(),
             'patient_id' => $request->patient_id,
-            'instructions' => $request->instructions
+            'instructions' => $request->instructions,
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
 
         // Save medicines in `prescription_items` table
