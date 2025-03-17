@@ -62,7 +62,10 @@ $(document).ready(function () {
                     }).then(() => {
                         $("#prescription-form")[0].reset();
                         $("#prescription-items").html("");
-                        window.location.href = "/doctor/patientprofile/" + response?.patient_id + "#pres";
+                        const activeTab = localStorage.getItem('activeTab') || '#pat_appointments';
+
+                        // Redirect to the patient profile page with the active tab
+                        window.location.href = `/doctor/patientprofile/${response?.patient_id}${activeTab}`;
                     });
                 },
                 error: function (xhr) {

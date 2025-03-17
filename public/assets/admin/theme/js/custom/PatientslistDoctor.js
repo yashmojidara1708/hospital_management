@@ -1,42 +1,70 @@
 $(document).ready(function() {
-    setTimeout(function() {
-        $('a[href="#pat_appointments"]').trigger('click'); // Simulate click instead of .tab('show')
-    }, 200);
-    $(document).on('click', '.view-patient-profile', function() {
-        let patientId = $(this).data('id'); // Get patient ID from `data-id`
+    // Retrieve the active tab from localStorage
+    const activeTab = localStorage.getItem('activeTab') || '#pat_appointments'; // Default to appointments tab
 
+    // Activate the stored tab
+    $('a[href="' + activeTab + '"]').trigger('click');
+    const patientId = $('a[href="' + activeTab + '"]').data('id'); // Get patient ID from data-id
+
+    // Fetch data for the active tab
+    if (patientId) {
+        if (activeTab === '#pres') {
+            fetchprescriptions(patientId); // Fetch prescriptions if the prescription tab is selected
+        } else if (activeTab === '#pat_appointments') {
+            fetchAppointments(patientId); // Fetch appointments if the appointments tab is selected
+        }
+    }
+
+    // Handle tab clicks to update localStorage and fetch data
+    $('.nav-tabs a').on('click', function(e) {
+        const tabHref = $(this).attr('href');
+        localStorage.setItem('activeTab', tabHref); // Store the active tab in localStorage
+
+        const patientId = $(this).data('id'); // Get patient ID from data-id
+        if (patientId) {
+            if (tabHref === '#pres') {
+                fetchprescriptions(patientId); // Fetch prescriptions if the prescription tab is clicked
+            } else if (tabHref === '#pat_appointments') {
+                fetchAppointments(patientId); // Fetch appointments if the appointments tab is clicked
+            }
+        }
+    });
+
+    $(document).on('click', '.view-patient-profile', function() {
+        const patientId = $(this).data('id'); // Get patient ID from `data-id`
         if (patientId) {
             window.location.href = `/doctor/patientprofile/${patientId}`; // Redirect to Patient Profile page
         } else {
             alert('Invalid patient ID');
         }
     });
-    $('a[href="#pat_appointments"]').on('click', function() {
-        let patientId = $(this).data('id'); // Get the patient ID from data-id
-        console.log(patientId);
-        if (patientId) {
-            fetchAppointments(patientId); // Call function to fetch appointments
-        }
-    });
-    $('a[href="#pres"]').on('click', function() {
-        let patientId = $(this).data('id'); // Get the patient ID from data-id
-        console.log(patientId);
-        if (patientId) {
-            fetchprescriptions(patientId); // Call function to fetch appointments
-        }
-    });
-    $('a[href="#medical"]').on('click', function() {
-        let patientId = $(this).data('id'); // Get the patient ID from data-id
-        console.log(patientId);
-        if (patientId) {
-            // fetchAppointments(patientId); // Call function to fetch appointments
-        }
+
+    $("#add-prescription-btn").on("click", function () {
+        $('#add-prescription-btn').attr('href', `/doctor/prescription?patient_id=${patientId}`);
     });
 
     $('a[href="#pat_appointments"]').on('click', function() {
-        let patientId = $(this).data('id'); // Get the patient ID
+        const patientId = $(this).data('id'); // Get the patient ID from data-id
+        console.log(patientId);
         if (patientId) {
+            fetchAppointments(patientId); // Call function to fetch appointments
             $('#add-prescription-btn').attr('href', `/doctor/prescription?patient_id=${patientId}`);
+        }
+    });
+
+    $('a[href="#pres"]').on('click', function() {
+        const patientId = $(this).data('id'); // Get the patient ID from data-id
+        console.log(patientId);
+        if (patientId) {
+            fetchprescriptions(patientId); // Call function to fetch prescriptions
+        }
+    });
+
+    $('a[href="#medical"]').on('click', function() {
+        const patientId = $(this).data('id'); // Get the patient ID from data-id
+        console.log(patientId);
+        if (patientId) {
+            // fetchAppointments(patientId); // Call function to fetch appointments
         }
     });
 
@@ -47,8 +75,7 @@ $(document).ready(function() {
         searching: true,
         paging: true,
         pageLength: 10,
-
-        "ajax": {
+        ajax: {
             url: "patientslist",
             type: 'GET',
             dataType: 'json',
@@ -56,27 +83,14 @@ $(document).ready(function() {
                 _token: $("[name='_token']").val(),
             },
         },
-        columns: [{
-                data: "patient_id",
-            },
-            {
-                data: "name",
-            },
-            {
-                data: "age",
-            },
-            {
-                data: "address",
-            },
-            {
-                data: "phone",
-            },
-            {
-                data: "email",
-            },
-            {
-                data: "last_visit",
-            },
+        columns: [
+            { data: "patient_id" },
+            { data: "name" },
+            { data: "age" },
+            { data: "address" },
+            { data: "phone" },
+            { data: "email" },
+            { data: "last_visit" },
         ],
     });
 
@@ -91,20 +105,21 @@ $(document).ready(function() {
                 let appointmentList = '';
                 if (response.length > 0) {
                     response.forEach(appointment => {
-                        let appointmentDate = new Date(appointment.date).toLocaleDateString('en-GB', {
+                        const appointmentDate = new Date(appointment.date).toLocaleDateString('en-GB', {
                             day: '2-digit',
                             month: 'short',
                             year: 'numeric'
                         });
 
-                        let lastDate = appointment.last_visit ?
+                        const lastDate = appointment.last_visit ?
                             new Date(appointment.last_visit).toLocaleDateString('en-GB', {
                                 day: '2-digit',
                                 month: 'short',
                                 year: 'numeric'
                             }) :
                             'N/A';
-                        let status = appointment.status == 1 ?
+
+                        const status = appointment.status == 1 ?
                             `<span class="badge badge-pill bg-success-light">Active</span>` :
                             `<span class="badge badge-pill bg-danger-light">Inactive</span>`;
 
@@ -112,9 +127,9 @@ $(document).ready(function() {
                             <tr>
                                 <td>${appointment.name}</td>
                                 <td>${appointmentDate}</td>
-                                <td>${lastDate ?lastDate: 'N/A'}</td>
+                                <td>${lastDate}</td>
                                 <td>${status}</td>
-                                </tr>`;
+                            </tr>`;
                     });
                 } else {
                     appointmentList = `<tr><td colspan="4" class="text-center">No appointments found.</td></tr>`;
@@ -135,23 +150,25 @@ $(document).ready(function() {
 
     function fetchprescriptions(patientId) {
         $.ajax({
-            url: `/doctor/patientprofile/${patientId}/prescriptions`, // Laravel route to get appointments
+            url: `/doctor/patientprofile/${patientId}/prescriptions`, // Laravel route to get prescriptions
             method: 'GET',
             dataType: 'json',
             success: function(response) {
-                console.log('prescriptions Data:', response); // Debugging
+                console.log('Prescriptions Data:', response); // Debugging
 
                 let prescriptions = '';
                 if (response.length > 0) {
                     response.forEach(prescription => {
+                        const medicineNames = prescription.medicine_names ? prescription.medicine_names.join(', ') : 'N/A';
+                        const createdAt = formatDate(prescription.created_at);
+
                         prescriptions += `
                             <tr>
-                                <td>${formatDate(prescription.created_at)}</td>
-                                <td>${prescription.medicine_names.join(', ')}</td>
+                                <td>${createdAt}</td>
+                                <td>${medicineNames}</td>
                                 <td>${prescription.doctor_name}</td>
                             </tr>`;
                     });
-
                 } else {
                     prescriptions = `<tr><td colspan="4" class="text-center">No prescriptions found.</td></tr>`;
                 }
@@ -163,4 +180,15 @@ $(document).ready(function() {
             }
         });
     }
+
+    // Generic AJAX error handler
+    $(document).ajaxError(function(event, xhr, settings, error) {
+        console.error('AJAX Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong! Please try again later.',
+            confirmButtonColor: '#d33'
+        });
+    });
 });
