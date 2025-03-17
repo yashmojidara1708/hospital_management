@@ -85,8 +85,8 @@
                                                     <tr>
                                                         <td>
                                                             <h2 class="table-avatar">
-
-                                                                <a href="patient-profile.html">{{ isset($appointment->patient_name) ? $appointment->patient_name : 'N|A' }}
+                                                                <a  id="patientprofile" href="javascript:void(0);" class="view-patient-profile" 
+                                                                data-id="{{ $appointment->patient_id }}">{{ isset($appointment->patient_name) ? $appointment->patient_name : 'N|A' }}
                                                                 </a>
                                                             </h2>
                                                         </td>
@@ -137,6 +137,7 @@
 @endsection
 
 @section('doctor-js')
+<script src="{{ asset('assets/admin/theme/js/custom/PatientslistDoctor.js') }}"></script>
     <script>
         Pusher.logToConsole = true;
         var loggedInDoctorId = "{{ $DrIds }}";

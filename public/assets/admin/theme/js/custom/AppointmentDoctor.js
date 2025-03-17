@@ -1,4 +1,14 @@
 $(document).ready(function() {
+    console.log('javascript appointment');
+    $(document).on('click', '.view-patient-profile', function() {
+        let patientId = $(this).data('id'); // Get patient ID from `data-id`
+        if (patientId) {
+            window.location.href = `/doctor/patientprofile/${patientId}`; // Redirect to Patient Profile page
+        } else {
+            alert('Invalid patient ID');
+        }
+    });
+
     $(document).on('click', '#Add_Appointments', function(e) {
         e.preventDefault();
         var appointmentId = $(this).data('id'); // Get appointment ID

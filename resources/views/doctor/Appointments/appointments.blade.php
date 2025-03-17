@@ -15,7 +15,7 @@
                                 <img src="assets/img/patients/patient.jpg" alt="User Image">
                             </a>
                             <div class="profile-det-info">
-                                <h3><a href="patient-profile.html"></a>{{ $appointment->patient_name }}</h3>
+                                <h3>{{ $appointment->patient_name }}</h3>
                                 <div class="patient-details">
                                     <h5><i class="far fa-calendar-alt"></i>
                                         {{ \Carbon\Carbon::parse($appointment->date)->format('d M, Y') }}

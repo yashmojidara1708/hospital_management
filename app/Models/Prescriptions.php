@@ -14,12 +14,9 @@ class Prescriptions extends Model
     // Fillable properties for mass assignment
     protected $fillable = [
         'id',
-       'doctor',
-       'appointment',
-       'patient',
-       'date',
-       'instructions',
-       'status',
-       'isdeleted',
+        'doctor_id',
+        'patient_id',
+        'instructions',
+        'isdeleted',
     ];
 }
