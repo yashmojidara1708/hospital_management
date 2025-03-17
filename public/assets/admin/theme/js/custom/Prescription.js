@@ -54,7 +54,6 @@ $(document).ready(function () {
                 contentType: "application/json",
                 cache: false,
                 success: function (response) {
-                    console.log("response:::", response)
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
