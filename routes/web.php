@@ -109,4 +109,6 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
     Route::POST('/updatePassword', [App\Http\Controllers\Doctor\ChangepasswordController::class, 'doctorUpdatePassword'])->name('doctor-update-password');
     //profile
     Route::get('/profile', [App\Http\Controllers\Doctor\ProfileController::class, 'index'])->name('doctor.profile');
+
+    Route::get('/doctor/fetch-appointments', [DashboardController::class, 'fetchUpdatedAppointments'])->name('doctor.fetchAppointments');
 });
