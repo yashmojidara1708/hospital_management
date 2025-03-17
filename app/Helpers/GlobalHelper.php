@@ -112,7 +112,7 @@ class GlobalHelper
             ->first();
     }
 
-    public static function getPatientPrescriptions($patientId)
+    public static function getPatientPrescriptions($patientId, $doctorId)
     {
         return DB::table('prescriptions')
             ->join('patients', 'patients.patient_id', '=', 'prescriptions.patient_id')
@@ -120,6 +120,7 @@ class GlobalHelper
             ->join('prescriptions_item', 'prescriptions_item.prescription_id', '=', 'prescriptions.id')
             ->join('medicines', 'medicines.id', '=', 'prescriptions_item.medicine_name')
             ->where('prescriptions.patient_id', $patientId)
+            ->where('prescriptions.doctor_id', $doctorId)
             ->select(
                 'prescriptions.id',
                 'prescriptions.instructions',
