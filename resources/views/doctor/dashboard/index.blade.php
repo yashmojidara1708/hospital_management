@@ -220,10 +220,11 @@
                                     <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
                                         <i class="far fa-eye"></i>
                                     </a>
-                                    <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
+                                    <a href="javascript:void(0);" class="btn btn-sm bg-success-light mark-complete" data-id="${appointment.id}">
                                         <i class="fas fa-check"></i>
                                     </a>
-                                    <a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+
+                                    <a href="javascript:void(0);" class="btn btn-sm bg-danger-light appoinment-delete" data-id="${appointment.id}">
                                         <i class="fas fa-times"></i>
                                     </a>
                                 </div>

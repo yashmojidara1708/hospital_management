@@ -50,9 +50,33 @@ class DashboardController extends Controller
             )
             ->where('doctors.email', $DoctorEmail)
             ->where('appointments.status', '1')
+            ->where('appointments.is_completed', '0')
             ->orderBy('appointments.date', 'asc')
             ->get();
 
         return response()->json(['status' => 'success', 'appointments' => $appointments]);
     }
+
+    public function updateAppointmentStatus(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        if (!isset($data['appointmentId'])) {
+            return response()->json(['status' => 'error', 'message' => 'Invalid request'], 400);
+        }
+ 
+        // Find the appointment
+        $appointment = Appointments::find($data['appointmentId']);
+  
+ 
+        if (!$appointment) {
+            return response()->json(['status' => 'error', 'message' => 'Appointment not found'], 404);
+        }
+    
+        // Update status
+        $appointment->is_completed = $data['is_completed'];
+        $appointment->save();
+    
+        return response()->json(['status' => 'success', 'message' => 'Appointment status updated']);
+    }
+
 }

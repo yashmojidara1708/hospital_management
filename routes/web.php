@@ -111,4 +111,7 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
     Route::get('/profile', [App\Http\Controllers\Doctor\ProfileController::class, 'index'])->name('doctor.profile');
 
     Route::get('/doctor/fetch-appointments', [DashboardController::class, 'fetchUpdatedAppointments'])->name('doctor.fetchAppointments');
+
+    // Appoinment status update route 
+    Route::POST('/update-appointment-status', [DashboardController::class, 'updateAppointmentStatus'])->name('doctor.updateAppointmentStatus');
 });

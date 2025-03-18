@@ -19,5 +19,6 @@ class Appointments extends Model
         'date',
         'time',
         'status',
+        'is_completed',
     ];
 }
