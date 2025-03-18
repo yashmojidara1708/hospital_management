@@ -245,12 +245,10 @@ $(document).ready(function() {
 
     function fetchprescriptions(patientId) {
         $.ajax({
-            url: `/doctor/patientprofile/${patientId}/prescriptions`, // Laravel route to get prescriptions
+            url: `/doctor/patientprofile/${patientId}/prescriptions`,
             method: 'GET',
             dataType: 'json',
             success: function(response) {
-                console.log('Prescriptions Data:', response); // Debugging
-
                 let prescriptions = '';
                 if (response.length > 0) {
                     response.forEach(prescription => {
@@ -262,6 +260,19 @@ $(document).ready(function() {
                                 <td>${createdAt}</td>
                                 <td>${medicineNames}</td>
                                 <td>${prescription.doctor_name}</td>
+                                <td class="text-center">
+                                    <div class="table-action">
+                                        <a href="javascript:void(0);" class="btn btn-sm bg-success-light edit-prescription" 
+                                            data-id="${prescription.id}" 
+                                            data-medicines='${JSON.stringify(prescription.medicine_names)}'>
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" class="btn btn-sm bg-danger-light delete-prescription" 
+                                            data-id="${prescription.id}">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>`;
                     });
                 } else {
@@ -276,14 +287,97 @@ $(document).ready(function() {
         });
     }
 
-    // Generic AJAX error handler
-    $(document).ajaxError(function(event, xhr, settings, error) {
-        console.error('AJAX Error:', error);
+    $(document).on('click', '.delete-prescription', function() {
+        let prescriptionId = $(this).data('id');
+    
         Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something went wrong! Please try again later.',
-            confirmButtonColor: '#d33'
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/doctor/prescriptions/${prescriptionId}/delete`,
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $(`#prescription-${prescriptionId}`).remove();
+                            Swal.fire({
+                                icon: "success",
+                                title: "Deleted!",
+                                text: "Prescription has been deleted successfully.",
+                                toast: true,
+                                position: "top-end",
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                            fetchprescriptions();
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops!",
+                                text: "Failed to delete prescription.",
+                                toast: true,
+                                position: "top-end",
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error deleting prescription:', xhr.responseText);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error!",
+                            text: "Something went wrong. Please try again later.",
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                });
+            }
         });
     });
+
+    $(document).on('click', '.edit-prescription', function() {
+        let prescriptionId = $(this).data('id');
+        console.log("prescriptionId:", prescriptionId)
+        window.location.href = 
+                    `/doctor/prescription?patient_id=${patientId}&prescription_id=${prescriptionId}`;
+        // $.ajax({
+        //     url: `/doctor/prescription/${prescriptionId}/edit`,
+        //     method: 'GET',
+        //     dataType: 'json',
+        //     success: function(response) {
+        //         if (response.success) {
+        //             window.location.href = 
+        //             `/doctor/prescription?patient_id=${patientId}&prescription_id=${prescriptionId}`;
+        //         }
+        //     },
+        //     error: function(xhr) {
+        //         console.error("Error fetching prescription:", xhr.responseText);
+        //     }
+        // });
+    });
+    
+    // Generic AJAX error handler
+    // $(document).ajaxError(function(event, xhr, settings, error) {
+    //     console.error('AJAX Error:', error);
+    //     Swal.fire({
+    //         icon: 'error',
+    //         title: 'Oops...',
+    //         text: 'Something went wrong! Please try again later.',
+    //         confirmButtonColor: '#d33'
+    //     });
+    // });
 });

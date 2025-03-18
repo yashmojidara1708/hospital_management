@@ -114,4 +114,14 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
 
     // Appoinment status update route 
     Route::POST('/update-appointment-status', [DashboardController::class, 'updateAppointmentStatus'])->name('doctor.updateAppointmentStatus');
+
+
+
+    // Prescription Delete from doctor
+    Route::post('/prescriptions/{id}/delete', [App\Http\Controllers\Doctor\PrescriptionController::class, 'destroy']);
+
+
+    // prescription data fetch by id 
+    Route::get('/prescription/{id}/edit', [App\Http\Controllers\Doctor\PrescriptionController::class, 'edit'])
+    ->name('doctor.prescription.edit');
 });

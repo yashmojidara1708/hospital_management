@@ -10,6 +10,7 @@ $(document).ready(function () {
         submitHandler: function (form) {
             let formData = {
                 patient_id: $("input[name='patient_id']").val(),
+                prescription_id: $("input[name='prescription_id']").val(),
                 instructions: $("#instructions").val(),
                 medicines: []
             };

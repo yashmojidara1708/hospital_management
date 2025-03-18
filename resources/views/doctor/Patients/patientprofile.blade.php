@@ -68,6 +68,7 @@
                                                             <th>Date </th>
                                                             <th>Name</th>
                                                             <th>Created by </th>
+                                                            <th>Action</th>
                                                             <th></th>
                                                         </tr>
                                                     </thead>

@@ -42,6 +42,7 @@
                 <form onsubmit="return false" method="POST" id="prescription-form" name="prescription-form"
                     enctype="multipart/form-data">
                     <input type="hidden" name="patient_id" value="{{ $patient->patient_id }}">
+                    <input type="hidden" name="prescription_id" value="{{ $prescription->id ?? '' }}">
                     @csrf
                     <!-- Add Item -->
                     <div class="text-right">
@@ -63,7 +64,7 @@
                                             <th style="min-width: 80px;"></th>
                                         </tr>
                                     </thead>
-                                    <tbody id="prescription-items">
+                                    {{-- <tbody id="prescription-items">
                                         <tr>
                                             <td>
                                                 <select class="form-control medicine-select"
@@ -95,7 +96,47 @@
                                                         class="far fa-trash-alt"></i></button>
                                             </td>
                                         </tr>
+                                    </tbody> --}}
+                                    <tbody id="prescription-items">
+                                        @if (!empty($medicineData))
+                                            @foreach ($medicineData as $data)
+                                                <tr>
+                                                    <td>
+                                                        <select class="form-control medicine-select" name="medicine_name[]" multiple>
+                                                            @foreach ($data['medicine_id'] as $key => $id)
+                                                                <option value="{{ $id }}" selected>{{ $data['medicine_name'][$key] }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                    <td><input class="form-control" type="number" name="quantity[]" value="{{ $data['quantity'] }}"></td>
+                                                    <td><input class="form-control" type="number" name="days[]" value="{{ $data['days'] }}"></td>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" name="time[morning][]" 
+                                                                {{ in_array('morning', $data['time']) ? 'checked' : '' }}> Morning
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" name="time[afternoon][]" 
+                                                                {{ in_array('afternoon', $data['time']) ? 'checked' : '' }}> Afternoon
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" name="time[evening][]" 
+                                                                {{ in_array('evening', $data['time']) ? 'checked' : '' }}> Evening
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" name="time[night][]" 
+                                                                {{ in_array('night', $data['time']) ? 'checked' : '' }}> Night
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn bg-danger-light remove-medicine"><i class="far fa-trash-alt"></i></button>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
                                     </tbody>
+                                    
+                                    
                                 </table>
                             </div>
                         </div>
@@ -105,7 +146,7 @@
                             <!-- Instruction Field -->
                             <div class="form-group">
                                 <label for="instructions">Instructions</label>
-                                <textarea class="form-control" id="instructions" name="instructions" rows="2" placeholder="Enter instructions..."></textarea>
+                                <textarea class="form-control" id="instructions" name="instructions" rows="2" placeholder="Enter instructions...">{{ old('instructions', $prescription->instructions ?? '') }}</textarea>
                             </div>
                         </div>
                     </div>

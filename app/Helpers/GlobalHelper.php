@@ -121,6 +121,7 @@ class GlobalHelper
             ->join('medicines', 'medicines.id', '=', 'prescriptions_item.medicine_name')
             ->where('prescriptions.patient_id', $patientId)
             ->where('prescriptions.doctor_id', $doctorId)
+            ->where('prescriptions.isdeleted', 0)
             ->select(
                 'prescriptions.id',
                 'prescriptions.instructions',
