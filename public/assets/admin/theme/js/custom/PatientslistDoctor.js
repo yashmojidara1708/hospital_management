@@ -254,7 +254,7 @@ $(document).ready(function() {
                     response.forEach(prescription => {
                         const medicineNames = prescription.medicine_names ? prescription.medicine_names.join(', ') : 'N/A';
                         const createdAt = formatDate(prescription.created_at);
-
+                        const invoiceUrl = `/doctor/invoice/${prescription.id}`;
                         prescriptions += `
                             <tr>
                                 <td>${createdAt}</td>
@@ -270,6 +270,9 @@ $(document).ready(function() {
                                         <a href="javascript:void(0);" class="btn btn-sm bg-danger-light delete-prescription" 
                                             data-id="${prescription.id}">
                                             <i class="fas fa-times"></i>
+                                        </a>
+                                        <a href="${invoiceUrl}" class="btn btn-sm bg-primary-light">
+                                            <i class="fas fa-file-invoice"></i> View Invoice
                                         </a>
                                     </div>
                                 </td>

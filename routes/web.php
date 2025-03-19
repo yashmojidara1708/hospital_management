@@ -99,6 +99,9 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
 
     //prescription
     Route::get('/prescription', [App\Http\Controllers\Doctor\PrescriptionController::class, 'index'])->name('doctor.prescription');
+    // Invoice
+    Route::GET('/invoice/{id}', [App\Http\Controllers\Doctor\PrescriptionController::class, 'showInvoice'])
+    ->name('doctor.invoice');
 
     //medicine
     Route::GET('/getmedicine', [App\Http\Controllers\Doctor\MedicineController::class, 'getmedicine'])->name('doctor.getmedicine');
