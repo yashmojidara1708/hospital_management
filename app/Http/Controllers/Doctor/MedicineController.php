@@ -66,22 +66,23 @@ class MedicineController extends Controller
 
     public function saveprescription(Request $request)
     {
+        // Check if updating an existing prescription
         if ($request->prescription_id) {
-            // Update existing prescription
             $prescription = Prescriptions::find($request->prescription_id);
             if (!$prescription) {
                 return response()->json(['status' => 'error', 'message' => 'Prescription not found'], 404);
             }
-    
+
+            // Update prescription details
             $prescription->update([
                 'instructions' => $request->instructions,
                 'updated_at' => now()
             ]);
-    
-            // Remove old medicines and reinsert updated ones
+
+            // Remove old medicines
             PrescriptionsItem::where('prescription_id', $prescription->id)->delete();
         } else {
-            // Create new prescription
+            // Create a new prescription
             $prescription = Prescriptions::create([
                 'doctor_id' => Auth::id(),
                 'patient_id' => $request->patient_id,
@@ -90,21 +91,23 @@ class MedicineController extends Controller
                 'updated_at' => now()
             ]);
         }
-    
         // Save medicines in `prescription_items` table
         foreach ($request->medicines as $medicine) {
             foreach ($medicine['medicine_name'] as $medicineName) {
-                $medicineRecord = Medicine::firstOrCreate(
-                    ['id' => $medicineName],
-                    [
+                // Check if the medicine exists
+                $medicineRecord = Medicine::where('id', $medicineName)->orWhere('name', $medicineName)->first();
+                // Only insert if the medicine does not exist
+                if (!$medicineRecord) {
+                    $medicineRecord = Medicine::create([
                         'name' => $medicineName,
                         'stock' => 10,
                         'price' => 10,
                         'expiry_date' => null,
                         'status' => 1
-                    ]
-                );
-    
+                    ]);
+                }
+
+                // Insert prescription item
                 PrescriptionsItem::create([
                     'prescription_id' => $prescription->id,
                     'medicine_name' => $medicineRecord->id,
@@ -114,7 +117,7 @@ class MedicineController extends Controller
                 ]);
             }
         }
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Prescription saved successfully!',
