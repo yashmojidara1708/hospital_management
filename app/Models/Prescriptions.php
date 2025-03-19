@@ -9,7 +9,7 @@ class Prescriptions extends Model
     //
     protected $primaryKey = 'id';
     protected $table = 'prescriptions';
-    public $timestamps = false;
+    public $timestamps = true;
 
     // Fillable properties for mass assignment
     protected $fillable = [

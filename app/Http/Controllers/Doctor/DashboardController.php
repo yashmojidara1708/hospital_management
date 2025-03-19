@@ -37,6 +37,7 @@ class DashboardController extends Controller
             )
             ->where('doctors.email', $DoctorEmail)
             ->where('appointments.status', '1')
+            ->where('appointments.is_completed', '0')
             ->orderBy('appointments.date', 'asc')
             ->get();
         // Pass the data to the view
@@ -59,7 +60,8 @@ class DashboardController extends Controller
 
         // Fetch appointments for this doctor
         $appointments = DB::table('appointments')
-                        ->where('doctor', $doctorId)     
+                        ->where('doctor', $doctorId)    
+                        ->where('appointments.is_completed', '0')
                         ->leftjoin('patients', 'patients.patient_id', '=', 'appointments.patient')
                         ->join('cities', 'patients.city', '=', 'cities.id')
                         ->join('states', 'cities.state_id', '=', 'states.id')

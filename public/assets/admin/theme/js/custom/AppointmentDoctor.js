@@ -1,4 +1,107 @@
 $(document).ready(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $(document).on("click", ".mark-complete", function() {
+        let appointmentId = $(this).data("id");
+        const requestData = {
+            appointmentId: appointmentId,
+            is_completed: 1,
+        }
+        $('#loader-container').show();
+        
+        $.ajax({
+            url: '/doctor/update-appointment-status',
+            type: "POST",
+            data: JSON.stringify(requestData),
+            processData: false,
+            contentType: "application/json",
+            cache: false,
+            beforeSend: function() {
+                showLoader();
+            },
+            
+            success: function(response) {
+                if (response.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Updated!",
+                        text: "Appointment completed successfully.",
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            },
+            complete: function() {
+                hideLoader();
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error("Error updating appointment status:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Failed!",
+                    text: "Something went wrong.",
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        });
+    });
+
+    $(document).on("click", ".appoinment-delete", function() {
+        let appointmentId = $(this).data("id");
+        const requestData = {
+            appointmentId: appointmentId,
+            is_completed: -1,
+        }
+        $.ajax({
+            url: '/doctor/update-appointment-status',
+            type: "POST",
+            data: JSON.stringify(requestData),
+            processData: false,
+            contentType: "application/json",
+            cache: false,
+            beforeSend: function() {
+                showLoader();
+            },
+            success: function(response) {
+                if (response.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Updated!",
+                        text: "Appointment Removed successfully.",
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            },
+            complete: function() {
+                hideLoader();
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error("Error updating appointment status:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Failed!",
+                    text: "Something went wrong.",
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        });
+    });
     console.log('javascript appointment');
     $(document).on('click', '.view-patient-profile', function() {
         let patientId = $(this).data('id'); // Get patient ID from `data-id`

@@ -10,6 +10,7 @@ $(document).ready(function () {
         submitHandler: function (form) {
             let formData = {
                 patient_id: $("input[name='patient_id']").val(),
+                prescription_id: $("input[name='prescription_id']").val(),
                 instructions: $("#instructions").val(),
                 medicines: []
             };
@@ -54,7 +55,6 @@ $(document).ready(function () {
                 contentType: "application/json",
                 cache: false,
                 success: function (response) {
-                    console.log("response:::", response)
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
@@ -63,7 +63,10 @@ $(document).ready(function () {
                     }).then(() => {
                         $("#prescription-form")[0].reset();
                         $("#prescription-items").html("");
-                        window.location.href = "/doctor/patientprofile/" + response?.patient_id + "#pres";
+                        const activeTab = localStorage.getItem('activeTab') || '#pat_appointments';
+
+                        // Redirect to the patient profile page with the active tab
+                        window.location.href = `/doctor/patientprofile/${response?.patient_id}${activeTab}`;
                     });
                 },
                 error: function (xhr) {

@@ -170,13 +170,74 @@
                         popup: "swal2-toast-custom"
                     }
                 });
+                fetchUpdatedAppointments();
             }
         });
 
-        function refreshAppointmentTable() {
-            $('#appointment-table-body').load(window.location.href + ' #appointment-table-body > *');
+        // function refreshAppointmentTable() {
+        //     $('#appointment-table-body').load(window.location.href + ' #appointment-table-body > *');
+        // }
+
+        // refreshAppointmentTable();
+
+        function fetchUpdatedAppointments() {
+            $.ajax({
+                url: "{{ route('doctor.fetchAppointments') }}",
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === "success") {
+                        updateAppointmentTable(response.appointments);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching updated appointments:", error);
+                }
+            });
         }
 
-        refreshAppointmentTable();
+        function updateAppointmentTable(appointments) {
+            let tableBody = $("#appointment-table-body");
+            tableBody.empty(); // Clear old data
+
+            if (appointments.length > 0) {
+                appointments.forEach(appointment => {
+                    let row = `
+                        <tr>
+                            <td>
+                                <h2 class="table-avatar">
+                                    <a href="javascript:void(0);" class="view-patient-profile" 
+                                    data-id="${appointment.patient_id}">${appointment.patient_name || 'N|A'}</a>
+                                </h2>
+                            </td>
+                            <td>${appointment.date || 'N|A'}
+                                <span class="d-block text-info">${appointment.time}</span>
+                            </td>
+                            <td>${appointment.phone || 'N|A'}</td>
+                            <td>${appointment.last_visit || ''}</td>
+                            <td class="text-right">
+                                <div class="table-action">
+                                    <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+                                        <i class="far fa-eye"></i>
+                                    </a>
+                                    <a href="javascript:void(0);" class="btn btn-sm bg-success-light mark-complete" data-id="${appointment.id}">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+
+                                    <a href="javascript:void(0);" class="btn btn-sm bg-danger-light appoinment-delete" data-id="${appointment.id}">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>`;
+                    tableBody.append(row);
+                });
+            } else {
+                tableBody.html('<tr><td colspan="6" class="text-center">No Appointments Found at this time</td></tr>');
+            }
+        }
+
+        // Initial load
+        fetchUpdatedAppointments();
     </script>
 @endsection

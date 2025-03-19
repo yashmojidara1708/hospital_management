@@ -11,6 +11,35 @@
 <html lang="en">
 
 <!-- doccure/doctor-dashboard.html  30 Nov 2019 04:12:03 GMT -->
+<style>
+    #loader-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+        display: flex;
+        align-items: center; /* Center vertically */
+        justify-content: center; /* Center horizontally */
+        z-index: 9999; /* Ensure it's on top of everything */
+        display: none; /* Initially hidden */
+    }
+
+    .loader {
+        border: 8px solid #f3f3f3; /* Light grey */
+        border-top: 8px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite; /* Spin animation */
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
 
 <head>
     <meta charset="utf-8">
@@ -41,7 +70,9 @@
 
     <!-- Main Wrapper -->
     <div class="main-wrapper">
-
+        <div id="loader-container">
+            <div class="loader"></div>
+        </div>
         <!-- Header -->
         <header class="header">
             {{-- @include('doctor.layouts.navbar') --}}
@@ -132,6 +163,15 @@
 
     @yield('doctor-js')
 </body>
+<script>
+    function showLoader() {
+        document.getElementById('loader-container').style.display = 'flex';
+    }
+
+    function hideLoader() {
+        document.getElementById('loader-container').style.display = 'none';
+    }
+</script>
 
 <!-- doccure/doctor-dashboard.html  30 Nov 2019 04:12:09 GMT -->
 

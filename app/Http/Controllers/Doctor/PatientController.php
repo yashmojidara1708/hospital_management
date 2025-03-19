@@ -104,7 +104,8 @@ class PatientController extends Controller
     }
     public function fetchprescriptions($id)
     {
-        $patient_percriptions = GlobalHelper::getPatientPrescriptions($id);
+        $doctor_id = Auth::id();
+        $patient_percriptions = GlobalHelper::getPatientPrescriptions($id, $doctor_id);
         $prescriptions_data = GlobalHelper::formatPrescriptionData($patient_percriptions);
 
         return response()->json($prescriptions_data);

@@ -105,7 +105,7 @@ $(document).on('change', '#doctor, #specialization, #date, #time', function() {
 
 
 let today = new Date();
-today.setDate(today.getDate() + 1); // Set to tomorrow (future date)
+today.setDate(today.getDate()); // Set to tomorrow (future date)
 
 let formattedDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
 $("#date").attr("min", formattedDate);
