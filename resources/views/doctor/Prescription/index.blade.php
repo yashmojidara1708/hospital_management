@@ -41,8 +41,8 @@
                 <!--prescription form-->
                 <form onsubmit="return false" method="POST" id="prescription-form" name="prescription-form"
                     enctype="multipart/form-data">
-                    <input type="hidden" name="patient_id" value="{{ $patient->patient_id }}">
-                    <input type="hidden" name="prescription_id" value="{{ $prescription->id ?? '' }}">
+                    <input type="hidden" name="patient_id" value="{{ isset($patient->patient_id) ? $patient->patient_id : '' }}">
+                    <input type="hidden" name="prescription_id" value="{{ isset($prescription->id) ? $prescription->id : '' }}">
                     @csrf
                     <!-- Add Item -->
                     <div class="text-right">
@@ -146,7 +146,7 @@
                             <!-- Instruction Field -->
                             <div class="form-group">
                                 <label for="instructions">Instructions</label>
-                                <textarea class="form-control" id="instructions" name="instructions" rows="2" placeholder="Enter instructions...">{{ old('instructions', $prescription->instructions ?? '') }}</textarea>
+                                <textarea class="form-control" id="instructions" name="instructions" rows="2" placeholder="Enter instructions...">{{ old('instructions', isset($prescription->instructions) ? $prescription->instructions :  '') }}</textarea>
                             </div>
                         </div>
                     </div>
