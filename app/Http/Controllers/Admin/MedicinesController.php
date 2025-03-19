@@ -68,11 +68,13 @@ class MedicinesController extends Controller
                 $NameexistingQuery->where('id', '!=', $hid);
             }
 
-            if ($NameexistingQuery->exists()) {
-                return response()->json([
-                    'status' => 0,
-                    'message' => 'The Medicines already exists.',
-                ]);
+            if(!$hid) {
+                if ($NameexistingQuery->exists()) {
+                    return response()->json([
+                        'status' => 0,
+                        'message' => 'The Medicines already exists.',
+                    ]);
+                }
             }
             $insert_medicin_data = [
                 'name' => isset($post['name']) ? $post['name'] : "",

@@ -173,7 +173,7 @@ $(document).on('click', '#edit_medicines', function() {
                 if (response.medicines_data) {
                     var medicinesdata = response.medicines_data;
                     $('#Add_Medicines_details').modal('show');
-                    $("#modal_title").html("Edit patients");
+                    $("#modal_title").html("Edit Medicine");
                     $('#hid').val(medicinesdata.id);
                     $('#name').val(medicinesdata.name);
                     $('#price').val(medicinesdata.price);
