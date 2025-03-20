@@ -3,9 +3,16 @@
 namespace App\Helpers;
 
 use App\Models\Patients;
-
+use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 
+if (!function_exists('get_setting')) {
+    function get_setting($key, $default = null)
+    {
+        $setting = Setting::where('key', $key)->value('value');
+        return $setting ?? $default;
+    }
+}
 class GlobalHelper
 {
     /**
@@ -154,5 +161,10 @@ class GlobalHelper
 
             return $prescription;
         });
+    }
+
+    public static function getSetting($key, $default = null)
+    {
+        return Setting::where('key', $key)->value('value') ?? $default;
     }
 }
