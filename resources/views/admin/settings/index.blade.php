@@ -9,8 +9,7 @@
 
         <div class="form-group">
             <label for="hospital_name">Hospital Name</label>
-            <input type="text" name="hospital_name" class="form-control" value="{{ $settings['hospital_name'] ?? '' }}"
-                required>
+            <input type="text" name="hospital_name" class="form-control" value="{{ $settings['hospital_name'] ?? '' }}" required>
         </div>
 
         <div class="form-group">
@@ -23,8 +22,7 @@
             <select name="country" class="form-control" id="country">
                 <option value="">Select Country</option>
                 @foreach ($countries as $country)
-                    <option value="{{ $country->name }}"
-                        {{ old('country', $settings['country'] ?? '') == $country->name ? 'selected' : '' }}>
+                    <option value="{{ $country->name }}" {{ old('country', $settings['country'] ?? '') == $country->name ? 'selected' : '' }}>
                         {{ $country->name }}
                     </option>
                 @endforeach
@@ -46,15 +44,6 @@
             <input type="text" name="zipcode" class="form-control" value="{{ $settings['zipcode'] ?? '' }}">
         </div>
 
-        {{-- <div class="form-group">
-            <label for="phone_number">Phone Number</label>
-            <input type="text" name="phone_number" class="form-control" value="{{ $settings['phone_number'] ?? '' }}">
-        </div>
-
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" name="email" class="form-control" value="{{ $settings['email'] ?? '' }}">
-        </div> --}}
         <div class="form-group">
             <label for="phone_number">Phone Number</label>
             <input type="text" name="phone_number" class="form-control" value="{{ $settings['phone_number'] ?? '' }}">
@@ -114,14 +103,50 @@
                 return true;
             }, "Please enter valid phone numbers separated by commas.");
 
+            $.validator.addMethod("fileSize", function(value, element, param) {
+                if (element.files.length === 0) {
+                    return true; // Skip validation if no file is selected
+                }
+                return element.files[0].size <= param;
+            }, "File size must be less than {0} bytes.");
+
             $("form[id='settings-form']").validate({
                 rules: {
-                    // Other rules...
+                    hospital_name: { required: true },
+                    address: { required: true, maxlength: 50 },
+                    country: { required: true },
+                    state: { required: true },
+                    city: { required: true },
+                    zipcode: { required: true, digits: true, minlength: 6, maxlength: 6 },
                     phone_number: { required: true, multiplePhoneNumbers: true },
                     email: { required: true, multipleEmails: true },
+                    company_logo: { 
+                        required: function() {
+                            return $("img#company_logo_preview").length === 0; // Only required if no preview image exists
+                        },
+                        extension: "jpg|jpeg|png|gif",
+                        fileSize: 5 * 1024 * 1024 // 5MB
+                    },
+                    favicon: { 
+                        required: function() {
+                            return $("img#favicon_preview").length === 0; // Only required if no preview image exists
+                        },
+                        extension: "jpg|jpeg|png|gif",
+                        fileSize: 5 * 1024 * 1024 // 5MB
+                    }
                 },
                 messages: {
-                    // Other messages...
+                    hospital_name: "Please enter the hospital name.",
+                    address: "Maximum 50 characters allowed.",
+                    country: "Please select a country.",
+                    state: "Please enter the state.",
+                    city: "Please enter the city.",
+                    zipcode: {
+                        required: "Please enter the ZIP code.",
+                        digits: "ZIP code must be numbers only.",
+                        minlength: "ZIP code must be exactly 6 digits.",
+                        maxlength: "ZIP code must be exactly 6 digits."
+                    },
                     phone_number: {
                         required: "Please enter the phone number.",
                         multiplePhoneNumbers: "Please enter valid phone numbers separated by commas."
@@ -129,6 +154,16 @@
                     email: {
                         required: "Please enter the email address.",
                         multipleEmails: "Please enter valid email addresses separated by commas."
+                    },
+                    company_logo: {
+                        required: "Please upload a company logo.",
+                        extension: "Only JPG, JPEG, PNG, or GIF files are allowed.",
+                        fileSize: "File size must be less than 5MB."
+                    },
+                    favicon: {
+                        required: "Please upload a favicon.",
+                        extension: "Only JPG, JPEG, PNG, or GIF files are allowed.",
+                        fileSize: "File size must be less than 5MB."
                     }
                 },
                 submitHandler: function(form) {
@@ -146,8 +181,7 @@
                             $('#loader-container').hide();
                             if (response.status == 1) {
                                 toastr.success(response.message);
-                                $('#settings-form')[0].reset();
-                                location.reload();
+                                location.reload(); // Reload the page to reflect changes
                             } else {
                                 toastr.error("Failed to update settings.");
                             }
