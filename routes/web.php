@@ -73,6 +73,11 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::post('/doctors/delete', [App\Http\Controllers\Admin\DoctorsController::class, 'delete'])->name('delete.doctors');
     Route::get('/doctors/{id}', [App\Http\Controllers\Admin\DoctorsController::class, 'doctorsDetails'])->name('doctors.details');
 
+    // Settings
+    Route::get('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('admin.settings');
+
+    Route::post('/settings/update', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('admin.settings.update');
+
     // Appointment
     Route::get('/appointments', [App\Http\Controllers\Admin\AppointmentsController::class, 'index'])->name('admin.appointments');
     Route::post('/appointmentslist', [App\Http\Controllers\Admin\AppointmentsController::class, 'appointmentslist'])->name('admin.appointmentslist');
@@ -99,6 +104,9 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
 
     //prescription
     Route::get('/prescription', [App\Http\Controllers\Doctor\PrescriptionController::class, 'index'])->name('doctor.prescription');
+    // Invoice
+    Route::GET('/invoice/{id}', [App\Http\Controllers\Doctor\PrescriptionController::class, 'showInvoice'])
+    ->name('doctor.invoice');
 
     //medicine
     Route::GET('/getmedicine', [App\Http\Controllers\Doctor\MedicineController::class, 'getmedicine'])->name('doctor.getmedicine');

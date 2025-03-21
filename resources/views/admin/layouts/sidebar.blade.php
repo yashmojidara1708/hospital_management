@@ -53,6 +53,12 @@
             'label' => 'Doctors',
             'roles' => ['Medical', 'Nurse', 'Admin'],
         ],
+        [
+            'route' => 'admin.settings',
+            'icon' => 'fa-solid fa-cog',            
+            'label' => 'Settings',
+            'roles' => ['Medical', 'Nurse', 'Admin'],
+        ],
     ];
 
     // Separate the "Dashboard" menu item

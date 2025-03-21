@@ -150,4 +150,37 @@ class PrescriptionController extends Controller
         ];
         return response()->json(['success' => true, 'data' => $data], 200);
     }
+
+    public function showInvoice($id)
+    {
+        // Fetch prescription
+        $prescription = DB::table('prescriptions')
+            ->where('prescriptions.id', $id)
+            ->first();
+
+        if (!$prescription) {
+            return redirect()->back()->with('error', 'Prescription not found.');
+        }
+
+        // Fetch doctor data
+        $doctorData = DB::table('doctors')
+            ->where('doctors.id', $prescription->doctor_id)
+            ->select('id', 'name', 'specialization', 'phone', 'email', 'experience', 'qualification', 'address')
+            ->first();
+
+        // Fetch medicines
+        $medicines = DB::table('prescriptions_item')
+            ->join('medicines', 'prescriptions_item.medicine_name', '=', 'medicines.id')
+            ->select(
+                'medicines.name',
+                'prescriptions_item.quantity',
+                'prescriptions_item.days',
+                'prescriptions_item.time',
+                'medicines.price' // Ensure price exists in medicines table
+            )
+            ->where('prescriptions_item.prescription_id', $id)
+            ->get();
+
+        return view('doctor.invoices.invoice', compact('prescription', 'doctorData', 'medicines'));
+    }
 }

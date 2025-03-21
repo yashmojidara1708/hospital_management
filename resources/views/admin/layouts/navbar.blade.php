@@ -1,11 +1,22 @@
 <!-- Logo -->
 <div class="header-left">
-    <a href="index.html" class="logo">
+    @if (!empty(get_setting('company_logo')))
+        @if (get_setting('company_logo'))
+            <a href="index.html" class="logo">
+                <img class="" src="{{ asset('uploads/' . get_setting('company_logo')) }}" alt="Hospital Logo">
+            </a>
+        @endif
+    @else
+        <a href="index.html" class="logo">
+            <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Hospital Logo">
+        </a>
+    @endif
+    {{-- <a href="index.html" class="logo">
         <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Logo">
     </a>
     <a href="index.html" class="logo logo-small">
         <img src="{{ asset('assets/admin/theme/img/logo-small.png') }}" alt="Logo" width="30" height="30">
-    </a>
+    </a> --}}
 </div>
 <!-- /Logo -->
 

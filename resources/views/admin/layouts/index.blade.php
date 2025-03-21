@@ -19,7 +19,15 @@
     <title>Admin | @yield('admin-title')</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/admin/theme/img/favicon.png') }}">
+    {{-- <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/admin/theme/img/favicon.png') }}"> --}}
+    @if (!empty(get_setting('favicon')))
+        @if (get_setting('favicon') != '' ? get_setting('favicon') : '')
+            <link rel="icon" type="image/png" sizes="56x56"
+                href="{{ asset('uploads/' . get_setting('favicon')) }}" alt="favicon">
+        @endif
+    @else
+        <link rel="icon" href="{{ asset('assets/admin/theme/img/favicon.png') }}" type="image/png" sizes="56x56" alt="favicon">
+    @endif
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('assets/admin/theme/css/bootstrap.min.css') }}">
