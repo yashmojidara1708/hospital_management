@@ -31,7 +31,7 @@ class SettingsController extends Controller
             'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:512',
         ];
-    
+
         // Define custom error messages
         $messages = [
             'hospital_name.required' => 'Please enter the hospital name.',
@@ -42,25 +42,37 @@ class SettingsController extends Controller
             'zipcode.required' => 'Please enter the ZIP code.',
             'zipcode.digits' => 'ZIP code must be 6 digits.',
             'phone_number.required' => 'Please enter the phone number.',
-            'phone_number.numeric' => 'Phone number must be numeric.',
             'email.required' => 'Please enter the email address.',
-            'email.email' => 'Please enter a valid email address.',
             'company_logo.image' => 'The company logo must be an image file.',
             'company_logo.mimes' => 'The company logo must be a JPEG, PNG, JPG, or GIF file.',
             'favicon.image' => 'The favicon must be an image file.',
             'favicon.mimes' => 'The favicon must be a JPEG, PNG, JPG, or GIF file.',
         ];
-    
+
         // Run validation
         $validator = Validator::make($request->all(), $rules, $messages);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 0, 'errors' => $validator->errors()]);
         }
-    
+
         // Proceed with storing settings...
         $settingsData = $request->except('_token', 'company_logo', 'favicon');
-    
+
+        // Handle multiple phone numbers
+        if ($request->has('phone_number')) {
+            $phoneNumbers = explode(',', $request->input('phone_number'));
+            $phoneNumbers = array_map('trim', $phoneNumbers); // Trim whitespace
+            $settingsData['phone_number'] = implode(',', $phoneNumbers); // Store as comma-separated string
+        }
+
+        // Handle multiple email addresses
+        if ($request->has('email')) {
+            $emails = explode(',', $request->input('email'));
+            $emails = array_map('trim', $emails); // Trim whitespace
+            $settingsData['email'] = implode(',', $emails); // Store as comma-separated string
+        }
+
         // Handle file uploads
         if ($request->hasFile('company_logo')) {
             $logo = $request->file('company_logo');
@@ -68,19 +80,19 @@ class SettingsController extends Controller
             $logo->move(public_path('uploads'), $logoName);
             $settingsData['company_logo'] = $logoName;
         }
-    
+
         if ($request->hasFile('favicon')) {
             $favicon = $request->file('favicon');
             $faviconName = 'favicon_' . time() . '.' . $favicon->getClientOriginalExtension();
             $favicon->move(public_path('uploads'), $faviconName);
             $settingsData['favicon'] = $faviconName;
         }
-    
+
         // Save settings in DB
         foreach ($settingsData as $key => $value) {
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);
         }
-    
+
         return response()->json(['status' => 1, 'message' => 'Settings updated successfully!']);
     }
     
