@@ -58,17 +58,21 @@
 
         <div class="form-group">
             <label for="company_logo">Company Logo</label>
-            <input type="file" name="company_logo" class="form-control">
+            <input type="file" name="company_logo" class="form-control" id="company_logo">
             @if (!empty($settings['company_logo']))
                 <img id="company_logo_preview" src="{{ asset('uploads/' . $settings['company_logo']) }}" alt="Company Logo" width="100">
+            @else
+                <img id="company_logo_preview" src="" alt="Company Logo Preview" width="100" style="display: none;">
             @endif
         </div>
         
         <div class="form-group">
             <label for="favicon">Favicon</label>
-            <input type="file" name="favicon" class="form-control">
+            <input type="file" name="favicon" class="form-control" id="favicon">
             @if (!empty($settings['favicon']))
                 <img id="favicon_preview" src="{{ asset('uploads/' . $settings['favicon']) }}" alt="Favicon" width="50">
+            @else
+                <img id="favicon_preview" src="" alt="Favicon Preview" width="50" style="display: none;">
             @endif
         </div>
 
@@ -81,8 +85,29 @@
 @section('admin-js')
     <script>
         $(document).ready(function() {
+            // Function to preview image
+            function previewImage(input, previewId) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $(previewId).attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            // Handle company logo file input change
+            $('#company_logo').on('change', function() {
+                previewImage(this, '#company_logo_preview');
+            });
+
+            // Handle favicon file input change
+            $('#favicon').on('change', function() {
+                previewImage(this, '#favicon_preview');
+            });
+
+            // Validation and AJAX submission
             $.validator.addMethod("multipleEmails", function(value, element) {
-                // Split the value by commas and validate each email
                 var emails = value.split(',');
                 for (var i = 0; i < emails.length; i++) {
                     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emails[i].trim())) {
@@ -93,7 +118,6 @@
             }, "Please enter valid email addresses separated by commas.");
 
             $.validator.addMethod("multiplePhoneNumbers", function(value, element) {
-                // Split the value by commas and validate each phone number
                 var phoneNumbers = value.split(',');
                 for (var i = 0; i < phoneNumbers.length; i++) {
                     if (!/^\d{10}$/.test(phoneNumbers[i].trim())) {
@@ -122,14 +146,14 @@
                     email: { required: true, multipleEmails: true },
                     company_logo: { 
                         required: function() {
-                            return $("img#company_logo_preview").length === 0; // Only required if no preview image exists
+                            return $("img#company_logo_preview").length === 0;
                         },
                         extension: "jpg|jpeg|png|gif",
                         fileSize: 5 * 1024 * 1024 // 5MB
                     },
                     favicon: { 
                         required: function() {
-                            return $("img#favicon_preview").length === 0; // Only required if no preview image exists
+                            return $("img#favicon_preview").length === 0;
                         },
                         extension: "jpg|jpeg|png|gif",
                         fileSize: 5 * 1024 * 1024 // 5MB
