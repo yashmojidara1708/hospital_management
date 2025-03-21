@@ -49,7 +49,7 @@
             <input type="text" name="phone_number" class="form-control" value="{{ $settings['phone_number'] ?? '' }}">
             <small class="form-text text-muted">Use commas (,) to separate multiple phone numbers.</small>
         </div>
-        
+
         <div class="form-group">
             <label for="email">Email</label>
             <input type="text" name="email" class="form-control" value="{{ $settings['email'] ?? '' }}">
@@ -63,7 +63,7 @@
                 <img id="company_logo_preview" src="{{ asset('uploads/' . $settings['company_logo']) }}" alt="Company Logo" width="100">
             @endif
         </div>
-        
+
         <div class="form-group">
             <label for="favicon">Favicon</label>
             <input type="file" name="favicon" class="form-control">
@@ -120,14 +120,14 @@
                     zipcode: { required: true, digits: true, minlength: 6, maxlength: 6 },
                     phone_number: { required: true, multiplePhoneNumbers: true },
                     email: { required: true, multipleEmails: true },
-                    company_logo: { 
+                    company_logo: {
                         required: function() {
                             return $("img#company_logo_preview").length === 0; // Only required if no preview image exists
                         },
                         extension: "jpg|jpeg|png|gif",
                         fileSize: 5 * 1024 * 1024 // 5MB
                     },
-                    favicon: { 
+                    favicon: {
                         required: function() {
                             return $("img#favicon_preview").length === 0; // Only required if no preview image exists
                         },

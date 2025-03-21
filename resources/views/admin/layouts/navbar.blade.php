@@ -11,6 +11,18 @@
             <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Hospital Logo">
         </a>
     @endif
+    {{-- Favicon Icon --}}
+    @if (!empty(get_setting('favicon')))
+        @if (get_setting('favicon'))
+            <a href="index.html" class="logo logo-small">
+                <img class="" src="{{ asset('uploads/' . get_setting('favicon')) }}" alt="Hospital Logo">
+            </a>
+        @endif
+    @else
+        <a href="index.html" class="logo logo-small">
+            <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Hospital Logo">
+        </a>
+    @endif
     {{-- <a href="index.html" class="logo">
         <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Logo">
     </a>

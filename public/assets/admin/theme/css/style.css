@@ -3354,7 +3354,7 @@ table.table-inbox tbody tr.checked {
 
 .error {
     color: #e0001a;
-    padding-top: 2%;
+    /* padding-top: 2%; */
 }
 
 .error-page {

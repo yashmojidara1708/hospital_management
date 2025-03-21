@@ -55,11 +55,11 @@
                                             <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
                                         </div>
                                     </form>
-                                    <div class="text-center forgotpass"><a href="">Forgot Password?</a></div>
-                                    <div class="login-or">
+                                    {{-- <div class="text-center forgotpass"><a href="">Forgot Password?</a></div> --}}
+                                    {{-- <div class="login-or">
                                         <span class="or-line"></span>
                                         <span class="span-or">or</span>
-                                    </div>
+                                    </div> --}}
                                 </div>
 
                                 <!-- Doctor Tab Pane -->
@@ -91,11 +91,11 @@
                                             <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
                                         </div>
                                     </form>
-                                    <div class="text-center forgotpass"><a href="forgot-password.html">Forgot Password?</a></div>
-								<div class="login-or">
+                                    {{-- <div class="text-center forgotpass"><a href="forgot-password.html">Forgot Password?</a></div> --}}
+								{{-- <div class="login-or">
 									<span class="or-line"></span>
 									<span class="span-or">or</span>
-								</div>
+								</div> --}}
                                 </div>
                             </div>
                         </div>
