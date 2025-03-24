@@ -75,6 +75,13 @@ class SettingsController extends Controller
 
         // Handle file uploads
         if ($request->hasFile('company_logo')) {
+            // Delete the old company logo if it exists
+            $oldLogo = Setting::where('key', 'company_logo')->value('value');
+            if ($oldLogo && file_exists(public_path('uploads/' . $oldLogo))) {
+                unlink(public_path('uploads/' . $oldLogo)); // Delete the old file
+            }
+
+            // Save the new company logo
             $logo = $request->file('company_logo');
             $logoName = 'company_logo_' . time() . '.' . $logo->getClientOriginalExtension();
             $logo->move(public_path('uploads'), $logoName);
@@ -82,6 +89,13 @@ class SettingsController extends Controller
         }
 
         if ($request->hasFile('favicon')) {
+            // Delete the old favicon if it exists
+            $oldFavicon = Setting::where('key', 'favicon')->value('value');
+            if ($oldFavicon && file_exists(public_path('uploads/' . $oldFavicon))) {
+                unlink(public_path('uploads/' . $oldFavicon)); // Delete the old file
+            }
+
+            // Save the new favicon
             $favicon = $request->file('favicon');
             $faviconName = 'favicon_' . time() . '.' . $favicon->getClientOriginalExtension();
             $favicon->move(public_path('uploads'), $faviconName);
