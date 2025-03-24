@@ -110,9 +110,9 @@ $(document).ready(function() {
             fetchAppointments(patientId); // Fetch appointments if the appointments tab is selected
         }
     }
-    // if (patientId) {
-    //     fetchAppointments(patientId);
-    // }
+    if (patientId) {
+        fetchAppointments(patientId);
+    }
 
     // Handle tab clicks to update localStorage and fetch data
     $('.nav-tabs a').on('click', function(e) {

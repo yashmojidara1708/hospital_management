@@ -146,7 +146,6 @@ class AppointmentsController extends Controller
         $response['message'] = "Somthing Gose Wrong!";
         $feilds =   [
             'doctor' => $request->doctor,
-            'specialization' => $request->specialization,
             'patient' => $request->patient,
             'date' => $request->date,
             'time' => $request->time,
@@ -155,7 +154,6 @@ class AppointmentsController extends Controller
 
         $rules = [
             'doctor' => 'required',
-            'specialization' => 'required',
             'patient' => 'required',
             'date' => 'required',
             'time' => 'required',
@@ -164,7 +162,6 @@ class AppointmentsController extends Controller
 
         $msg = [
             'doctor.required' => 'Please select doctor name',
-            'specialization.required' => 'Please select specialities name',
             'patient.required' => 'Please select patient name',
             'date.required' => 'Please select date',
             'time.required' => 'Please select time',
@@ -178,9 +175,14 @@ class AppointmentsController extends Controller
         );
         if (!$validator->fails()) {
             $appointmentTime = date("H:i:s", strtotime($request->time));
+            $doctorId = $request->doctor;
+            $specializationId = DB::table('Doctors')
+                ->where('id', $doctorId)
+                ->value('specialization'); 
+
             $insert_team_data = [
                 'doctor' => isset($post['doctor']) ? $post['doctor'] : "",
-                'specialization' => isset($post['specialization']) ? $post['specialization'] : "",
+                'specialization' => isset($specializationId) ? $specializationId : "", 
                 'patient' => isset($post['patient']) ? $post['patient'] : "",
                 'date' => isset($post['date']) ? $post['date'] : "",
                 'time' => $appointmentTime,

@@ -26,18 +26,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label class="col-lg-3 col-form-label">Specialization</label>
-                        <div class="col-lg-9">
-                            <select name="specialization" class="form-control" id="specialization">
-                                <option value="">Select Specialization</option>
-                                @foreach ($specializations as $specialization)
-                                    <option value="{{ $specialization->id }}">{{ $specialization->name }}</option>
-                                @endforeach
-                            </select>
-
-                        </div>
-                    </div>
 
                     <div class="form-group row">
                         <label class="col-lg-3 col-form-label">Patient</label>
