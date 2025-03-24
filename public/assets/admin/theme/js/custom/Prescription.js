@@ -5,7 +5,12 @@ $(document).ready(function () {
         }
     });
     initializeSelect2();
-    // Form validation rules
+
+    // Ensure at least one row on page load
+    if ($("#prescription-items tr").length === 0) {
+        addMedicineRow(); // Add the default medicine row
+    }
+
     $("#prescription-form").validate({
         submitHandler: function (form) {
             let formData = {
@@ -62,7 +67,7 @@ $(document).ready(function () {
                         confirmButtonColor: "#3085d6"
                     }).then(() => {
                         $("#prescription-form")[0].reset();
-                        $("#prescription-items").html("");
+                        $("#prescription-items").html(""); // Clear all items
                         const activeTab = localStorage.getItem('activeTab') || '#pat_appointments';
 
                         // Redirect to the patient profile page with the active tab
@@ -84,80 +89,100 @@ $(document).ready(function () {
 
     // Add new medicine row
     $(document).on("click", ".add-more-item", function () {
-        let newRow = `
-                        <tr>
-                            <td>
-                                <select class="form-control medicine-select" name="medicine_name[]" required></select>
-                            </td>
-                            <td><input class="form-control" type="number" name="quantity[]" required></td>
-                            <td><input class="form-control" type="number" name="days[]" required></td>
-                            <td>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="time[morning][]"> Morning
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="time[afternoon][]"> Afternoon
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="time[evening][]"> Evening
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="time[night][]"> Night
-                                </div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn bg-danger-light remove-medicine">
-                                    <i class="far fa-trash-alt"></i>
-                                </button>
-                            </td>
-                        </tr>`;
+        addMedicineRow(); // Add a new row
+    });
 
-        // $("#prescription-items").append(newRow);
-        let $newRow = $(newRow).appendTo("#prescription-items");
-        $newRow.find(".medicine-select").select2({
+    // Remove medicine row
+    $(document).on("click", ".remove-medicine", function () {
+        if ($("#prescription-items tr").length > 1) { // Ensure at least one row remains
+            $(this).closest("tr").remove();
+        } else {
+            Swal.fire({
+                icon: "warning",
+                title: "Cannot Remove",
+                text: "At least one medicine entry must remain.",
+                confirmButtonColor: "#d33"
+            });
+        }
+    });
+});
+
+// Function to add a new row
+function addMedicineRow() {
+    let newRow = `
+        <tr>
+            <td>
+                <select class="form-control medicine-select" name="medicine_name[]" required></select>
+            </td>
+            <td><input class="form-control" type="number" name="quantity[]" required></td>
+            <td><input class="form-control" type="number" name="days[]" required></td>
+            <td>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="time[morning][]"> Morning
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="time[afternoon][]"> Afternoon
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="time[evening][]"> Evening
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="time[night][]"> Night
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn bg-danger-light remove-medicine">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </td>
+        </tr>`;
+
+    let $newRow = $(newRow).appendTo("#prescription-items");
+    initializeSelect2ForRow($newRow);
+}
+
+// Function to initialize Select2 for a specific row
+function initializeSelect2ForRow($row) {
+    $row.find(".medicine-select").select2({
+        placeholder: "Select Medicine or Type New",
+        multiple: true,
+        tags: true,
+        ajax: {
+            url: '/doctor/getmedicine',
+            dataType: "json",
+            delay: 250,
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return { id: item.name, text: item.name };
+                    }),
+                };
+            },
+            cache: true,
+        },
+    });
+}
+
+// Initialize Select2 for existing rows
+function initializeSelect2() {
+    $('.medicine-select').each(function () {
+        $(this).select2({
             placeholder: "Select Medicine or Type New",
             multiple: true,
             tags: true,
             ajax: {
                 url: '/doctor/getmedicine',
-                dataType: "json",
+                dataType: 'json',
                 delay: 250,
                 processResults: function (data) {
                     return {
                         results: $.map(data, function (item) {
-                            return { id: item.name, text: item.name };
-                        }),
+                            return { id: item.id, text: item.name };
+                        })
                     };
                 },
-                cache: true,
-            },
+                cache: true
+            }
         });
     });
-
-    // Remove medicine row
-    $(document).on("click", ".remove-medicine", function () {
-        $(this).closest("tr").remove();
-    });
-});
-
-function initializeSelect2() {
-    $('.medicine-select').select2({
-        placeholder: "Select Medicine or Type New",
-        multiple: true,
-        tags: true,
-        ajax: {
-            url: '/doctor/getmedicine', // Laravel Route to fetch medicines
-            dataType: 'json',
-            delay: 250,
-            processResults: function (data) {
-                return {
-                    results: $.map(data, function (item) {
-                        return { id: item.id, text: item.name };
-                    })
-                };
-            },
-            cache: true
-        }
-    });
 }
-// Initialize Select2 on page load

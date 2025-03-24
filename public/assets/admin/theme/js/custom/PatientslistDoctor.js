@@ -99,7 +99,8 @@ $(document).ready(function() {
 
     // Activate the stored tab
     $('a[href="' + activeTab + '"]').trigger('click');
-    const patientId = $('a[href="' + activeTab + '"]').data('id'); // Get patient ID from data-id
+    // const patientId = $('a[href="' + activeTab + '"]').data('id'); // Get patient ID from data-id
+    let patientId = $('.nav-tabs .nav-link.active').data("id");
 
     // Fetch data for the active tab
     if (patientId) {
@@ -109,6 +110,9 @@ $(document).ready(function() {
             fetchAppointments(patientId); // Fetch appointments if the appointments tab is selected
         }
     }
+    // if (patientId) {
+    //     fetchAppointments(patientId);
+    // }
 
     // Handle tab clicks to update localStorage and fetch data
     $('.nav-tabs a').on('click', function(e) {
