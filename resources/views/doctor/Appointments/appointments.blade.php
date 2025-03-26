@@ -64,6 +64,24 @@
     <!-- Add Modal -->
     @include('doctor.Appointments.modal')
     <!-- /ADD Modal -->
+
+    <div id="rejectAppointmentModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reject Appointment</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <textarea id="rejectionReason" class="form-control" placeholder="Enter rejection reason..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmRejectAppointment">Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @endsection

@@ -1,4 +1,28 @@
 $(document).ready(function() {
+    $(".row-checkbox").prop("checked", false); 
+    initCheckboxFunctionality();
+    $("#selectAll").change(function () {
+        if ($(this).prop("checked")) {
+            $("#bulkActionsContainer").css("display", "flex");
+            $(".row-checkbox").prop("checked", true); 
+        } else {
+            $("#bulkActionsContainer").hide();
+            $(".row-checkbox").prop("checked", false); 
+        }
+    });
+
+    $(document).on("change", ".row-checkbox", function () {
+        let totalCheckboxes = $(".row-checkbox").length;
+        let checkedCheckboxes = $(".row-checkbox:checked").length;
+
+        if (checkedCheckboxes > 0) {
+            $("#bulkActionsContainer").show();
+        } else {
+            $("#bulkActionsContainer").hide();
+        }
+
+        $("#selectAll").prop("checked", checkedCheckboxes === totalCheckboxes);
+    });
 
     $.ajaxSetup({
         headers: {
@@ -7,92 +31,102 @@ $(document).ready(function() {
     });
     $(document).on("click", ".mark-complete", function() {
         let appointmentId = $(this).data("id");
-        const requestData = {
-            appointmentId: appointmentId,
-            is_completed: 1,
-        }
-        $.ajax({
-            url: '/doctor/update-appointment-status',
-            type: "POST",
-            data: JSON.stringify(requestData),
-            processData: false,
-            contentType: "application/json",
-            cache: false,
-            
-            success: function(response) {
-                if (response.status === "success") {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Updated!",
-                        text: "Appointment completed successfully.",
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
     
-                    // Remove row or change appearance
-                    fetchUpdatedAppointments();
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error updating appointment status:", error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Failed!",
-                    text: "Something went wrong.",
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 2000
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to approve this appointment?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Approve!",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/doctor/update-appointment-status',
+                    type: "POST",
+                    data: JSON.stringify({
+                        appointmentId: appointmentId,
+                        is_completed: 1
+                    }),
+                    processData: false,
+                    contentType: "application/json",
+                    beforeSend: function() {
+                        showLoader();
+                    },
+                    success: function(response) {
+                        if (response.status === "success") {
+                            Swal.fire("Success!", "Appointment approved successfully.", "success");
+                        }
+                    },
+                    complete: function() {
+                        hideLoader();
+                        window.location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error:", error);
+                        Swal.fire("Failed!", "Something went wrong.", "error");
+                    }
                 });
             }
         });
     });
 
+    let selectedAppointmentId = null;
+
+    // Reject Appointment Modal Trigger
     $(document).on("click", ".appoinment-delete", function() {
-        let appointmentId = $(this).data("id");
-        const requestData = {
-            appointmentId: appointmentId,
-            is_completed: -1,
+        selectedAppointmentId = $(this).data("id");
+        $("#rejectionReason").val(''); 
+        $("#rejectAppointmentModal").modal("show");
+    });
+    // Confirm Reject Appointment
+    $("#confirmRejectAppointment").on("click", function() {
+        let reason = $("#rejectionReason").val().trim();
+        
+        if (!reason) {
+            Swal.fire("Error!", "Please provide a rejection reason.", "error");
+            return;
         }
+    
         $.ajax({
             url: '/doctor/update-appointment-status',
             type: "POST",
-            data: JSON.stringify(requestData),
+            data: JSON.stringify({
+                appointmentId: selectedAppointmentId,
+                is_completed: -1,
+                reason: reason 
+            }),
             processData: false,
             contentType: "application/json",
-            cache: false,
-            
+            beforeSend: function() {
+                showLoader();
+            },
             success: function(response) {
                 if (response.status === "success") {
                     Swal.fire({
+                        title: "Success!",
+                        text: "Appointment rejected successfully.",
                         icon: "success",
-                        title: "Updated!",
-                        text: "Appointment Removed successfully.",
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        timer: 2000
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        $(".row-checkbox").prop("checked", false); 
+                        window.location.reload();
                     });
-    
-                    // Remove row or change appearance
-                    fetchUpdatedAppointments();
+                } else {
+                    Swal.fire("Error!", response.message || "Something went wrong.", "error");
                 }
             },
+            complete: function() {
+                hideLoader();
+            },
             error: function(xhr, status, error) {
-                console.error("Error updating appointment status:", error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Failed!",
-                    text: "Something went wrong.",
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 2000
-                });
+                console.error("Error:", error);
+                Swal.fire("Failed!", "Something went wrong.", "error");
             }
         });
+    
+        $("#rejectAppointmentModal").modal("hide");
     });
     // Retrieve the active tab from localStorage
     const activeTab = localStorage.getItem('activeTab') || '#pat_appointments'; // Default to appointments tab
@@ -192,6 +226,161 @@ $(document).ready(function() {
             { data: "last_visit" },
         ],
     });
+
+    let selectedAppointments = [];
+
+    // Checkbox functionality
+    function initCheckboxFunctionality() {
+        // Select All checkbox change
+        $('#selectAll').change(function() {
+            const isChecked = $(this).prop('checked');
+            $('.row-checkbox').prop('checked', isChecked);
+            updateSelectedAppointments();
+        });
+        
+        // Individual row checkbox change
+        $(document).on('change', '.row-checkbox', function() {
+            // Update Select All checkbox status
+            const allChecked = $('.row-checkbox:checked').length === $('.row-checkbox').length;
+            $('#selectAll').prop('checked', allChecked);
+            
+            updateSelectedAppointments();
+        });
+    }
+    
+
+    // Update selected appointments array
+    function updateSelectedAppointments() {
+        selectedAppointments = $(".row-checkbox:checked").map(function () {
+            return $(this).attr("data-id"); // FIX: Use attr() instead of data()
+        }).get();
+        
+        // Show/hide bulk actions
+        if (selectedAppointments.length > 0) {
+            $('#bulkActionsContainer').show();
+            $('#selectedAppointments').val(JSON.stringify(selectedAppointments));
+        } else {
+            $('#bulkActionsContainer').hide();
+        }
+        
+        // Update select all checkbox
+        $('#selectAll').prop('checked', 
+            selectedAppointments.length === $('.row-checkbox').length
+        );
+    }
+
+    // Bulk Approve
+    $('#bulkApprove').click(function() {
+        if (selectedAppointments.length === 0) return;
+        
+        Swal.fire({
+            title: "Approve Selected Appointments?",
+            text: `You are about to approve ${selectedAppointments.length} appointment(s)`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Approve!",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                updateBulkAppointments('approve');
+            }
+        });
+    });
+
+    // Bulk Reject
+    // $('#bulkReject').click(function() {
+    //     if (selectedAppointments.length === 0) return;
+        
+    //     Swal.fire({
+    //         title: "Reject Selected Appointments?",
+    //         text: `You are about to reject ${selectedAppointments.length} appointment(s)`,
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonText: "Yes, Reject!",
+    //         cancelButtonText: "Cancel"
+    //     }).then((result) => {
+    //         if (result.isConfirmed) {
+    //             updateBulkAppointments('reject');
+    //         }
+    //     });
+    // });
+    $("#confirmBulkRejectAppointment").click(function () {
+        let reason = $("#bulkRejectionReasonTextarea").val().trim();
+        if (!reason) {
+            Swal.fire("Error!", "Please provide a rejection reason.", "error");
+            return;
+        }
+
+        updateBulkAppointments("reject");
+        $("#rejectBulkAppointmentModal").modal("hide");
+    });
+    $("#customReasonCheckbox").change(function () {
+        if ($(this).is(":checked")) {
+            $("#bulkRejectionReasonTextarea").show();
+        } else {
+            $("#bulkRejectionReasonTextarea").hide().val("");
+        }
+    });
+    $('#bulkReject').click(function() {
+        // selectedAppointments = $(".row-checkbox:checked").map(function () {
+        //     return $(this).val();
+        // }).get();
+
+        // if (selectedAppointments.length === 0) {
+        //     alert("Please select at least one appointment.");
+        //     return;
+        // }
+
+        // Open modal
+        $("#customReasonCheckbox").prop("checked", false);
+        $("#bulkRejectionReasonTextarea").hide().val(""); // Hide textarea initially
+        $("#rejectBulkAppointmentModal").modal("show");
+    });
+    
+
+    // Update bulk appointments status
+    function updateBulkAppointments(action) {
+        const status = action === 'approve' ? 1 : -1;
+
+        $.ajax({
+            url: '/doctor/update-all-appointments-status',
+            type: "POST",
+            data: JSON.stringify({
+                appointmentIds: selectedAppointments,
+                status: status
+            }),
+            processData: false,
+            contentType: "application/json",
+            beforeSend: function() {
+                showLoader();
+            },
+            success: function(response) {
+                if (response.status === "success") {
+                    const message = action === 'approve' 
+                        ? "Appointments approved successfully" 
+                        : "Appointments rejected successfully";
+                    
+                    Swal.fire({
+                        title: "Success!",
+                        text: message,
+                        icon: "success",
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        fetchUpdatedAppointments();
+                    });
+                }
+            },
+            complete: function() {
+                hideLoader();
+                $('#bulkActionsContainer').hide();
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                Swal.fire("Failed!", "Something went wrong.", "error");
+            }
+        });
+    }
 
     function fetchAppointments(patientId) {
         $.ajax({
