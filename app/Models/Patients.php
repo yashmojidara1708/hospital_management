@@ -23,6 +23,5 @@ class Patients extends Model
         'phone',
         'email',
         'last_visit',
-        'status',
     ];
 }

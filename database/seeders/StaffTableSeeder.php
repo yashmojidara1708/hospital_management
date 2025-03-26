@@ -15,6 +15,9 @@ class StaffTableSeeder extends Seeder
      */
     public function run()
     {
+        $adminRole = DB::table('roles')->where('name', 'Admin')->first();
+        $adminRoleId = $adminRole ? $adminRole->id : 1;
+
         $existingStaff = DB::table('staff')
             ->where('email', 'admin@hms.com')
             ->first();
@@ -24,7 +27,7 @@ class StaffTableSeeder extends Seeder
                 ->where('email', 'admin@hms.com')
                 ->update([
                     'name' => 'Global Admin',
-                    'roles' => json_encode(["1"]),
+                    'roles' => json_encode([$adminRoleId]),
                     'date_of_birth' => '1990-01-01',
                     'phone' => '1234567890',
                     'password' => Hash::make('Admin@123'),
@@ -41,7 +44,7 @@ class StaffTableSeeder extends Seeder
             DB::table('staff')->insert([
                 'name' => 'Global Admin',
                 'email' => 'admin@hms.com',
-                'roles' => json_encode(["1"]),
+                'roles' => json_encode([$adminRoleId]),
                 'date_of_birth' => '1990-01-01',
                 'phone' => '1234567890',
                 'password' => Hash::make('Admin@123'),

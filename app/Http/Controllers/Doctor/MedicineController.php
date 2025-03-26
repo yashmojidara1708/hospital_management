@@ -102,7 +102,7 @@ class MedicineController extends Controller
                         'name' => $medicineName,
                         'stock' => 10,
                         'price' => 10,
-                        'expiry_date' => null,
+                        'expiry_date' => date('Y-m-d', strtotime('+1 year')),
                         'status' => 1
                     ]);
                 }

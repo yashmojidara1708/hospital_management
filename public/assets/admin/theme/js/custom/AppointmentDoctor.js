@@ -6,101 +6,101 @@ $(document).ready(function() {
     });
     $(document).on("click", ".mark-complete", function() {
         let appointmentId = $(this).data("id");
-        const requestData = {
-            appointmentId: appointmentId,
-            is_completed: 1,
-        }
-        $('#loader-container').show();
-        
-        $.ajax({
-            url: '/doctor/update-appointment-status',
-            type: "POST",
-            data: JSON.stringify(requestData),
-            processData: false,
-            contentType: "application/json",
-            cache: false,
-            beforeSend: function() {
-                showLoader();
-            },
-            
-            success: function(response) {
-                if (response.status === "success") {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Updated!",
-                        text: "Appointment completed successfully.",
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
-                }
-            },
-            complete: function() {
-                hideLoader();
-                window.location.reload();
-            },
-            error: function(xhr, status, error) {
-                console.error("Error updating appointment status:", error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Failed!",
-                    text: "Something went wrong.",
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 2000
+    
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to approve this appointment?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Approve!",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/doctor/update-appointment-status',
+                    type: "POST",
+                    data: JSON.stringify({
+                        appointmentId: appointmentId,
+                        is_completed: 1
+                    }),
+                    processData: false,
+                    contentType: "application/json",
+                    beforeSend: function() {
+                        showLoader();
+                    },
+                    success: function(response) {
+                        if (response.status === "success") {
+                            Swal.fire("Success!", "Appointment approved successfully.", "success");
+                        }
+                    },
+                    complete: function() {
+                        hideLoader();
+                        window.location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error:", error);
+                        Swal.fire("Failed!", "Something went wrong.", "error");
+                    }
                 });
             }
         });
     });
 
+    let selectedAppointmentId = null;
+
+    // Reject Appointment Modal Trigger
     $(document).on("click", ".appoinment-delete", function() {
-        let appointmentId = $(this).data("id");
-        const requestData = {
-            appointmentId: appointmentId,
-            is_completed: -1,
+        selectedAppointmentId = $(this).data("id");
+        $("#rejectionReason").val(''); // Clear previous reason
+        $("#rejectAppointmentModal").modal("show");
+    });
+    // Confirm Reject Appointment
+    $("#confirmRejectAppointment").on("click", function() {
+        let reason = $("#rejectionReason").val().trim();
+        
+        if (!reason) {
+            Swal.fire("Error!", "Please provide a rejection reason.", "error");
+            return;
         }
+    
         $.ajax({
             url: '/doctor/update-appointment-status',
             type: "POST",
-            data: JSON.stringify(requestData),
+            data: JSON.stringify({
+                appointmentId: selectedAppointmentId,
+                is_completed: -1,
+                reason: reason
+            }),
             processData: false,
             contentType: "application/json",
-            cache: false,
             beforeSend: function() {
                 showLoader();
             },
             success: function(response) {
                 if (response.status === "success") {
                     Swal.fire({
+                        title: "Success!",
+                        text: "Appointment rejected successfully.",
                         icon: "success",
-                        title: "Updated!",
-                        text: "Appointment Removed successfully.",
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        timer: 2000
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
                     });
+                } else {
+                    Swal.fire("Error!", response.message || "Something went wrong.", "error");
                 }
             },
             complete: function() {
                 hideLoader();
-                window.location.reload();
             },
             error: function(xhr, status, error) {
-                console.error("Error updating appointment status:", error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Failed!",
-                    text: "Something went wrong.",
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 2000
-                });
+                console.error("Error:", error);
+                Swal.fire("Failed!", "Something went wrong.", "error");
             }
         });
+    
+        $("#rejectAppointmentModal").modal("hide");
     });
     console.log('javascript appointment');
     $(document).on('click', '.view-patient-profile', function() {

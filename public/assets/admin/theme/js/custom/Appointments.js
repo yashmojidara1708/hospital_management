@@ -5,9 +5,9 @@ $(document).ready(function() {
     $("#Add_Appointments_details").on("hidden.bs.modal", function() {
         $("#AppointmentsForm")[0].reset();
         $("#hid").val("");
-        $("#AppointmentForm").validate().resetForm();
+        $("#AppointmentsForm").validate().resetForm();
         $("#status").val("").change();
-        $("#AppointmentForm").find('.error').removeClass('error');
+        $("#AppointmentsForm").find('.error').removeClass('error');
         $("#oldimgbox").hide();
     });
 
@@ -112,7 +112,6 @@ $("#date").attr("min", formattedDate);
 
 var validationRules = {
     doctor: "required",
-    specialization: "required",
     patient: "required",
     date: "required",
     time: "required",
@@ -121,7 +120,6 @@ var validationRules = {
 
 var validationMessages = {
     doctor: "Please enter the doctor's name",
-    specialization: "Please select the doctor's specialization",
     patient: "Please enter the patient's name",
     date: "Please select the date",
     time: "Please select a time",

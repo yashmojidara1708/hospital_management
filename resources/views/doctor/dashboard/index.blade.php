@@ -2,7 +2,30 @@
     $DoctorDatas = session('doctors_data');
     $DrIds = isset($DoctorDatas['id']) ? $DoctorDatas['id'] : '';
 @endphp
+<style>
+    .custom-checkbox {
+        padding-left: 1.5rem;
+    }
 
+    .custom-control-label::before,
+    .custom-control-label::after {
+        top: 0.15rem;
+        left: -1.5rem;
+        width: 1.2rem;
+        height: 1.2rem;
+    }
+
+    .custom-control-input:checked~.custom-control-label::before {
+        background-color: #09e5ab;
+        border-color: #09e5ab;
+    }
+
+    .custom-control-input:focus~.custom-control-label::before {
+        box-shadow: 0 0 0 0.2rem rgba(9, 229, 171, 0.25);
+    }
+
+    /* Remove !important to allow jQuery to update the display */
+</style>
 @extends('doctor.layouts.index')
 @section('doctor-page-title', 'Dashboard')
 @section('page-title', 'Dashboard')
@@ -62,6 +85,15 @@
     <div class="row">
         <div class="col-md-12">
             <h4 class="mb-4">Upcomming Patient Appoinment </h4>
+            <div class="card-footer" id="bulkActionsContainer" style="display: none;">
+                <input type="hidden" id="selectedAppointments" name="selectedAppointments" value="">
+                <button class="btn btn-success mr-2" id="bulkApprove">
+                    <i class="fas fa-check"></i> Approve Selected
+                </button>
+                <button class="btn btn-danger" id="bulkReject">
+                    <i class="fas fa-times"></i> Reject Selected
+                </button>
+            </div>
             <div class="appointment-tab">
                 <div class="tab-content">
                     <!-- Upcoming Appointment Tab -->
@@ -72,6 +104,12 @@
                                     <table class="table table-hover table-center mb-0">
                                         <thead>
                                             <tr>
+                                                <th width="5%">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" id="selectAll">
+                                                        <label class="custom-control-label" for="selectAll"></label>
+                                                    </div>
+                                                </th>
                                                 <th>Patient Name</th>
                                                 <th>Appt Date</th>
                                                 <th>Phone</th>
@@ -84,8 +122,16 @@
                                                 @foreach ($appointments as $appointment)
                                                     <tr>
                                                         <td>
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input row-checkbox" 
+                                                                    id="appointment_{{ $appointment->id }}" 
+                                                                    data-id="{{ $appointment->id }}">
+                                                                <label class="custom-control-label" for="appointment_{{ $appointment->id }}"></label>
+                                                            </div>
+                                                        </td>
+                                                        <td>
                                                             <h2 class="table-avatar">
-                                                                <a  id="patientprofile" href="javascript:void(0);" class="view-patient-profile" 
+                                                                <a id="patientprofile" href="javascript:void(0);" class="view-patient-profile" 
                                                                 data-id="{{ $appointment->patient_id }}">{{ isset($appointment->patient_name) ? $appointment->patient_name : 'N|A' }}
                                                                 </a>
                                                             </h2>
@@ -94,22 +140,17 @@
                                                             {{ isset($appointment->date) ? $appointment->date : 'N|A' }}
                                                             <span class="d-block text-info">{{ $appointment->time }}</span>
                                                         </td>
-                                                        <td>{{ isset($appointment->phone) ? $appointment->phone : 'N|A' }}
-                                                        </td>
-                                                        <td>{{ isset($appointment->last_visit) ? $appointment->last_visit : '' }}
-                                                        </td>
+                                                        <td>{{ isset($appointment->phone) ? $appointment->phone : 'N|A' }}</td>
+                                                        <td>{{ isset($appointment->last_visit) ? $appointment->last_visit : '' }}</td>
                                                         <td class="text-right">
                                                             <div class="table-action">
-                                                                <a href="javascript:void(0);"
-                                                                    class="btn btn-sm bg-info-light">
+                                                                <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
                                                                     <i class="far fa-eye"></i>
                                                                 </a>
-                                                                <a href="javascript:void(0);"
-                                                                    class="btn btn-sm bg-success-light">
+                                                                <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
                                                                     <i class="fas fa-check"></i>
                                                                 </a>
-                                                                <a href="javascript:void(0);"
-                                                                    class="btn btn-sm bg-danger-light">
+                                                                <a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
                                                                     <i class="fas fa-times"></i>
                                                                 </a>
                                                             </div>
@@ -118,7 +159,7 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="6">
+                                                    <td colspan="7">
                                                         <h6 class="text-center">No Appointments Found at this time</h6>
                                                     </td>
                                                 </tr>
@@ -130,10 +171,58 @@
                         </div>
                     </div>
 
+                    
                 </div>
             </div>
         </div>
     </div>
+
+    
+@section('modal-content')
+
+{{-- single reject appoinment --}}
+<div id="rejectAppointmentModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reject Appointment</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="rejectionReason" class="form-control" placeholder="Enter rejection reason..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmRejectAppointment">Reject</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{{-- bulk reject appoinment --}}
+<div id="rejectBulkAppointmentModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reject Appointment</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="customReasonCheckbox">
+                    <label class="form-check-label" for="customReasonCheckbox">Add Custom Rejection Reason</label>
+                </div>
+                <textarea id="bulkRejectionReasonTextarea" class="form-control mt-3" placeholder="Enter rejection reason..." style="display: none;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmBulkRejectAppointment">Reject</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
 @endsection
 
 @section('doctor-js')
@@ -205,6 +294,14 @@
                     let row = `
                         <tr>
                             <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input row-checkbox" 
+                                        id="appointment_${appointment.id}" 
+                                        data-id="${appointment.id}">
+                                    <label class="custom-control-label" for="appointment_${appointment.id}"></label>
+                                </div>
+                            </td>
+                            <td>
                                 <h2 class="table-avatar">
                                     <a href="javascript:void(0);" class="view-patient-profile" 
                                     data-id="${appointment.patient_id}">${appointment.patient_name || 'N|A'}</a>
@@ -223,7 +320,6 @@
                                     <a href="javascript:void(0);" class="btn btn-sm bg-success-light mark-complete" data-id="${appointment.id}">
                                         <i class="fas fa-check"></i>
                                     </a>
-
                                     <a href="javascript:void(0);" class="btn btn-sm bg-danger-light appoinment-delete" data-id="${appointment.id}">
                                         <i class="fas fa-times"></i>
                                     </a>
@@ -233,8 +329,11 @@
                     tableBody.append(row);
                 });
             } else {
-                tableBody.html('<tr><td colspan="6" class="text-center">No Appointments Found at this time</td></tr>');
+                tableBody.html('<tr><td colspan="7" class="text-center">No Appointments Found at this time</td></tr>');
             }
+            
+            // Reinitialize checkbox functionality after table update
+            // initCheckboxFunctionality();
         }
 
         // Initial load
