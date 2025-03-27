@@ -87,6 +87,14 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::post('/appointments/toggle-status', [App\Http\Controllers\Admin\AppointmentsController::class, 'toggleStatus'])->name('appointments.toggleStatus');
     Route::get('/appointments/getTimeSlots', [App\Http\Controllers\Admin\AppointmentsController::class, 'getTimeSlots'])->name('appointments.getTimeSlots');
     Route::GET('/appointments/checkAvailability', [App\Http\Controllers\Admin\AppointmentsController::class, 'checkAvailability'])->name('appointments.checkAvailability');
+
+
+     // rooms routes
+     Route::get('/rooms', [App\Http\Controllers\Admin\RoomCategoryController::class, 'index'])->name('admin.rooms');
+     Route::post('/rooms/save', [App\Http\Controllers\Admin\RoomCategoryController::class, 'store'])->name('admin.rooms.save');
+     Route::post('/rooms/list', [App\Http\Controllers\Admin\RoomCategoryController::class, 'show'])->name('admin.rooms.list');
+     Route::get('/rooms/edit', [App\Http\Controllers\Admin\RoomCategoryController::class, 'edit'])->name('admin.rooms.edit');
+     Route::post('/rooms/delete', [App\Http\Controllers\Admin\RoomCategoryController::class, 'delete'])->name('admin.rooms.delete');
 });
 
 Route::any('/doctor/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('doctor.logout');
