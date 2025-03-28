@@ -75,8 +75,23 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
 
     // Settings
     Route::get('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('admin.settings');
-
     Route::post('/settings/update', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('admin.settings.update');
+    // RoomCategory
+
+    Route::get('/roomcategory', [App\Http\Controllers\Admin\RoomCategoryController::class, 'index'])->name('admin.room.category');
+    Route::POST('/roomcategorylist', [App\Http\Controllers\Admin\RoomCategoryController::class, 'roomCategorylist'])->name('admin.room.category.list');
+    Route::POST('/roomCategory/save', [App\Http\Controllers\Admin\RoomCategoryController::class, 'save'])->name('admin.room.category.save');
+    Route::GET('/roomCategory/edit', [App\Http\Controllers\Admin\RoomCategoryController::class, 'edit'])->name('admin.room.category.edit');
+    Route::POST('/roomCategory/delete', [App\Http\Controllers\Admin\RoomCategoryController::class, 'delete'])->name('admin.room.category.delete');
+  
+    //Rooms
+    Route::get('/rooms', [App\Http\Controllers\Admin\RoomsController::class, 'index'])->name('admin.rooms');
+    Route::POST('/room/save', [App\Http\Controllers\Admin\RoomsController::class, 'save'])->name('admin.rooms.save');
+    Route::POST('/roomlist', [App\Http\Controllers\Admin\RoomsController::class, 'roomslist'])->name('admin.rooms.list');
+    Route::POST('/room/toggle-status', [App\Http\Controllers\Admin\RoomsController::class, 'toggleStatus'])->name('admin.rooms.toggle-status');
+    Route::Get('/room/edit', [App\Http\Controllers\Admin\RoomsController::class, 'edit'])->name('admin.rooms.edit');
+    Route::POST('/room/delete', [App\Http\Controllers\Admin\RoomsController::class, 'delete'])->name('admin.rooms.delete');
+   
 
     // Appointment
     Route::get('/appointments', [App\Http\Controllers\Admin\AppointmentsController::class, 'index'])->name('admin.appointments');

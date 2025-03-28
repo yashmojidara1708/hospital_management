@@ -1,28 +1,28 @@
 <!-- Logo -->
 <div class="header-left">
-    @if (!empty(get_setting('company_logo')))
+    {{-- @if (!empty(get_setting('company_logo')))
         @if (get_setting('company_logo'))
             <a href="index.html" class="logo">
                 <img class="" src="{{ asset('uploads/' . get_setting('company_logo')) }}" alt="Hospital Logo">
             </a>
         @endif
-    @else
+    @else --}}
         <a href="index.html" class="logo">
             <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Hospital Logo">
         </a>
-    @endif
+    {{-- @endif --}}
     {{-- Favicon Icon --}}
-    @if (!empty(get_setting('favicon')))
-        @if (get_setting('favicon'))
-            <a href="index.html" class="logo logo-small">
+    {{-- @if (!empty(get_setting('favicon'))) --}}
+        {{-- @if (get_setting('favicon')) --}}
+            {{-- <a href="index.html" class="logo logo-small">
                 <img class="" src="{{ asset('uploads/' . get_setting('favicon')) }}" alt="Hospital Logo">
-            </a>
-        @endif
-    @else
+            </a> --}}
+        {{-- @endif --}}
+    {{-- @else --}}
         <a href="index.html" class="logo logo-small">
             <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Hospital Logo">
         </a>
-    @endif
+    {{-- @endif --}}
     {{-- <a href="index.html" class="logo">
         <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Logo">
     </a>

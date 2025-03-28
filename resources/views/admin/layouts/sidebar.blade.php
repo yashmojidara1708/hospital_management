@@ -54,6 +54,20 @@
             'roles' => ['Medical', 'Nurse', 'Admin'],
         ],
         [
+            'route' => 'admin.room.category',
+            'icon' => 'fa-solid fa-hospital',
+            'label' => 'Room Category',
+            'roles' => ['Admin'],
+        ],
+
+        [
+            'route' => 'admin.rooms',
+            'icon' => 'fas fa-procedures',
+            'label' => 'Rooms',
+            'roles' => ['Admin'],
+        ],
+
+        [
             'route' => 'admin.settings',
             'icon' => 'fa-solid fa-cog',            
             'label' => 'Settings',

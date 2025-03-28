@@ -81,6 +81,14 @@ class GlobalHelper
             ->get();
     }
 
+    public static function getAllRoomCategory()
+    {
+        return DB::table('room_categories')
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+    }
+
     public static function getAllPatients()
     {
         return DB::table('patients')

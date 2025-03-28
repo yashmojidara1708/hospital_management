@@ -18,6 +18,10 @@ class DatabaseSeeder extends Seeder
             StatesSeeder::class,
             CountriesSeeder::class,
             CitySeeder::class,
+            RolesSeeder::class,
+            SpecialitySeeder::class,
+            PatientsSeeder::class,
+            DoctorSeeder::class,
         ]);
     }
 }

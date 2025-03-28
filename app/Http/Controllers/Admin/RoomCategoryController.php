@@ -1,0 +1,164 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+use App\Models\RoomCategories;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
+
+
+class RoomCategoryController extends Controller
+{
+    //
+    public function index()
+    {
+        return view('admin.RoomCategory.index');
+    }
+    public function roomCategorylist(Request $request)
+    {
+        $role_data = RoomCategories::select('*');
+        return Datatables::of($role_data)
+            ->addColumn('action', function ($row) {
+                $action = '<div class="dropdown dropup d-flex justify-content-center">
+                            <button class="btn p-0" type="button" id="cardOpt3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                               <i class="bx bx-dots-vertical-rounded"></i>
+                             </button>
+                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
+                                 <a class="dropdown-item" href="javascript:void(0);" data-id="' . $row->id . '">
+                                     <i class="bx bx-edit-alt me-1"></i> Edit
+                                 </a>
+                                 <a class="teamroleDelete dropdown-item" href="javascript:void(0);" data-id="' . $row->id . '">
+                                     <i class="bx bx-trash me-1"></i> Delete
+                                 </a>
+                             </div>
+                           </div>
+                           <div class="actions text-center">
+                               <a class="btn btn-sm bg-success-light" data-toggle="modal" href="javascript:void(0);" id="edit_role" data-id="' . $row->id . '">
+                                   <i class="fe fe-pencil"></i>
+                               </a>
+                               <a data-toggle="modal" class="btn btn-sm bg-danger-light" href="javascript:void(0);" id="delete_role" data-id="' . $row->id . '">
+                                   <i class="fe fe-trash"></i>
+                               </a>
+                           </div>';
+
+                return $action;
+            })
+            ->rawColumns(['action']) // Ensure HTML is not escaped
+            ->make(true);
+    }
+   
+
+    // Create a new room Category
+    public function save(Request $request)
+    {
+        $post = $request->post();
+        $hid = isset($post['hid']) ? intval($post['hid']) : null;
+        $response['status'] = 0;
+        $response['message'] = "Somthing Gose Wrong!";
+        $feilds =   [
+            'name' => $request->name,
+        ];
+
+        $rules = [
+             'name' => 'required',
+        ];
+
+        $msg = [
+            'name.required' => 'Please enter role name',
+          //  'name.unique' => 'This role name is already taken. Please choose a different name.'
+        ];
+
+        $validator = Validator::make(
+            $feilds,
+            $rules,
+            $msg
+        );
+        if (!$validator->fails()) {
+            $existingRole =RoomCategories::where('name', $request->name);
+    
+            if ($hid) {
+                $existingRole->where('id', '!=', $hid); // Exclude current record during update
+            }
+        
+            if ($existingRole->exists()) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'This room Category is already taken. Please choose a different name.',
+                ]);
+            }
+        
+            $insert_team_data = [
+                'name' => isset($post['name']) ? $post['name'] : "",
+            ];
+            if ($hid) {
+                // Update existing record
+                $role = RoomCategories::find($hid);
+                if ($role) {
+                    $role->update($insert_team_data);
+                    $response['status'] = 1;
+                    $response['message'] = "Room Categories updated successfully!";
+                } else {
+                    $response['message'] = "Room Categories not found!";
+                }
+            } else {
+                // Create new record
+                if (RoomCategories::create($insert_team_data)) {
+                    $response['status'] = 1;
+                    $response['message'] = "Room Category added successfully!";
+                } else {
+                    $response['message'] = "Failed to add Room Category!";
+                }
+            }
+        }
+        return response()->json($response);
+        exit;
+    }
+    public function delete(Request $request)
+    {
+        $post = $request->post();
+        $id = isset($post['id']) ? $post['id'] : "";
+        $response['status']  = 0;
+        $response['message']  = "Somthing Goes Wrong!";
+        if (is_numeric($id)) {
+            $delete_role = RoomCategories::where('id', $id);
+            if ($delete_role) {
+                $delete_role->delete();
+                $response['status'] = 1;
+                $response['message'] = 'Room Categories deleted successfully.';
+            } else {
+                $response['message'] = 'something went wrong.';
+            }
+        }
+        echo json_encode($response);
+        exit;
+    }
+    public function edit(Request $request)
+    {
+        $id = $request->query('id');
+
+        // Initialize response
+        $response = [
+            'status' => 0,
+            'message' => 'Something went wrong!'
+        ];
+
+        // Check if ID is valid
+        if (is_numeric($id)) {
+            $role_data = RoomCategories::find($id); // Use `find($id)` instead of `where()->get()->first()`
+
+            if ($role_data) {
+                $response = [
+                    'status' => 1,
+                    'role_data' => $role_data
+                ];
+            }
+        }
+
+        return response()->json($response);
+        exit; // Proper JSON response
+    }
+}
+
+
