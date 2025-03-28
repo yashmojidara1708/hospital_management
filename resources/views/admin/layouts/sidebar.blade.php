@@ -59,6 +59,12 @@
             'label' => 'Settings',
             'roles' => ['Medical', 'Nurse', 'Admin'],
         ],
+        [
+            'route' => 'admin.rooms',
+            'icon' => 'fa-solid fa-bed',            
+            'label' => 'Rooms Category',
+            'roles' => ['Admin'],
+        ],
     ];
 
     // Separate the "Dashboard" menu item
