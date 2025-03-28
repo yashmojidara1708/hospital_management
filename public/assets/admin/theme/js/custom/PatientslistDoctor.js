@@ -1,13 +1,14 @@
 $(document).ready(function() {
-    $(".row-checkbox").prop("checked", false); 
+    $(".row-checkbox").prop("checked", false);
     initCheckboxFunctionality();
     $("#selectAll").change(function () {
         if ($(this).prop("checked")) {
             $("#bulkActionsContainer").css("display", "flex");
-            $(".row-checkbox").prop("checked", true); 
+            $("#bulkActionsContainer").css("justify-content", "end");
+            $(".row-checkbox").prop("checked", true);
         } else {
             $("#bulkActionsContainer").hide();
-            $(".row-checkbox").prop("checked", false); 
+            $(".row-checkbox").prop("checked", false);
         }
     });
 
@@ -31,7 +32,7 @@ $(document).ready(function() {
     });
     $(document).on("click", ".mark-complete", function() {
         let appointmentId = $(this).data("id");
-    
+
         Swal.fire({
             title: "Are you sure?",
             text: "Do you want to approve this appointment?",
@@ -76,25 +77,25 @@ $(document).ready(function() {
     // Reject Appointment Modal Trigger
     $(document).on("click", ".appoinment-delete", function() {
         selectedAppointmentId = $(this).data("id");
-        $("#rejectionReason").val(''); 
+        $("#rejectionReason").val('');
         $("#rejectAppointmentModal").modal("show");
     });
     // Confirm Reject Appointment
     $("#confirmRejectAppointment").on("click", function() {
         let reason = $("#rejectionReason").val().trim();
-        
+
         if (!reason) {
             Swal.fire("Error!", "Please provide a rejection reason.", "error");
             return;
         }
-    
+
         $.ajax({
             url: '/doctor/update-appointment-status',
             type: "POST",
             data: JSON.stringify({
                 appointmentId: selectedAppointmentId,
                 is_completed: -1,
-                reason: reason 
+                reason: reason
             }),
             processData: false,
             contentType: "application/json",
@@ -110,7 +111,7 @@ $(document).ready(function() {
                         timer: 2000,
                         showConfirmButton: false
                     }).then(() => {
-                        $(".row-checkbox").prop("checked", false); 
+                        $(".row-checkbox").prop("checked", false);
                         window.location.reload();
                     });
                 } else {
@@ -125,7 +126,7 @@ $(document).ready(function() {
                 Swal.fire("Failed!", "Something went wrong.", "error");
             }
         });
-    
+
         $("#rejectAppointmentModal").modal("hide");
     });
     // Retrieve the active tab from localStorage
@@ -237,24 +238,24 @@ $(document).ready(function() {
             $('.row-checkbox').prop('checked', isChecked);
             updateSelectedAppointments();
         });
-        
+
         // Individual row checkbox change
         $(document).on('change', '.row-checkbox', function() {
             // Update Select All checkbox status
             const allChecked = $('.row-checkbox:checked').length === $('.row-checkbox').length;
             $('#selectAll').prop('checked', allChecked);
-            
+
             updateSelectedAppointments();
         });
     }
-    
+
 
     // Update selected appointments array
     function updateSelectedAppointments() {
         selectedAppointments = $(".row-checkbox:checked").map(function () {
             return $(this).attr("data-id"); // FIX: Use attr() instead of data()
         }).get();
-        
+
         // Show/hide bulk actions
         if (selectedAppointments.length > 0) {
             $('#bulkActionsContainer').show();
@@ -262,9 +263,9 @@ $(document).ready(function() {
         } else {
             $('#bulkActionsContainer').hide();
         }
-        
+
         // Update select all checkbox
-        $('#selectAll').prop('checked', 
+        $('#selectAll').prop('checked',
             selectedAppointments.length === $('.row-checkbox').length
         );
     }
@@ -272,7 +273,7 @@ $(document).ready(function() {
     // Bulk Approve
     $('#bulkApprove').click(function() {
         if (selectedAppointments.length === 0) return;
-        
+
         Swal.fire({
             title: "Approve Selected Appointments?",
             text: `You are about to approve ${selectedAppointments.length} appointment(s)`,
@@ -290,7 +291,7 @@ $(document).ready(function() {
     // Bulk Reject
     // $('#bulkReject').click(function() {
     //     if (selectedAppointments.length === 0) return;
-        
+
     //     Swal.fire({
     //         title: "Reject Selected Appointments?",
     //         text: `You are about to reject ${selectedAppointments.length} appointment(s)`,
@@ -336,7 +337,7 @@ $(document).ready(function() {
         $("#bulkRejectionReasonTextarea").hide().val(""); // Hide textarea initially
         $("#rejectBulkAppointmentModal").modal("show");
     });
-    
+
 
     // Update bulk appointments status
     function updateBulkAppointments(action) {
@@ -356,10 +357,10 @@ $(document).ready(function() {
             },
             success: function(response) {
                 if (response.status === "success") {
-                    const message = action === 'approve' 
-                        ? "Appointments approved successfully" 
+                    const message = action === 'approve'
+                        ? "Appointments approved successfully"
                         : "Appointments rejected successfully";
-                    
+
                     Swal.fire({
                         title: "Success!",
                         text: message,
@@ -455,12 +456,12 @@ $(document).ready(function() {
                                 <td>${prescription.doctor_name}</td>
                                 <td class="text-center">
                                     <div class="table-action">
-                                        <a href="javascript:void(0);" class="btn btn-sm bg-success-light edit-prescription" 
-                                            data-id="${prescription.id}" 
+                                        <a href="javascript:void(0);" class="btn btn-sm bg-success-light edit-prescription"
+                                            data-id="${prescription.id}"
                                             data-medicines='${JSON.stringify(prescription.medicine_names)}'>
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="javascript:void(0);" class="btn btn-sm bg-danger-light delete-prescription" 
+                                        <a href="javascript:void(0);" class="btn btn-sm bg-danger-light delete-prescription"
                                             data-id="${prescription.id}">
                                             <i class="fas fa-times"></i>
                                         </a>
@@ -485,7 +486,7 @@ $(document).ready(function() {
 
     $(document).on('click', '.delete-prescription', function() {
         let prescriptionId = $(this).data('id');
-    
+
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -548,7 +549,7 @@ $(document).ready(function() {
     $(document).on('click', '.edit-prescription', function() {
         let prescriptionId = $(this).data('id');
         console.log("prescriptionId:", prescriptionId)
-        window.location.href = 
+        window.location.href =
                     `/doctor/prescription?patient_id=${patientId}&prescription_id=${prescriptionId}`;
         // $.ajax({
         //     url: `/doctor/prescription/${prescriptionId}/edit`,
@@ -556,7 +557,7 @@ $(document).ready(function() {
         //     dataType: 'json',
         //     success: function(response) {
         //         if (response.success) {
-        //             window.location.href = 
+        //             window.location.href =
         //             `/doctor/prescription?patient_id=${patientId}&prescription_id=${prescriptionId}`;
         //         }
         //     },
@@ -565,7 +566,7 @@ $(document).ready(function() {
         //     }
         // });
     });
-    
+
     // Generic AJAX error handler
     // $(document).ajaxError(function(event, xhr, settings, error) {
     //     console.error('AJAX Error:', error);

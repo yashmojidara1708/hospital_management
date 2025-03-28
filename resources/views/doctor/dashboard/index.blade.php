@@ -87,9 +87,9 @@
             <h4 class="mb-4">Upcomming Patient Appoinment </h4>
             <div class="card-footer" id="bulkActionsContainer" style="display: none;">
                 <input type="hidden" id="selectedAppointments" name="selectedAppointments" value="">
-                <button class="btn btn-success mr-2" id="bulkApprove">
+                {{-- <button class="btn btn-success mr-2" id="bulkApprove">
                     <i class="fas fa-check"></i> Approve Selected
-                </button>
+                </button> --}}
                 <button class="btn btn-danger" id="bulkReject">
                     <i class="fas fa-times"></i> Reject Selected
                 </button>
@@ -123,15 +123,15 @@
                                                     <tr>
                                                         <td>
                                                             <div class="custom-control custom-checkbox">
-                                                                <input type="checkbox" class="custom-control-input row-checkbox" 
-                                                                    id="appointment_{{ $appointment->id }}" 
+                                                                <input type="checkbox" class="custom-control-input row-checkbox"
+                                                                    id="appointment_{{ $appointment->id }}"
                                                                     data-id="{{ $appointment->id }}">
                                                                 <label class="custom-control-label" for="appointment_{{ $appointment->id }}"></label>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                <a id="patientprofile" href="javascript:void(0);" class="view-patient-profile" 
+                                                                <a id="patientprofile" href="javascript:void(0);" class="view-patient-profile"
                                                                 data-id="{{ $appointment->patient_id }}">{{ isset($appointment->patient_name) ? $appointment->patient_name : 'N|A' }}
                                                                 </a>
                                                             </h2>
@@ -171,13 +171,13 @@
                         </div>
                     </div>
 
-                    
+
                 </div>
             </div>
         </div>
     </div>
 
-    
+
 @section('modal-content')
 
 {{-- single reject appoinment --}}
@@ -295,15 +295,15 @@
                         <tr>
                             <td>
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input row-checkbox" 
-                                        id="appointment_${appointment.id}" 
+                                    <input type="checkbox" class="custom-control-input row-checkbox"
+                                        id="appointment_${appointment.id}"
                                         data-id="${appointment.id}">
                                     <label class="custom-control-label" for="appointment_${appointment.id}"></label>
                                 </div>
                             </td>
                             <td>
                                 <h2 class="table-avatar">
-                                    <a href="javascript:void(0);" class="view-patient-profile" 
+                                    <a href="javascript:void(0);" class="view-patient-profile"
                                     data-id="${appointment.patient_id}">${appointment.patient_name || 'N|A'}</a>
                                 </h2>
                             </td>
@@ -331,7 +331,7 @@
             } else {
                 tableBody.html('<tr><td colspan="7" class="text-center">No Appointments Found at this time</td></tr>');
             }
-            
+
             // Reinitialize checkbox functionality after table update
             // initCheckboxFunctionality();
         }
