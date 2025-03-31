@@ -60,9 +60,15 @@
             'roles' => ['Medical', 'Nurse', 'Admin'],
         ],
         [
+            'route' => 'admin.rooms.category',
+            'icon' => 'fa-solid fa-layer-group',            
+            'label' => 'Rooms Category',
+            'roles' => ['Admin'],
+        ],
+        [
             'route' => 'admin.rooms',
             'icon' => 'fa-solid fa-bed',            
-            'label' => 'Rooms Category',
+            'label' => 'Rooms',
             'roles' => ['Admin'],
         ],
     ];

@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     if ($.fn.DataTable.isDataTable('#roomsTable')) {
         $('#roomsTable').DataTable().destroy();
     }
@@ -20,36 +19,41 @@ $(document).ready(function () {
         destroy: true,
 
         "ajax": {
-            url: "/admin/rooms-category/list",
+            url: "/admin/rooms/list",
             type: 'POST',
             dataType: 'json',
             data: {
                 _token: $("[name='_token']").val(),
             },
         },
-        columns: [{
-                data: "name",
-            },
-            {
-                data: "action",
-                orderable: false
-            },
+        columns: [
+            { data: "room_number" },
+            { data: "category_name" },
+            { data: "beds" },
+            { data: "charges" },
+            { data: "status" },
+            { data: "action", orderable: false },
         ],
     });
 
-    // Initialize modal
     $('#add_rooms').click(function () {
-        $('#modal_title').text('Add Room Category');
+        $('#modal_title').text('Add Room');
         $('#RoomsForm')[0].reset();
-        $('#room_id').val('');
+        $('#hidden_room_id').val('');
         $('#add_rooms_details').modal('show');
     });
 
     var validationRules = {
-        room_name: "required",
+        room_number: "required",
+        category_id: "required",
+        beds: { required: true, digits: true },
+        charges: { required: true, number: true },
     };
     var validationMessages = {
-        room_name: "Please enter the room name",
+        room_number: "Please enter the room number",
+        category_id: "Please select a category",
+        beds: "Please enter a valid number of beds",
+        charges: "Please enter valid charges",
     };
 
     $('form[id="RoomsForm"]').validate({
@@ -59,7 +63,7 @@ $(document).ready(function () {
             var formData = new FormData($("#RoomsForm")[0]);
             $('#loader-container').show();
             $.ajax({
-                url: BASE_URL + '/admin/rooms-category/save',
+                url: BASE_URL + '/admin/rooms/save',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -68,9 +72,8 @@ $(document).ready(function () {
                 success: function(response) {
                     if(response?.status == 1) {
                         $('#RoomsForm')[0].reset();
-                        $('#room_id').val('');
+                        $('#hidden_room_id').val('');
                         $('#add_rooms_details').modal('hide');
-                        // $("#RoomsForm").validate().resetForm();
                         $('#roomsTable').DataTable().ajax.reload();
                         toastr.success(response?.message);
                     } else {
@@ -85,21 +88,19 @@ $(document).ready(function () {
         var id = $(this).data("id");
         $.ajax({
             type: "GET",
-            url: "/admin/rooms-category/edit",
-            data: {
-                _token: $("[name='_token']").val(),
-                id: id,
-            },
+            url: "/admin/rooms/edit",
+            data: { _token: $("[name='_token']").val(), id: id },
             success: function(response) {
                 if (response.status == 1) {
-                    if (response?.room_data) {
-                        var roomsdata = response?.room_data;
-                        $('#add_rooms_details').modal('show');
-                        $("#modal_title").html("Edit Rooms");
-                        $('#hidden_room_id').val(roomsdata?.id);
-                        $('#room_name').val(roomsdata?.name);
-                       
-                    }
+                    var room = response?.room_data;
+                    $('#add_rooms_details').modal('show');
+                    $("#modal_title").html("Edit Room");
+                    $('#hidden_room_id').val(room?.id);
+                    $('#room_number').val(room?.room_number);
+                    $('#category_id').val(room?.category_id);
+                    $('#beds').val(room?.beds);
+                    $('#charges').val(room?.charges);
+                    $('#status').val(room?.status);
                 }
             },
         });
@@ -119,11 +120,8 @@ $(document).ready(function () {
             if (result.isConfirmed) {
                 $.ajax({
                     type: "POST",
-                    url: "/admin/rooms-category/delete",
-                    data: {
-                        _token: $("[name='_token']").val(),
-                        id: id,
-                    },
+                    url: "/admin/rooms/delete",
+                    data: { _token: $("[name='_token']").val(), id: id },
                     success: function(response) {
                         if (response?.status == 1) {
                             $('#roomsTable').DataTable().ajax.reload();

@@ -90,11 +90,18 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
 
 
      // rooms routes
-     Route::get('/rooms', [App\Http\Controllers\Admin\RoomCategoryController::class, 'index'])->name('admin.rooms');
-     Route::post('/rooms/save', [App\Http\Controllers\Admin\RoomCategoryController::class, 'store'])->name('admin.rooms.save');
-     Route::post('/rooms/list', [App\Http\Controllers\Admin\RoomCategoryController::class, 'show'])->name('admin.rooms.list');
-     Route::get('/rooms/edit', [App\Http\Controllers\Admin\RoomCategoryController::class, 'edit'])->name('admin.rooms.edit');
-     Route::post('/rooms/delete', [App\Http\Controllers\Admin\RoomCategoryController::class, 'delete'])->name('admin.rooms.delete');
+     Route::get('/rooms-category', [App\Http\Controllers\Admin\RoomCategoryController::class, 'index'])->name('admin.rooms.category');
+     Route::post('/rooms-category/save', [App\Http\Controllers\Admin\RoomCategoryController::class, 'store'])->name('admin.rooms.category.save');
+     Route::post('/rooms-category/list', [App\Http\Controllers\Admin\RoomCategoryController::class, 'show'])->name('admin.rooms.category.list');
+     Route::get('/rooms-category/edit', [App\Http\Controllers\Admin\RoomCategoryController::class, 'edit'])->name('admin.rooms.category.edit');
+     Route::post('/rooms-category/delete', [App\Http\Controllers\Admin\RoomCategoryController::class, 'delete'])->name('admin.rooms.category.delete');
+
+      // rooms routes
+      Route::get('/rooms', [App\Http\Controllers\Admin\RoomController::class, 'index'])->name('admin.rooms');
+      Route::post('/rooms/save', [App\Http\Controllers\Admin\RoomController::class, 'store'])->name('admin.rooms.save');
+      Route::post('/rooms/list', [App\Http\Controllers\Admin\RoomController::class, 'show'])->name('admin.rooms.list');
+      Route::get('/rooms/edit', [App\Http\Controllers\Admin\RoomController::class, 'edit'])->name('admin.rooms.edit');
+      Route::post('/rooms/delete', [App\Http\Controllers\Admin\RoomController::class, 'delete'])->name('admin.rooms.delete');
 });
 
 Route::any('/doctor/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('doctor.logout');
