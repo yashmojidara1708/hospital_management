@@ -89,19 +89,26 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::GET('/appointments/checkAvailability', [App\Http\Controllers\Admin\AppointmentsController::class, 'checkAvailability'])->name('appointments.checkAvailability');
 
 
-     // rooms routes
-     Route::get('/rooms-category', [App\Http\Controllers\Admin\RoomCategoryController::class, 'index'])->name('admin.rooms.category');
-     Route::post('/rooms-category/save', [App\Http\Controllers\Admin\RoomCategoryController::class, 'store'])->name('admin.rooms.category.save');
-     Route::post('/rooms-category/list', [App\Http\Controllers\Admin\RoomCategoryController::class, 'show'])->name('admin.rooms.category.list');
-     Route::get('/rooms-category/edit', [App\Http\Controllers\Admin\RoomCategoryController::class, 'edit'])->name('admin.rooms.category.edit');
-     Route::post('/rooms-category/delete', [App\Http\Controllers\Admin\RoomCategoryController::class, 'delete'])->name('admin.rooms.category.delete');
+    // rooms routes
+    Route::get('/rooms-category', [App\Http\Controllers\Admin\RoomCategoryController::class, 'index'])->name('admin.rooms.category');
+    Route::post('/rooms-category/save', [App\Http\Controllers\Admin\RoomCategoryController::class, 'store'])->name('admin.rooms.category.save');
+    Route::post('/rooms-category/list', [App\Http\Controllers\Admin\RoomCategoryController::class, 'show'])->name('admin.rooms.category.list');
+    Route::get('/rooms-category/edit', [App\Http\Controllers\Admin\RoomCategoryController::class, 'edit'])->name('admin.rooms.category.edit');
+    Route::post('/rooms-category/delete', [App\Http\Controllers\Admin\RoomCategoryController::class, 'delete'])->name('admin.rooms.category.delete');
 
-      // rooms routes
-      Route::get('/rooms', [App\Http\Controllers\Admin\RoomController::class, 'index'])->name('admin.rooms');
-      Route::post('/rooms/save', [App\Http\Controllers\Admin\RoomController::class, 'store'])->name('admin.rooms.save');
-      Route::post('/rooms/list', [App\Http\Controllers\Admin\RoomController::class, 'show'])->name('admin.rooms.list');
-      Route::get('/rooms/edit', [App\Http\Controllers\Admin\RoomController::class, 'edit'])->name('admin.rooms.edit');
-      Route::post('/rooms/delete', [App\Http\Controllers\Admin\RoomController::class, 'delete'])->name('admin.rooms.delete');
+    // rooms routes
+    Route::get('/rooms', [App\Http\Controllers\Admin\RoomController::class, 'index'])->name('admin.rooms');
+    Route::post('/rooms/save', [App\Http\Controllers\Admin\RoomController::class, 'store'])->name('admin.rooms.save');
+    Route::post('/rooms/list', [App\Http\Controllers\Admin\RoomController::class, 'show'])->name('admin.rooms.list');
+    Route::get('/rooms/edit', [App\Http\Controllers\Admin\RoomController::class, 'edit'])->name('admin.rooms.edit');
+    Route::post('/rooms/delete', [App\Http\Controllers\Admin\RoomController::class, 'delete'])->name('admin.rooms.delete');
+
+    // Admit Patient
+    Route::get('/admit-patient', [App\Http\Controllers\Admin\AdmitPatientController::class, 'index'])->name('admin.admit-patient');
+    Route::post('/admit-patient/list', [App\Http\Controllers\Admin\AdmitPatientController::class, 'list'])->name('admin.admit-patient.list');
+    Route::post('/admit-patient/save', [App\Http\Controllers\Admin\AdmitPatientController::class, 'save'])->name('admin.admit-patient.save');
+    Route::get('/admit-patient/edit', [App\Http\Controllers\Admin\AdmitPatientController::class, 'edit'])->name('admin.admit-patient.edit');
+    Route::post('/admit-patient/delete', [App\Http\Controllers\Admin\AdmitPatientController::class, 'delete'])->name('admin.admit-patient.delete');
 });
 
 Route::any('/doctor/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('doctor.logout');
@@ -121,7 +128,7 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
     Route::get('/prescription', [App\Http\Controllers\Doctor\PrescriptionController::class, 'index'])->name('doctor.prescription');
     // Invoice
     Route::GET('/invoice/{id}', [App\Http\Controllers\Doctor\PrescriptionController::class, 'showInvoice'])
-    ->name('doctor.invoice');
+        ->name('doctor.invoice');
 
     //medicine
     Route::GET('/getmedicine', [App\Http\Controllers\Doctor\MedicineController::class, 'getmedicine'])->name('doctor.getmedicine');
@@ -135,18 +142,18 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->group(function () {
 
     Route::get('/doctor/fetch-appointments', [DashboardController::class, 'fetchUpdatedAppointments'])->name('doctor.fetchAppointments');
 
-    // Appoinment status update route 
+    // Appoinment status update route
     Route::POST('/update-appointment-status', [DashboardController::class, 'updateAppointmentStatus'])->name('doctor.updateAppointmentStatus');
 
     // Update all appoinment
     Route::post('/update-all-appointments-status', [DashboardController::class, 'updateAllAppointmentsStatus'])
-    ->name('doctor.updateAllAppointmentsStatus');
+        ->name('doctor.updateAllAppointmentsStatus');
 
     // Prescription Delete from doctor
     Route::post('/prescriptions/{id}/delete', [App\Http\Controllers\Doctor\PrescriptionController::class, 'destroy']);
 
 
-    // prescription data fetch by id 
+    // prescription data fetch by id
     Route::get('/prescription/{id}/edit', [App\Http\Controllers\Doctor\PrescriptionController::class, 'edit'])
-    ->name('doctor.prescription.edit');
+        ->name('doctor.prescription.edit');
 });
