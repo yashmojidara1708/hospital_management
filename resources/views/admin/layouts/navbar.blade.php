@@ -136,13 +136,13 @@
     <li class="nav-item dropdown has-arrow">
         <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
             <span class="user-img"><img class="rounded-circle"
-                    src="{{ asset('assets/admin/theme/img/profiles/avatar-01.jpg') }}" width="31"
+                    src="{{ asset('assets/admin/theme/img/profiles/avatar-05.png') }}" width="31"
                     alt=""></span>
         </a>
         <div class="dropdown-menu">
             <div class="user-header">
                 <div class="avatar avatar-sm">
-                    <img src="{{ asset('assets/admin/theme/img/profiles/avatar-01.jpg') }}" alt="User Image"
+                    <img src="{{ asset('assets/admin/theme/img/profiles/avatar-05.png') }}" alt="User Image"
                         class="avatar-img rounded-circle">
                 </div>
                 <div class="user-text">
