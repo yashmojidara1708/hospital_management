@@ -75,16 +75,37 @@ class GlobalHelper
     public static function getAllDoctors()
     {
         return DB::table('doctors')
-            ->select('id', 'name')
-            ->where('isdeleted', '!=', 1)
-            ->orderBy('name')
-            ->get();
+        ->select('doctors.*', 'specialities.name as specialization_name') // Add specialization name
+        ->join('specialities', 'doctors.specialization', '=', 'specialities.id') // Join with specialities table
+        ->where('doctors.isdeleted', '!=', 1)
+        ->orderBy('doctors.name')
+        ->get()
+        ->map(function($doctor) {
+            $imagePath = "assets/admin/theme/img/doctors/" . $doctor->image;
+            $defaultImage = asset("assets/admin/theme/img/doctors/default.jpg");
+
+            // Check if the file exists using the public path
+            $imageUrl = (!empty($doctor->image) && file_exists(public_path($imagePath)))
+                ? asset($imagePath)
+                : $defaultImage;
+
+            // Modify the doctor data to include the image HTML
+            $doctor->avatar = '
+                <h2 class="table-avatar">
+                    <a href="profile.html" class="avatar avatar-sm mr-2">
+                        <img src="' . $imageUrl . '" width="50" height="50" class="rounded-circle" alt="User Image">
+                    </a>
+                    <a href="profile.html">' . e($doctor->name) . '</a>
+                </h2>';
+
+            return $doctor;
+        });
     }
 
     public static function getAllPatients()
     {
         return DB::table('patients')
-            ->select('patient_id', 'name')
+            ->select('patients.*')
             ->orderBy('name')
             ->where('isdeleted', '!=', 1)
             ->get();
