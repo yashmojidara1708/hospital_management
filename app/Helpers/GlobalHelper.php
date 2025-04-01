@@ -90,6 +90,52 @@ class GlobalHelper
             ->get();
     }
 
+    public static function getAllRooms()
+    {
+        return DB::table('rooms')
+        ->join('rooms_category', 'rooms.category_id', '=', 'rooms_category.id')
+        ->select('rooms.id', 'rooms.room_number', 'rooms_category.name as category_name')
+        ->where('rooms.status', '!=', 0)
+        ->orderBy('rooms.room_number')
+        ->get();
+    }
+
+    public static function getAllRoomCategories()
+    {
+        return DB::table('rooms_category')
+            ->select('id', 'name')
+            ->where('isdeleted', '!=', 1)
+            ->orderBy('name')
+            ->get();
+    }
+    // all admited pation list
+    public static function getAllAdmittedPatients()
+    {
+        return DB::table('admitted_patients')
+            ->join('patients', 'admitted_patients.patient_id', '=', 'patients.patient_id')
+            ->join('doctors', 'admitted_patients.doctor_id', '=', 'doctors.id')
+            ->join('specialities', 'doctors.specialization', '=', 'specialities.id')
+            ->join('rooms', 'admitted_patients.room_id', '=', 'rooms.id')
+            ->join('rooms_category', 'rooms.category_id', '=', 'rooms_category.id') // Get room category name
+            ->where('admitted_patients.isdeleted', 0)
+            ->orderBy('admitted_patients.id', 'desc')
+            ->get();
+    }
+    // now get all patients and getAllAdmittedPatients match if admitted not show in this patient list
+    public static function getAllPatientsList()
+    {
+        $admittedPatientIds = DB::table('admitted_patients')
+            ->where('isdeleted', 0)
+            ->pluck('patient_id');
+
+        return DB::table('patients')
+            ->select('patient_id', 'name')
+            ->where('isdeleted', '!=', 1)
+            ->whereNotIn('patient_id', $admittedPatientIds)
+            ->orderBy('name')
+            ->get();
+    }
+
     /**
      * Get patient data by ID.
      *

@@ -55,21 +55,27 @@
         ],
         [
             'route' => 'admin.settings',
-            'icon' => 'fa-solid fa-cog',            
+            'icon' => 'fa-solid fa-cog',
             'label' => 'Settings',
             'roles' => ['Medical', 'Nurse', 'Admin'],
         ],
         [
             'route' => 'admin.rooms.category',
-            'icon' => 'fa-solid fa-layer-group',            
+            'icon' => 'fa-solid fa-layer-group',
             'label' => 'Rooms Category',
             'roles' => ['Admin'],
         ],
         [
             'route' => 'admin.rooms',
-            'icon' => 'fa-solid fa-bed',            
+            'icon' => 'fa-solid fa-bed',
             'label' => 'Rooms',
             'roles' => ['Admin'],
+        ],
+        [
+            'route' => 'admin.admit-patient',
+            'icon' => 'fa-solid fa-user-plus',
+            'label' => 'Admit Patients',
+            'roles' => ['Admin', 'Staff'],
         ],
     ];
 
