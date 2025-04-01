@@ -112,7 +112,6 @@ class DoctorsController extends Controller
                 'specialization' => isset($request->specialization) ? $request->specialization : "",
                 'phone' => isset($request->phone) ? $request->phone : "",
                 'email' => isset($request->email) ? $request->email : "",
-                'password' => isset($request->password) ? Hash::make($request->password) : "",
                 'role' => 'doctor',
                 'experience' => isset($request->experience) ? $request->experience : "",
                 'qualification' => isset($request->qualification) ? $request->qualification : "",
@@ -124,11 +123,15 @@ class DoctorsController extends Controller
                 'image' => $imageName,
             ];
 
+            if (!$hid) {
+                $insert_doctor_data['password'] = isset($post['password']) ? Hash::make($post['password']) : "";
+            }
+
             if ($hid) {
                 // Update existing record
                 if (isset($Doctors)) {
                     if (!empty($post['password'])) {
-                        $Doctors->password = Hash::make($post['password']);
+                        $Doctors['password'] = Hash::make($post['password']);
                     }
                     $Doctors->update($insert_doctor_data);
                     $response = ['status' => 1, 'message' => 'Doctor updated successfully!'];

@@ -106,13 +106,17 @@ class StaffController extends Controller
                 'date_of_birth' => $post['date_of_birth'] ?? "",
                 'phone' => $post['phone'] ?? "",
                 'email' => $post['email'] ?? "",
-                'password' => isset($post['password']) ? Hash::make($post['password']) : "",
                 'address' => $post['address'] ?? "",
                 'country' => $post['country'] ?? "",
                 'state' => $post['state'] ?? "",
                 'city' => $post['city'] ?? "",
                 'zip' => $post['zip'] ?? "",
             ];
+
+
+            if (!$hid) {
+                $Staff_insert_data['password'] = isset($post['password']) ? Hash::make($post['password']) : "";
+            }
 
             if ($hid) {
                 // Update existing record
