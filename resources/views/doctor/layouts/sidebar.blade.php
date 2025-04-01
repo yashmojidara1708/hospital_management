@@ -1,12 +1,14 @@
 <?php
 $menuItems = [['route' => 'doctor.home', 'icon' => 'fas fa-columns', 'label' => 'Dashboard'], ['route' => 'doctor.appointments', 'icon' => 'fas fa-calendar-check', 'label' => 'Appointments'], ['route' => 'doctor.patients', 'icon' => 'fas fa-user-injured', 'label' => 'My Patients'], ['route' => 'doctor-change-password', 'icon' => 'fas fa-lock', 'label' => 'Change Password'], ['route' => 'doctor.logout', 'icon' => 'fas fa-sign-out-alt', 'label' => 'Logout', 'class' => 'text-danger']];
+$imagePath = "assets/admin/theme/img/doctors/" . $DoctorImage;
+$defaultImage = asset("assets/admin/theme/img/doctors/default.jpg");
 ?>
 
 <div class="profile-sidebar">
     <div class="widget-profile pro-widget-content">
         <div class="profile-info-widget">
             <a href="#" class="booking-doc-img">
-                <img src="{{ asset('assets/doctor/theme/img/doctors/doctor-thumb-02.jpg') }}" alt="User Image">
+                <img src="{{ asset($DoctorImage ? $imagePath : 'assets/admin/theme/img/doctors/default.jpg') }}" alt="User Image">
             </a>
             <div class="profile-det-info">
                 <h3>{{ isset($DoctorName) ? $DoctorName : 'N/A' }}</h3>

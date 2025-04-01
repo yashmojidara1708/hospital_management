@@ -4,6 +4,7 @@
     $DoctorRole = isset($DoctorData['role']) ? $DoctorData['role'] : '';
     $DoctorName = isset($DoctorData['name']) ? $DoctorData['name'] : '';
     $DoctorEmail = isset($DoctorData['email']) ? $DoctorData['email'] : '';
+    $DoctorImage = isset($DoctorData['image']) ? $DoctorData['image'] : '';
     $DrId = isset($DoctorData['id']) ? $DoctorData['id'] : '';
 
 @endphp
