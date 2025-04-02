@@ -18,9 +18,8 @@ return new class extends Migration
             $table->text('instructions')->nullable();
             $table->integer('isdeleted')->default(0);
             $table->timestamps();
-
-            $table->foreign('doctor_id')->references('id')->on('doctors')->onDelete('cascade');
-            $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
+            $table->integer('doctor_id');
+            $table->integer('patient_id');
         });
     }
 
