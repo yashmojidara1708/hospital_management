@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\GlobalHelper;
 use App\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Mail\AppointmentNotification;
@@ -23,9 +24,11 @@ class DashboardController extends Controller
                 ->where('isdeleted', '!=', 1)
                 ->count();
         }
+        $staffData = session('staff_data');
 
-        return view('admin.dashboard.index', compact('counts'));
-        // return view('admin.dashboard.index');
+        $login_data = GlobalHelper::getcurrentadminlogin($staffData);
+
+        return view('admin.dashboard.index', compact('counts','login_data'));
     }
 
     public function fetchUpdatedAppointments()
@@ -94,7 +97,7 @@ class DashboardController extends Controller
     public function updateAllAppointmentsStatus(Request $request)
     {
         $data = json_decode($request->getContent(), true);
-  
+
         // Validate input
         $validator = Validator::make($data, [
             'appointmentIds' => 'required|array',
@@ -129,7 +132,7 @@ class DashboardController extends Controller
                 ->leftJoin('patients', 'appointments.patient', '=', 'patients.patient_id')
                 ->whereIn('appointments.id', $appointmentIds)
                 ->get();
-           
+
             // 3. Send email notifications
             foreach ($appointments as $appointment) {
                 if ($appointment->patient_email) {

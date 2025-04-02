@@ -3,6 +3,7 @@
 /public/build
 /public/hot
 /public/storage
+public/assets/admin/theme/img/*
 public/uploads/*
 /storage/*.key
 /storage/pail

@@ -4,7 +4,9 @@ namespace App\Helpers;
 
 use App\Models\Patients;
 use App\Models\Setting;
+use App\Models\Staff;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 if (!function_exists('get_setting')) {
     function get_setting($key, $default = null)
@@ -75,22 +77,22 @@ class GlobalHelper
     public static function getAllDoctors()
     {
         return DB::table('doctors')
-        ->select('doctors.*', 'specialities.name as specialization_name') // Add specialization name
-        ->join('specialities', 'doctors.specialization', '=', 'specialities.id') // Join with specialities table
-        ->where('doctors.isdeleted', '!=', 1)
-        ->orderBy('doctors.name')
-        ->get()
-        ->map(function($doctor) {
-            $imagePath = "assets/admin/theme/img/doctors/" . $doctor->image;
-            $defaultImage = asset("assets/admin/theme/img/doctors/default.jpg");
+            ->select('doctors.*', 'specialities.name as specialization_name') // Add specialization name
+            ->join('specialities', 'doctors.specialization', '=', 'specialities.id') // Join with specialities table
+            ->where('doctors.isdeleted', '!=', 1)
+            ->orderBy('doctors.name')
+            ->get()
+            ->map(function ($doctor) {
+                $imagePath = "assets/admin/theme/img/doctors/" . $doctor->image;
+                $defaultImage = asset("assets/admin/theme/img/doctors/default.jpg");
 
-            // Check if the file exists using the public path
-            $imageUrl = (!empty($doctor->image) && file_exists(public_path($imagePath)))
-                ? asset($imagePath)
-                : $defaultImage;
+                // Check if the file exists using the public path
+                $imageUrl = (!empty($doctor->image) && file_exists(public_path($imagePath)))
+                    ? asset($imagePath)
+                    : $defaultImage;
 
-            // Modify the doctor data to include the image HTML
-            $doctor->avatar = '
+                // Modify the doctor data to include the image HTML
+                $doctor->avatar = '
                 <h2 class="table-avatar">
                     <a href="profile.html" class="avatar avatar-sm mr-2">
                         <img src="' . $imageUrl . '" width="50" height="50" class="rounded-circle" alt="User Image">
@@ -98,8 +100,8 @@ class GlobalHelper
                     <a href="profile.html">' . e($doctor->name) . '</a>
                 </h2>';
 
-            return $doctor;
-        });
+                return $doctor;
+            });
     }
 
     public static function getAllPatients()
@@ -114,11 +116,11 @@ class GlobalHelper
     public static function getAllRooms()
     {
         return DB::table('rooms')
-        ->join('rooms_category', 'rooms.category_id', '=', 'rooms_category.id')
-        ->select('rooms.id', 'rooms.room_number', 'rooms_category.name as category_name')
-        ->where('rooms.status', '!=', 0)
-        ->orderBy('rooms.room_number')
-        ->get();
+            ->join('rooms_category', 'rooms.category_id', '=', 'rooms_category.id')
+            ->select('rooms.id', 'rooms.room_number', 'rooms_category.name as category_name')
+            ->where('rooms.status', '!=', 0)
+            ->orderBy('rooms.room_number')
+            ->get();
     }
 
     public static function getAllRoomCategories()
@@ -233,5 +235,41 @@ class GlobalHelper
     public static function getSetting($key, $default = null)
     {
         return Setting::where('key', $key)->value('value') ?? $default;
+    }
+
+    public static function getcurrentadminlogin($staffId)
+    {
+        $staff = Staff::where('id', $staffId)->first();
+
+        if (!$staff) {
+            return null; // Staff record na male to null return karse
+        }
+
+        // Staff na roles fetch karo (assuming staff table has 'roles' column as array)
+        $roles = is_array($staff->roles) ? $staff->roles : explode(',', $staff->roles);
+
+        // Roles na names fetch karo
+        $roleNames = DB::table('roles')
+            ->whereIn('id', $roles)
+            ->pluck('name')
+            ->toArray();
+
+        // Convert array to comma-separated string
+        $roleNamesString = implode(', ', $roleNames);
+
+        // Staff object ne update kari role names add karo
+        $staff->role_names = $roleNamesString;
+
+        return $staff;
+    }
+
+    public static function getcurrentdoctorlogin($doctorId)
+    {
+        return DB::table('doctors')
+            ->select('doctors.*', 'specialities.name as specialization_name') // Add specialization name
+            ->join('specialities', 'doctors.specialization', '=', 'specialities.id') // Join with specialities table
+            ->where('doctors.id', $doctorId)
+            ->where('doctors.isdeleted', '!=', 1)
+            ->first();
     }
 }

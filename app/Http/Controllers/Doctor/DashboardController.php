@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Doctor;
+
+use App\Helpers\GlobalHelper;
 use Yajra\DataTables\DataTables;
 use App\Models\Role;
 use App\Http\Controllers\Controller;
@@ -15,6 +17,9 @@ class DashboardController extends Controller
     public function index()
     {
         $DoctorData = session('doctors_data');
+
+        $Doctor_login_data = GlobalHelper::getcurrentdoctorlogin($DoctorData['id']);
+
         $DoctorEmail = isset($DoctorData['email']) ? $DoctorData['email'] : '';
         // Fetch appointments with patient details
         $appointments = Appointments::join('Patients', 'appointments.patient', '=', 'Patients.patient_id')
@@ -52,20 +57,20 @@ class DashboardController extends Controller
         ->distinct('patient')
         ->count('patient');
 
-        return view('doctor.dashboard.index', compact('appointments','totalAppointments','totalPatientCount','todayPatients'));
+        return view('doctor.dashboard.index', compact('appointments','totalAppointments','totalPatientCount','todayPatients','Doctor_login_data'));
     }
     public function appointments()
     {
-        $doctorId = Auth::user()->id; 
+        $doctorId = Auth::user()->id;
 
         // Fetch appointments for this doctor
         $appointments = DB::table('appointments')
-                        ->where('doctor', $doctorId)    
+                        ->where('doctor', $doctorId)
                         ->where('appointments.is_completed', '0')
                         ->leftjoin('patients', 'patients.patient_id', '=', 'appointments.patient')
                         ->join('cities', 'patients.city', '=', 'cities.id')
                         ->join('states', 'cities.state_id', '=', 'states.id')
-                        ->join('countries', 'states.country_id', '=', 'countries.id')    
+                        ->join('countries', 'states.country_id', '=', 'countries.id')
                         ->select(
                             'appointments.*',
                             'patients.name as patient_id',
@@ -82,14 +87,14 @@ class DashboardController extends Controller
 
         return view('doctor.Appointments.appointments',compact('appointments'));
     }
-    
+
     public function getAppointmentDetails(Request $request)
     {
             $id = $request->id;
-        
+
             // Fetch the appointment details
             $appointment = DB::table('appointments')->where('id', $id)->first();
-        
+
             if ($appointment) {
                 return response()->json([
                     'success' => true,
@@ -102,5 +107,5 @@ class DashboardController extends Controller
                 ]);
             }
         }
-  
+
 }

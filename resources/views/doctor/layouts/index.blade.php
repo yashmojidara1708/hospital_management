@@ -1,11 +1,13 @@
 @php
     $currentRouteName = \Route::currentRouteName();
     $DoctorData = session('doctors_data');
-    $DoctorRole = isset($DoctorData['role']) ? $DoctorData['role'] : '';
-    $DoctorName = isset($DoctorData['name']) ? $DoctorData['name'] : '';
-    $DoctorEmail = isset($DoctorData['email']) ? $DoctorData['email'] : '';
-    $DoctorImage = isset($DoctorData['image']) ? $DoctorData['image'] : '';
-    $DrId = isset($DoctorData['id']) ? $DoctorData['id'] : '';
+
+    $DoctorRole = isset($Doctor_login_data->role) ? $Doctor_login_data->role : '';
+    $DoctorName = isset($Doctor_login_data->name) ? $Doctor_login_data->name : '';
+    $DoctorEmail = isset($Doctor_login_data->email) ? $Doctor_login_data->email : '';
+    $DoctorImage = isset($Doctor_login_data->image) ? $Doctor_login_data->image : '';
+    $DoctorSpecialization = isset($Doctor_login_data->specialization_name) ? $Doctor_login_data->specialization_name : '';
+    $DrId = isset($Doctor_login_data->id) ? $Doctor_login_data->id : '';
 
 @endphp
 <!DOCTYPE html>

@@ -82,7 +82,7 @@ class LoginController extends Controller
 
             $staff = DB::table('staff')
                 ->where('staff.email', $request->email)
-                ->select('staff.roles', 'staff.email', 'staff.name as username', 'staff.isdeleted')
+                ->select('staff.id','staff.roles', 'staff.email', 'staff.name as username', 'staff.isdeleted')
                 ->first();
 
             if (!$staff) {
@@ -113,6 +113,7 @@ class LoginController extends Controller
 
             // Combine staff data with the role name
             $staffData = [
+                'id' => $staff->id,
                 'roles' => $staff->roles,
                 'email' => $staff->email,
                 'username' => $staff->username,

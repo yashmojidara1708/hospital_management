@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $("#DoctorsForm")[0].reset();
     $("#hid").val("");
     $("#priview_image_title").hide();
@@ -14,13 +14,13 @@ $(document).ready(function() {
         }
     }
 
-    $("#close_icone").click(function() {
+    $("#close_icone").click(function () {
         $("#img_privew").attr('src', '#').hide();
         $("#priview_image_title").hide();
         $("#image").val(''); // Clear file input
     });
 
-    $('#country').on('change', function() {
+    $('#country').on('change', function () {
         var countryId = $(this).val();
         $('#state').html('<option value="">Loading...</option>'); // Show loading text
         $('#city').html('<option value="">Select City</option>'); // Reset city
@@ -30,9 +30,9 @@ $(document).ready(function() {
                 url: 'get-states/' + countryId,
                 type: 'GET',
                 dataType: 'json',
-                success: function(states) {
+                success: function (states) {
                     $('#state').html('<option value="">Select State</option>');
-                    $.each(states, function(index, state) {
+                    $.each(states, function (index, state) {
                         $('#state').append('<option value="' + state.id + '">' + state.name + '</option>');
                     });
                 }
@@ -43,7 +43,7 @@ $(document).ready(function() {
     });
 
     // When State is changed, fetch cities
-    $('#state').on('change', function() {
+    $('#state').on('change', function () {
         var stateId = $(this).val();
         $('#city').html('<option value="">Loading...</option>'); // Show loading text
 
@@ -52,9 +52,9 @@ $(document).ready(function() {
                 url: 'get-cities/' + stateId,
                 type: 'GET',
                 dataType: 'json',
-                success: function(cities) {
+                success: function (cities) {
                     $('#city').html('<option value="">Select City</option>');
-                    $.each(cities, function(index, city) {
+                    $.each(cities, function (index, city) {
                         $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
                     });
                 }
@@ -64,7 +64,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#Add_Doctors_details").on("hidden.bs.modal", function() {
+    $("#Add_Doctors_details").on("hidden.bs.modal", function () {
         $("#DoctorsForm")[0].reset();
         $("#hid").val("");
         $("#DoctorsForm").validate().resetForm();
@@ -91,38 +91,38 @@ $(document).ready(function() {
             },
         },
         columns: [{
-                data: "name",
-            },
-            {
-                data: "specialization",
-            },
+            data: "name",
+        },
+        {
+            data: "specialization",
+        },
 
-            {
-                data: "phone",
-            },
-            {
-                data: "email",
-            },
-            {
-                data: "experience",
-            },
-            {
-                data: "qualification",
-            },
-            {
-                data: "address",
-            },
-            {
-                data: "action",
-                orderable: false
-            },
+        {
+            data: "phone",
+        },
+        {
+            data: "email",
+        },
+        {
+            data: "experience",
+        },
+        {
+            data: "qualification",
+        },
+        {
+            data: "address",
+        },
+        {
+            data: "action",
+            orderable: false
+        },
         ],
     });
 
     $('#loader-container').hide();
 })
 
-$(document).on('click', '#Add_Doctors', function() {
+$(document).on('click', '#Add_Doctors', function () {
     $('#Add_Doctors_details').modal('show');
     $("#modal_title").html("");
     $("#modal_title").html("Add Doctors");
@@ -158,7 +158,7 @@ var validationRules = {
         maxlength: 6,
     },
     password: {
-        required: function() {
+        required: function () {
             return $('#hid').val() === "";
         },
 
@@ -207,7 +207,7 @@ var validationMessages = {
 $('form[id="DoctorsForm"]').validate({
     rules: validationRules,
     messages: validationMessages,
-    submitHandler: function() {
+    submitHandler: function () {
         var formData = new FormData($("#DoctorsForm")[0]);
         $('#loader-container').show();
         $.ajax({
@@ -217,12 +217,14 @@ $('form[id="DoctorsForm"]').validate({
             processData: false,
             contentType: false,
             cache: false,
-            success: function(data) {
+            success: function (data) {
                 if (data && Object.keys(data).length > 0) {
                     if (data.status == 1) {
                         toastr.success(data.message);
                         $('#loader-container').hide();
                         $('#Add_Doctors_details').modal('hide');
+                        $("#priview_image_title").hide();
+                        $("#close_icone").hide();
                     } else {
                         toastr.error(data.message);
                         $('#loader-container').hide();
@@ -237,7 +239,7 @@ $('form[id="DoctorsForm"]').validate({
     },
 });
 
-$(document).on("click", "#delete_doctors", function() {
+$(document).on("click", "#delete_doctors", function () {
     let id = $(this).data("id");
     Swal.fire({
         title: "Are you sure?",
@@ -256,7 +258,7 @@ $(document).on("click", "#delete_doctors", function() {
                     _token: $("[name='_token']").val(),
                     id: id,
                 },
-                success: function(response) {
+                success: function (response) {
                     var data = JSON.parse(response);
                     if (data.status == 1) {
                         $('#DoctorsTable').DataTable().ajax.reload();
@@ -270,7 +272,7 @@ $(document).on("click", "#delete_doctors", function() {
     });
 });
 
-$(document).on('click', '#edit_doctors', function() {
+$(document).on('click', '#edit_doctors', function () {
     var id = $(this).data("id");
     console.log("id", id);
     $.ajax({
@@ -280,7 +282,7 @@ $(document).on('click', '#edit_doctors', function() {
             _token: $("[name='_token']").val(),
             id: id,
         },
-        success: function(response) {
+        success: function (response) {
             if (response.status == 1) {
                 if (response.doctor_data) {
                     var doctorsdata = response.doctor_data;
@@ -314,9 +316,9 @@ $(document).on('click', '#edit_doctors', function() {
                         url: 'get-states/' + doctorsdata.country,
                         type: 'GET',
                         dataType: 'json',
-                        success: function(states) {
+                        success: function (states) {
                             $('#state').html('<option value="">Select State</option>');
-                            $.each(states, function(index, state) {
+                            $.each(states, function (index, state) {
                                 $('#state').append('<option value="' + state.id + '">' + state.name + '</option>');
                             });
 
@@ -328,9 +330,9 @@ $(document).on('click', '#edit_doctors', function() {
                                 url: 'get-cities/' + doctorsdata.state,
                                 type: 'GET',
                                 dataType: 'json',
-                                success: function(cities) {
+                                success: function (cities) {
                                     $('#city').html('<option value="">Select City</option>');
-                                    $.each(cities, function(index, city) {
+                                    $.each(cities, function (index, city) {
                                         $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
                                     });
 
