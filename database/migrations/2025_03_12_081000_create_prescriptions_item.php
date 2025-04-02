@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('time')->nullable();
             $table->integer('isdeleted')->default(0);
             $table->timestamps();
-            $table->integer('prescription_id');
         });
     }
 
