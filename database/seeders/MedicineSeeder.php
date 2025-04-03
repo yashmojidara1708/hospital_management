@@ -13,6 +13,12 @@ class MedicineSeeder extends Seeder
      */
     public function run(): void
     {
+
+        // Check if the medicines table is empty
+        if (DB::table('medicines')->count() > 0) {
+            echo "Skipping MedicineSeeder, data already exists.\n";
+            return;
+        }
         // Define default medicines
         $medicines = [
             [

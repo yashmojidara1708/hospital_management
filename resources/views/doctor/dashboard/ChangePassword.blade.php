@@ -38,5 +38,5 @@
 @endsection
 
 @section('doctor-js')
-<script src="{{ asset('assets/admin/theme/js/custom/doctorpassword.js') }}"></script>
+<script src="{{ asset('assets/admin/theme/js/custom/Doctorpassword.js') }}"></script>
 @endsection

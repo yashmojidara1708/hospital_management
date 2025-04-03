@@ -18,8 +18,6 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-
-
         if (Auth::check()) {
             // Fetch the authenticated staff's data
             $staff = DB::table('staff')->where('id', Auth::id())->first();

@@ -9,6 +9,11 @@ class RoomSeeder extends Seeder
 {
     public function run()
     {
+        // Check if the rooms table is empty
+        if (DB::table('rooms')->count() > 0) {
+            echo "Skipping RoomSeeder, data already exists.\n";
+            return;
+        }
         $categories = DB::table('rooms_category')->pluck('id', 'name');
 
         DB::table('rooms')->insert([

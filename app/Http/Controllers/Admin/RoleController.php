@@ -14,7 +14,7 @@ class RoleController extends Controller
     //
     public function index()
     {
-        return view('admin.hms_role.index');
+        return view('admin.roles.index');
     }
     public function toggleStatus(Request $request)
 {
@@ -38,7 +38,7 @@ class RoleController extends Controller
                     <input type="checkbox" id="status_' . $row->id . '" class="check toggle-status" data-id="' . $row->id . '" ' . $checked . '>
                     <label for="status_' . $row->id . '" class="checktoggle">checkbox</label>
                 </div>';
-       
+
             })
             ->addColumn('action', function ($row) {
                 $action = '<div class="dropdown dropup d-flex justify-content-center">
@@ -68,7 +68,7 @@ class RoleController extends Controller
             ->rawColumns(['action', 'status']) // Ensure HTML is not escaped
             ->make(true);
     }
-   
+
 
     // Create a new role
     public function save(Request $request)
@@ -97,31 +97,31 @@ class RoleController extends Controller
         );
         if (!$validator->fails()) {
             $existingRole =role::where('name', $request->name)->where('isdeleted', 0);
-    
+
             if ($hid) {
                 $existingRole->where('id', '!=', $hid); // Exclude current record during update
             }
-        
+
             if ($existingRole->exists()) {
                 return response()->json([
                     'status' => 0,
                     'message' => 'This role name is already taken. Please choose a different name.',
                 ]);
             }
-        
+
             // Check if a soft-deleted role exists with the same name
              $deletedRole =role::where('name', $request->name)->where('isdeleted', 1)->first();
-        
+
             if ($deletedRole) {
             //     // Restore the deleted role instead of creating a new one
                 $deletedRole->update(['isdeleted' => 0, 'status' => $post['status'] ?? 1]);
-        
+
                return response()->json([
                      'status' => 1,
                      'message' => "Role restored successfully!",
                  ]);
              }
-            
+
             $insert_team_data = [
                 'name' => isset($post['name']) ? $post['name'] : "",
                 'status' => isset($post['status']) ? $post['status'] : "",

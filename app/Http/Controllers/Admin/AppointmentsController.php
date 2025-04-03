@@ -27,7 +27,7 @@ class AppointmentsController extends Controller
         $doctors = GlobalHelper::getAllDoctors();
         $patients = GlobalHelper::getAllPatients();
         $specializations = GlobalHelper::getAllSpecialities();
-        return view('admin.Appointments.index', compact('specializations', 'doctors', 'patients'));
+        return view('admin.appointments.index', compact('specializations', 'doctors', 'patients'));
     }
     public function getTimeSlots(Request $request)
     {
@@ -178,11 +178,11 @@ class AppointmentsController extends Controller
             $doctorId = $request->doctor;
             $specializationId = DB::table('Doctors')
                 ->where('id', $doctorId)
-                ->value('specialization'); 
+                ->value('specialization');
 
             $insert_team_data = [
                 'doctor' => isset($post['doctor']) ? $post['doctor'] : "",
-                'specialization' => isset($specializationId) ? $specializationId : "", 
+                'specialization' => isset($specializationId) ? $specializationId : "",
                 'patient' => isset($post['patient']) ? $post['patient'] : "",
                 'date' => isset($post['date']) ? $post['date'] : "",
                 'time' => $appointmentTime,

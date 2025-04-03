@@ -22,7 +22,7 @@ class DoctorsController extends Controller
     {
         $countries = GlobalHelper::getAllCountries();
         $specializations = GlobalHelper::getAllSpecialities();
-        return view('admin.Doctor.index', compact('specializations', 'countries'));
+        return view('admin.doctor.index', compact('specializations', 'countries'));
     }
     public function save(Request $request)
     {

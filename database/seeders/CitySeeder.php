@@ -9,6 +9,12 @@ class CitySeeder extends Seeder
 {
     public function run(): void
     {
+
+        if (DB::table('cities')->count() > 0) {
+            echo "Skipping CitySeeder, data already exists.\n";
+            return;
+        }
+
         DB::table('cities')->delete();
         $cities = [
             // Andaman and Nicobar Islands (state_id = 1)

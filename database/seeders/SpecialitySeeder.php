@@ -12,6 +12,11 @@ class SpecialitySeeder extends Seeder
      */
     public function run()
     {
+        // Check if the specialities table is empty
+        if (DB::table('specialities')->count() > 0) {
+            echo "Skipping SpecialitySeeder, data already exists.\n";
+            return;
+        }
         // Define default specialties
         $specialities = [
             ['name' => 'Cardiothoracic Surgery', 'status' => 1],

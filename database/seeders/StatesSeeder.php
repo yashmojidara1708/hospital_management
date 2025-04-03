@@ -14,6 +14,11 @@ class StatesSeeder extends Seeder
      */
     public function run()
     {
+        // Check if the states table is empty
+        if (DB::table('states')->count() > 0) {
+            echo "Skipping StatesSeeder, data already exists.\n";
+            return;
+        }
         //
         DB::table('states')->delete();
         $states = array(

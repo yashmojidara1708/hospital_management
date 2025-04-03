@@ -18,6 +18,11 @@ class AdmittedPatientSeeder extends Seeder
             return; // Avoid seeding if related tables are empty
         }
 
+        if (DB::table('admitted_patients')->count() > 0) {
+            echo "Skipping AdmittedPatientSeeder, data already exists.\n";
+            return;
+        }
+
         DB::table('admitted_patients')->insert([
             [
                 'patient_id' => $patients[array_rand($patients)],

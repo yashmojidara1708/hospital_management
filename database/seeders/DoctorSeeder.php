@@ -13,6 +13,12 @@ class DoctorSeeder extends Seeder
      */
     public function run()
     {
+
+        // Check if the doctors table is empty
+        if (DB::table('doctors')->count() > 0) {
+            echo "Skipping DoctorSeeder, data already exists.\n";
+            return;
+        }
         // Ensure specialities exist or seed them if not
         $this->call(SpecialitySeeder::class);
 

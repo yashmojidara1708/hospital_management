@@ -8,19 +8,25 @@ use Illuminate\Support\Facades\DB;
 
 class PatientsSeeder extends Seeder
 {
+
     /**
      * Run the database seeds.
      */
     public function run()
     {
+        // Check if the patients table is empty
+        if (DB::table('patients')->count() > 0) {
+            echo "Skipping PatientsSeeder, data already exists.\n";
+            return;
+        }
         // Define default patients
         $patients = [
             [
                 'name' => 'Test Patient',
-                'age' => 30, 
+                'age' => 30,
                 'address' => '123 Test St',
                 'country' => 1,
-                'city' => 1, 
+                'city' => 1,
                 'state' => 1,
                 'zip' => '123456',
                 'phone' => '123-456-7890',
@@ -40,7 +46,7 @@ class PatientsSeeder extends Seeder
                 DB::table('Patients')->insert($patient);
                 echo "Inserted: " . $patient['name'] . "\n";
             } else {
-                echo "Patient already exists: " . $patient['name'] . "\n"; 
+                echo "Patient already exists: " . $patient['name'] . "\n";
             }
         }
 

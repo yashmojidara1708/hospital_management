@@ -25,7 +25,7 @@
             </tbody>
         </table>
     </div>
-    @include('admin.Appointments.AppointmentsModal')
+    @include('admin.appointments.AppointmentsModal')
 @endsection
 
 @section('admin-js')
