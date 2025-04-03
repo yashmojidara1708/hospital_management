@@ -37,13 +37,13 @@ class PatientsSeeder extends Seeder
 
         foreach ($patients as $patient) {
             // Check if patient already exists
-            $existingPatient = DB::table('Patients')
+            $existingPatient = DB::table('patients')
                 ->where('email', $patient['email'])
                 ->first();
 
             if (!$existingPatient) {
                 // Insert if not exists
-                DB::table('Patients')->insert($patient);
+                DB::table('patients')->insert($patient);
                 echo "Inserted: " . $patient['name'] . "\n";
             } else {
                 echo "Patient already exists: " . $patient['name'] . "\n";

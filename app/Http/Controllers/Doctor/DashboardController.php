@@ -22,7 +22,7 @@ class DashboardController extends Controller
 
         $DoctorEmail = isset($DoctorData['email']) ? $DoctorData['email'] : '';
         // Fetch appointments with patient details
-        $appointments = Appointments::join('Patients', 'appointments.patient', '=', 'Patients.patient_id')
+        $appointments = Appointments::join('patients', 'appointments.patient', '=', 'patients.patient_id')
             ->join('doctors', 'appointments.doctor', '=', 'doctors.id')
             ->select(
                 'appointments.id',
@@ -31,12 +31,12 @@ class DashboardController extends Controller
                 'appointments.date',
                 'appointments.time',
                 'appointments.status',
-                'Patients.name as patient_name',
-                'Patients.phone as phone',
-                'Patients.last_visit as last_visit',
-                'Patients.patient_id',
-                'Patients.phone',
-                'Patients.email',
+                'patients.name as patient_name',
+                'patients.phone as phone',
+                'patients.last_visit as last_visit',
+                'patients.patient_id',
+                'patients.phone',
+                'patients.email',
                 'doctors.name as doctor_name',
                 'doctors.email as doctor_email'
             )
