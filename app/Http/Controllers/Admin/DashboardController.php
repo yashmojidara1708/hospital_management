@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\GlobalHelper;
 use App\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Mail\AppointmentNotification;
@@ -30,6 +31,13 @@ class DashboardController extends Controller
                 ->sum('beds');
         return view('admin.dashboard.index', compact('counts'));
         // return view('admin.dashboard.index');
+
+        $staffData = session('staff_data');
+
+        $login_data = GlobalHelper::getcurrentadminlogin($staffData);
+
+        return view('admin.dashboard.index', compact('counts','login_data'));
+
     }
 
     public function fetchUpdatedAppointments()
@@ -37,7 +45,7 @@ class DashboardController extends Controller
         $DoctorData = session('doctors_data');
         $DoctorEmail = isset($DoctorData['email']) ? $DoctorData['email'] : '';
 
-        $appointments = Appointments::join('Patients', 'appointments.patient', '=', 'Patients.patient_id')
+        $appointments = Appointments::join('patients', 'appointments.patient', '=', 'patients.patient_id')
             ->join('doctors', 'appointments.doctor', '=', 'doctors.id')
             ->select(
                 'appointments.id',
@@ -46,12 +54,12 @@ class DashboardController extends Controller
                 'appointments.date',
                 'appointments.time',
                 'appointments.status',
-                'Patients.name as patient_name',
-                'Patients.phone as phone',
-                'Patients.last_visit as last_visit',
-                'Patients.patient_id',
-                'Patients.phone',
-                'Patients.email',
+                'patients.name as patient_name',
+                'patients.phone as phone',
+                'patients.last_visit as last_visit',
+                'patients.patient_id',
+                'patients.phone',
+                'patients.email',
                 'doctors.name as doctor_name',
                 'doctors.email as doctor_email'
             )
@@ -98,7 +106,7 @@ class DashboardController extends Controller
     public function updateAllAppointmentsStatus(Request $request)
     {
         $data = json_decode($request->getContent(), true);
-  
+
         // Validate input
         $validator = Validator::make($data, [
             'appointmentIds' => 'required|array',
@@ -133,7 +141,7 @@ class DashboardController extends Controller
                 ->leftJoin('patients', 'appointments.patient', '=', 'patients.patient_id')
                 ->whereIn('appointments.id', $appointmentIds)
                 ->get();
-           
+
             // 3. Send email notifications
             foreach ($appointments as $appointment) {
                 if ($appointment->patient_email) {

@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('admitted_patients', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
-            $table->foreignId('doctor_id')->constrained('doctors')->onDelete('set null')->nullable();
-            $table->foreignId('room_id')->constrained('rooms')->onDelete('set null')->nullable();
+            $table->integer('patient_id');
+            $table->integer('doctor_id')->nullable();
+            $table->integer('room_id')->nullable();
             $table->date('admit_date');
             $table->date('discharge_date')->nullable();
             $table->text('admission_reason');

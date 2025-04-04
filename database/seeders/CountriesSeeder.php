@@ -10,6 +10,12 @@ class CountriesSeeder extends Seeder
 
     public function run()
     {
+
+        if (DB::table('countries')->count() > 0) {
+            echo "Skipping CountriesSeeder, data already exists.\n";
+            return;
+        }
+
         DB::table('countries')->delete();
         $countries = array(
             array('id' => 1, 'code' => 'AF', 'name' => "Afghanistan", 'phonecode' => 93),

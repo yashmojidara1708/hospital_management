@@ -22,9 +22,9 @@
             </tbody>
         </table>
     </div>
-    @include('admin.HMS_Role.hms_roleModel')
+    @include('admin.roles.hms_roleModel')
 @endsection
 
 @section('admin-js')
-    <script src="{{ asset('assets/admin/theme/js/custom/role.js') }}"></script>
+    <script src="{{ asset('assets/admin/theme/js/custom/Role.js') }}"></script>
 @endsection

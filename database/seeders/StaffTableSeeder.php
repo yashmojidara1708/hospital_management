@@ -15,6 +15,11 @@ class StaffTableSeeder extends Seeder
      */
     public function run()
     {
+        // Check if the staff table is empty
+        if (DB::table('staff')->count() > 0) {
+            echo "Skipping StaffTableSeeder, data already exists.\n";
+            return;
+        }
         $adminRole = DB::table('roles')->where('name', 'Admin')->first();
         $adminRoleId = $adminRole ? $adminRole->id : 1;
 

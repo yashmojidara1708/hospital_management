@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -12,6 +13,12 @@ class DoctorSeeder extends Seeder
      */
     public function run()
     {
+
+        // Check if the doctors table is empty
+        if (DB::table('doctors')->count() > 0) {
+            echo "Skipping DoctorSeeder, data already exists.\n";
+            return;
+        }
         // Ensure specialities exist or seed them if not
         $this->call(SpecialitySeeder::class);
 
@@ -21,13 +28,13 @@ class DoctorSeeder extends Seeder
             ->value('id');
 
         // Check if a doctor with a specific email already exists
-        $existingDoctor = DB::table('Doctors')
+        $existingDoctor = DB::table('doctors')
             ->where('email', 'dr@gmail.com')
             ->first();
 
         if ($existingDoctor && $existingDoctor->isdeleted == 1) {
             // Update existing doctor information if marked as deleted
-            DB::table('Doctors')
+            DB::table('doctors')
                 ->where('email', 'dr@gmail.com')
                 ->update([
                     'name' => 'Dr. Admin',
@@ -49,7 +56,7 @@ class DoctorSeeder extends Seeder
             echo "Existing doctor record updated successfully.\n";
         } else if (!$existingDoctor) {
             // Insert new doctor if not exists
-            DB::table('Doctors')->insert([
+            DB::table('doctors')->insert([
                 'name' => 'Dr. Admin',
                 'role' => 'Surgeon',
                 'specialization' => $specializationId, // Use the ID from the specialities table

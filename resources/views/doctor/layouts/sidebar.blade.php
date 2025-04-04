@@ -14,7 +14,7 @@ $defaultImage = asset("assets/admin/theme/img/doctors/default.jpg");
                 <h3>{{ isset($DoctorName) ? $DoctorName : 'N/A' }}</h3>
 
                 <div class="patient-details">
-                    <h5 class="mb-0">BDS, MDS - Oral & Maxillofacial Surgery</h5>
+                    <h5 class="mb-0">{{ isset($DoctorSpecialization) ? $DoctorSpecialization : 'N/A'}}</h5>
                 </div>
             </div>
         </div>

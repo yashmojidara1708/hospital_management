@@ -10,12 +10,18 @@ class AdmittedPatientSeeder extends Seeder
 {
     public function run()
     {
-        $patients = DB::table('patients')->pluck('id')->toArray();
+        $patients = DB::table('patients')->pluck('patient_id')->toArray();
+
         $doctors = DB::table('doctors')->pluck('id')->toArray();
         $rooms = DB::table('rooms')->pluck('id')->toArray();
 
         if (empty($patients) || empty($doctors) || empty($rooms)) {
             return; // Avoid seeding if related tables are empty
+        }
+
+        if (DB::table('admitted_patients')->count() > 0) {
+            echo "Skipping AdmittedPatientSeeder, data already exists.\n";
+            return;
         }
 
         DB::table('admitted_patients')->insert([

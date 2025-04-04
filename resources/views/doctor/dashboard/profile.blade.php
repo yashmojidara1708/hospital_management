@@ -7,7 +7,7 @@
 @section('doctor-content')
 <div class="row">
     <div class="col-md-7 col-lg-8 col-xl-9">
-						
+
         <!-- Basic Information -->
         <div class="card">
             <div class="card-body">
@@ -79,7 +79,7 @@
             </div>
         </div>
         <!-- /Basic Information -->
-        
+
         <!-- About Me -->
         <div class="card">
             <div class="card-body">
@@ -91,7 +91,7 @@
             </div>
         </div>
         <!-- /About Me -->
-        
+
         <!-- Clinic Info -->
         <div class="card">
             <div class="card-body">
@@ -176,12 +176,12 @@
             </div>
         </div>
         <!-- /Contact Details -->
-        
+
         <!-- Pricing -->
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Pricing</h4>
-                
+
                 <div class="form-group mb-0">
                     <div id="pricing_select">
                         <div class="custom-control custom-radio custom-control-inline">
@@ -195,18 +195,18 @@
                     </div>
 
                 </div>
-                
+
                 <div class="row custom_price_cont" id="custom_price_cont" style="display: none;">
                     <div class="col-md-4">
                         <input type="text" class="form-control" id="custom_rating_input" name="custom_rating_count" value="" placeholder="20">
                         <small class="form-text text-muted">Custom price you can add</small>
                     </div>
                 </div>
-                
+
             </div>
         </div>
         <!-- /Pricing -->
-        
+
         <!-- Services and Specialization -->
         <div class="card services-card">
             <div class="card-body">
@@ -215,16 +215,16 @@
                     <label>Services</label>
                     <input type="text" data-role="tagsinput" class="input-tags form-control" placeholder="Enter Services" name="services" value="Tooth cleaning " id="services">
                     <small class="form-text text-muted">Note : Type & Press enter to add new services</small>
-                </div> 
+                </div>
                 <div class="form-group mb-0">
                     <label>Specialization </label>
                     <input class="input-tags form-control" type="text" data-role="tagsinput" placeholder="Enter Specialization" name="specialist" value="Children Care,Dental Care" id="specialist">
                     <small class="form-text text-muted">Note : Type & Press  enter to add new specialization</small>
-                </div> 
-            </div>              
+                </div>
+            </div>
         </div>
         <!-- /Services and Specialization -->
-     
+
         <!-- Education -->
         <div class="card">
             <div class="card-body">
@@ -237,19 +237,19 @@
                                     <div class="form-group">
                                         <label>Degree</label>
                                         <input type="text" class="form-control">
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="form-group">
                                         <label>College/Institute</label>
                                         <input type="text" class="form-control">
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="form-group">
                                         <label>Year of Completion</label>
                                         <input type="text" class="form-control">
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -261,7 +261,7 @@
             </div>
         </div>
         <!-- /Education -->
-    
+
         <!-- Experience -->
         <div class="card">
             <div class="card-body">
@@ -274,25 +274,25 @@
                                     <div class="form-group">
                                         <label>Hospital Name</label>
                                         <input type="text" class="form-control">
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="form-group">
                                         <label>From</label>
                                         <input type="text" class="form-control">
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="form-group">
                                         <label>To</label>
                                         <input type="text" class="form-control">
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="form-group">
                                         <label>Designation</label>
                                         <input type="text" class="form-control">
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -304,7 +304,7 @@
             </div>
         </div>
         <!-- /Experience -->
-        
+
         <!-- Awards -->
         <div class="card">
             <div class="card-body">
@@ -315,13 +315,13 @@
                             <div class="form-group">
                                 <label>Awards</label>
                                 <input type="text" class="form-control">
-                            </div> 
+                            </div>
                         </div>
                         <div class="col-12 col-md-5">
                             <div class="form-group">
                                 <label>Year</label>
                                 <input type="text" class="form-control">
-                            </div> 
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -331,7 +331,7 @@
             </div>
         </div>
         <!-- /Awards -->
-        
+
         <!-- Memberships -->
         <div class="card">
             <div class="card-body">
@@ -342,7 +342,7 @@
                             <div class="form-group">
                                 <label>Memberships</label>
                                 <input type="text" class="form-control">
-                            </div> 
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -352,7 +352,7 @@
             </div>
         </div>
         <!-- /Memberships -->
-        
+
         <!-- Registrations -->
         <div class="card">
             <div class="card-body">
@@ -363,13 +363,13 @@
                             <div class="form-group">
                                 <label>Registrations</label>
                                 <input type="text" class="form-control">
-                            </div> 
+                            </div>
                         </div>
                         <div class="col-12 col-md-5">
                             <div class="form-group">
                                 <label>Year</label>
                                 <input type="text" class="form-control">
-                            </div> 
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -379,15 +379,15 @@
             </div>
         </div>
         <!-- /Registrations -->
-        
+
         <div class="submit-section submit-btn-bottom">
             <button type="submit" class="btn btn-primary submit-btn">Save Changes</button>
         </div>
-        
+
     </div>
 </div>
 @endsection
 
 @section('doctor-js')
-<script src="{{ asset('assets/admin/theme/js/custom/doctorpassword.js') }}"></script>
+<script src="{{ asset('assets/admin/theme/js/custom/Doctorpassword.js') }}"></script>
 @endsection

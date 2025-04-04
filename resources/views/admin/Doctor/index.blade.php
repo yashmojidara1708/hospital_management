@@ -27,7 +27,7 @@
             </tbody>
         </table>
     </div>
-    @include('admin.Doctor.DoctorModal')
+    @include('admin.doctor.DoctorModal')
 @endsection
 
 @section('admin-js')
