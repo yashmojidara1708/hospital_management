@@ -16,7 +16,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $tables = ['doctors', 'staff', 'patients'];
+        $tables = ['doctors', 'staff', 'patients','rooms'];
         $counts = [];
 
         foreach ($tables as $table) {
@@ -24,11 +24,20 @@ class DashboardController extends Controller
                 ->where('isdeleted', '!=', 1)
                 ->count();
         }
+     
+            // Sum total beds for rooms
+            $counts['total_beds'] = DB::table('rooms')
+                ->where('isdeleted', '!=', 1)
+                ->sum('beds');
+        return view('admin.dashboard.index', compact('counts'));
+        // return view('admin.dashboard.index');
+
         $staffData = session('staff_data');
 
         $login_data = GlobalHelper::getcurrentadminlogin($staffData);
 
         return view('admin.dashboard.index', compact('counts','login_data'));
+
     }
 
     public function fetchUpdatedAppointments()

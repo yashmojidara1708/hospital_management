@@ -2,7 +2,6 @@
 
 @section('admin-title', 'Admit patients')
 @section('page-title', 'List of Patients')
-
 @section('add-button')
     <div class="col-sm-5 col">
         <a id="add_admit_patient" data-toggle="modal" data-target="#add_admit_patient_details"
@@ -33,5 +32,5 @@
 @endsection
 
 @section('admin-js')
-    <script src="{{ asset('assets/admin/theme/js/custom/Admitpatients.js') }}"></script>
+<script src="{{ asset('assets/admin/theme/js/custom/Admitpatients.js') }}"></script>
 @endsection

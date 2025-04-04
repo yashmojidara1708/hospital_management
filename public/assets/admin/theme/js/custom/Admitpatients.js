@@ -1,8 +1,44 @@
-$(document).ready(function () {
+$(document).ready(function() {
     if ($.fn.DataTable.isDataTable('#admitPatientTable')) {
         $('#admitPatientTable').DataTable().destroy();
     }
+    $('#room_id').change(function() {
+        var roomId = $(this).val();
+        console.log(roomId);
+        if (!roomId) {
+            // Clear calendar if no room selected
+            return;
+        }
+        $.ajax({
+            url: '/admin/fetch-room-availability/' + roomId,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                if (response.length > 0) {
+                    let room = response[0]; // Assuming one room is returned
+                    let message = `Room:${room.room_number}-${room.category_name}<br>
+                    🛏 Total Beds: ${room.beds}<br>  
+                    🏥 Occupied Beds: ${room.occupied_beds} <br> 
+                    ✅ Available Beds: ${room.remaining_beds}<br>`;
 
+                    let bgColor = room.remaining_beds == 0 ? "error" : "success";
+
+                    toastr[bgColor](message, "Room Availability", {
+                        timeOut: 15000, // Auto-close after 10 seconds
+                        progressBar: true,
+                        positionClass: "toast-top-right"
+                    });
+                } else {
+                    toastr.warning("No data found for this room.", "Warning");
+                }
+                // Add new events
+            },
+            error: function(error) {
+                toastr.error("Failed to fetch room availability.", "Error");
+            }
+        });
+    });
     $('#admitPatientTable').dataTable({
         processing: true,
         serverSide: true,
@@ -31,14 +67,14 @@ $(document).ready(function () {
         ],
     });
 
-    $("#add_admit_patient_details").on("hidden.bs.modal", function () {
+    $("#add_admit_patient_details").on("hidden.bs.modal", function() {
         $("#admitPatientForm")[0].reset();
         $("#hidden_id").val("");
         $("#admitPatientForm").validate().resetForm();
         $("#admitPatientForm").find('.error').removeClass('error');
     });
 
-    $('#add_admit_patient').click(function () {
+    $('#add_admit_patient').click(function() {
         $('#modal_title').text('Add Patient');
         $('#admitPatientForm')[0].reset();
         $('#hidden_id').val('');
@@ -73,7 +109,7 @@ $(document).ready(function () {
     $('form[id="admitPatientForm"]').validate({
         rules: validationRules,
         messages: validationMessages,
-        submitHandler: function () {
+        submitHandler: function() {
             var formData = new FormData($("#admitPatientForm")[0]);
             $('#loader-container').show();
             $.ajax({
@@ -83,22 +119,22 @@ $(document).ready(function () {
                 processData: false,
                 contentType: false,
                 cache: false,
-                success: function (response) {
-                    if (response?.status == 1) {
+                success: function(response) {
+                    if (response.status == 1) {
                         $('#admitPatientForm')[0].reset();
                         $('#hidden_room_id').val('');
                         $('#add_admit_patient_details').modal('hide');
                         $('#admitPatientTable').DataTable().ajax.reload();
-                        toastr.success(response?.message);
+                        toastr.success(response.message);
                     } else {
-                        toastr.error(response?.message);
+                        toastr.error(response.message);
                     }
                 }
             });
         },
     });
 
-    $(document).on("click", "#delete_admitdetails", function () {
+    $(document).on("click", "#delete_admitdetails", function() {
         let id = $(this).data("id");
         Swal.fire({
             title: "Are you sure?",
@@ -117,7 +153,7 @@ $(document).ready(function () {
                         _token: $("[name='_token']").val(),
                         id: id,
                     },
-                    success: function (response) {
+                    success: function(response) {
                         var data = JSON.parse(response);
                         if (data.status == 1) {
                             $('#admitPatientTable').DataTable().ajax.reload();
@@ -131,7 +167,7 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on("click", "#edit_admitdetails", function () {
+    $(document).on("click", "#edit_admitdetails", function() {
         let id = $(this).data("id");
         $('#modal_title').text('Edit Patient');
         $.ajax({
@@ -141,7 +177,7 @@ $(document).ready(function () {
                 _token: $("[name='_token']").val(),
                 id: id,
             },
-            success: function (response) {
+            success: function(response) {
                 var data = JSON.parse(response);
                 console.log("data", data);
                 if (data.status == 1) {
