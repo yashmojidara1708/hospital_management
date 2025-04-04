@@ -10,7 +10,7 @@ class AdmittedPatientSeeder extends Seeder
 {
     public function run()
     {
-        $patients = DB::table('patients')->pluck('id')->toArray();
+        $patients = DB::table('patients')->pluck('patient_id')->toArray();
         $doctors = DB::table('doctors')->pluck('id')->toArray();
         $rooms = DB::table('rooms')->pluck('id')->toArray();
 
