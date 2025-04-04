@@ -11,7 +11,7 @@ class Room extends Model
 
     protected $table = 'rooms';
     protected $primaryKey = 'id';
-    protected $fillable = ['category_id', 'room_number', 'beds', 'charges', 'status'];
+    protected $fillable = ['category_id', 'room_number', 'beds', 'charges', 'status','isdeleted'];
 
     // Relationship: Each room belongs to one category
     public function category()

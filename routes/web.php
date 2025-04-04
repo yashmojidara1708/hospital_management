@@ -103,8 +103,16 @@ Route::middleware(['auth:staff'])->prefix('admin')->group(function () {
     Route::get('/rooms/edit', [App\Http\Controllers\Admin\RoomController::class, 'edit'])->name('admin.rooms.edit');
     Route::post('/rooms/delete', [App\Http\Controllers\Admin\RoomController::class, 'delete'])->name('admin.rooms.delete');
 
+    // generate bill
+    Route::get('/generatebill/{id}', [App\Http\Controllers\Admin\AdmitPatientController::class,'generateBill'])->name('admin.generatebill');
+ 
+    // store bill
+    Route::POST('/bill/store', [App\Http\Controllers\Admin\BillController::class,'storebill'])->name('admin.savebill');
+ 
     // Admit Patient
-    Route::get('/admit-patient', [App\Http\Controllers\Admin\AdmitPatientController::class, 'index'])->name('admin.admit-patient');
+
+    Route::get('/fetch-room-availability/{room_id}', [App\Http\Controllers\Admin\AdmitPatientController::class, 'fetchRoomAvailability'])->name('admin.admit-patient.fetchRoomAvailability');
+     Route::get('/admit-patient', [App\Http\Controllers\Admin\AdmitPatientController::class, 'index'])->name('admin.admit-patient');
     Route::post('/admit-patient/list', [App\Http\Controllers\Admin\AdmitPatientController::class, 'list'])->name('admin.admit-patient.list');
     Route::post('/admit-patient/save', [App\Http\Controllers\Admin\AdmitPatientController::class, 'save'])->name('admin.admit-patient.save');
     Route::get('/admit-patient/edit', [App\Http\Controllers\Admin\AdmitPatientController::class, 'edit'])->name('admin.admit-patient.edit');
