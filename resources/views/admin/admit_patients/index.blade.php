@@ -14,6 +14,7 @@
         <table class="datatable table table-hover mb-0" id="admitPatientTable">
             <thead class="text-left">
                 <tr>
+                    <th>Id</th>
                     <th>Patient Name</th>
                     <th>Doctor Name</th>
                     <th>Room</th>

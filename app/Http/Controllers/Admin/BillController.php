@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bill;
+use Illuminate\Support\Facades\Auth;
 class BillController extends Controller
 {
     //
@@ -26,9 +27,9 @@ class BillController extends Controller
             'room_charge' => $request->room_charge,
             'doctor_fees'=>$request->doctor_fee,
             'discount' => $request->discount,
-            'discount_amount'=>$request->discount_amount,
+            'discount_amount'=>$request->discount_amount_hidden,
             'total_amount' => $request->total_amount,
-            'generated_by' => $request->generated_by, 
+            'generated_by'    =>Auth::user()->id 
         ]);
         return response()->json(['status' => 1, 'message' => 'Bill Saved Successfully!!']);
 
