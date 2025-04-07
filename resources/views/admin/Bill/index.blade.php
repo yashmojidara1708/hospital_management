@@ -1,7 +1,7 @@
 @extends('admin.layouts.index')
 
-@section('admin-title', 'Generate Bill')
-@section('page-title', 'Bill')
+@section('admin-title', 'Patient Bill')
+@section('page-title', 'Patient Bill')
 
 @section('admin-content')
 <div class="col-lg-12 offset-lg-0">
@@ -109,7 +109,6 @@
             $days_admitted = $patientdetail->days_admitted;
             $room_total = $room_charge * $days_admitted;
             $doctor_total = $doctor_fee * $days_admitted;
-            $subtotal = $room_total + $doctor_total;
             if($days_admitted==0)
             {
                 $discount=0;
@@ -120,9 +119,9 @@
                 $total=$subtotal-$discountamount;  
             }
             else {
-                $discount=10;
+               /* $discount=10;
                 $discountamount=(($subtotal*10)/100);
-                $total=$subtotal-$discountamount;     
+                $total=$subtotal-$discountamount;  */   
             }
                    
         @endphp
@@ -158,56 +157,78 @@
         </tr>
     </tbody>
     <tfoot>
-       
-          
-        @if (isset( $days_admitted) && $days_admitted >=1)
+               
+                @if($days_admitted==0)
+                <tr>
+                    <th colspan="3" class="text-right">Sub Total</th>
+                    <th class="text-center" id="sub_total">
+                        <span id="sub_total">₹0.00</span> 
+                    </th>
+                </tr>  
+                @else
                 <tr>
                     <th colspan="4" class="text-right">Sub Total</th>
-                    <th class="text-right">₹{{ number_format($subtotal, 2) }}</th>
+                    <th class="text-center" id="sub_total">
+                        <span id="sub_total">₹0.00</span> 
+                    </th>
                 </tr>
-            <tr>
-                <th colspan="4" class="text-right text-danger">Discount(10%)</th>
-                <th class="text-right text-danger">- ₹{{ number_format($discountamount, 2) }}</th>
+                @endif
+                @if($days_admitted==0)
+                <tr>
+                <th colspan="3" class="text-right text-danger">
+                    Discount (%) 
+                    <input type="number" id="discount_percentage" class="form-control d-inline w-25 ml-2" 
+                           value="{{ $discount ?? 0 }}" min="0" max="100" step="1">
+                </th>
+                <th class="text-center text-danger">
+                    <span id="discount_amount">- ₹0.00</span>
+                </th>
             </tr>  
-        @endif  
-        @if (isset( $days_admitted) && $days_admitted >=1) 
-        <tr>
-            <th colspan="4" class="text-right">Grand Total</th>
-            <th class="text-right text-success">
-                ₹{{ number_format($total, 2) }}
+            @else
+            <tr>
+            <th colspan="4" class="text-right text-danger">
+                Discount (%) 
+                <input type="number" id="discount_percentage" class="form-control d-inline w-25 ml-2" 
+                       value="{{ $discount ?? 0 }}" min="0" max="100" step="1">
             </th>
-        </tr>    
-        @else
-        <tr>
-            <th colspan="3" class="text-right">Grand Total</th>
-            <th class="text-center text-success">
-                ₹{{ number_format($total, 2) }}
+            <th class="text-center text-danger">
+                <span id="discount_amount">- ₹0.00</span>
             </th>
         </tr> 
         @endif
+        @if($days_admitted==0)
+        <tr>
+            <th colspan="3" class="text-right">Grand Total</th>
+            <th class="text-center text-success">
+                <span id="grand_total">₹0.00</span>
+            </th>
+        </tr>    
+      @else
+      <tr>
+        <th colspan="4" class="text-right">Grand Total</th>
+        <th class="text-center text-success">
+            <span id="grand_total">₹0.00</span>
+        </th>
+    </tr>    
+      @endif
     </tfoot>
-</table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @php
-                $formatter = new NumberFormatter('en', NumberFormatter::SPELLOUT);
-                $amountInWords = ucfirst($formatter->format($total)) . ' rupees only';
-            @endphp
-           
+</table>                     
+    </div>   
+    </div>
+    </div>
+    </div>           
            <div class="other-info mt-3">
             <h4 class="d-flex align-items-center">
                 <i class="fa-solid fa-money-bill-wave text-success mr-2"></i> Total Payable Amount
             </h4>
-            <p class="text-muted mb-1"><strong>₹{{ number_format($total, 2, '.', '') }}</strong></p>
-            <p class="text-muted"><em>({{ ucwords($amountInWords) }})</em></p>
+            <p class="text-muted mb-1"><strong> <span id="grand_total_display"></span></strong></p>
+            <p class="text-muted"><em><span id="grand_total_in_words"></span></em></p>
         </div>
         
             <div class="other-info">
                 <h4>Other Information</h4>
                 <p class="text-muted mb-0">Thank you for trusting our medical services. Should you have any questions regarding your treatment or this invoice, please feel free to contact our billing department. We are committed to providing you with the highest level of care and support.
-
+                </p>
                 </div>
 
             <div class="d-flex justify-content-end mt-3">
@@ -227,28 +248,43 @@
         <input type="hidden" name="admission_date" value="{{ $patientdetail->admit_date }}">
        <input type="hidden" name="discharge_date" value="{{ $patientdetail->discharge_date }}">
        <input type="hidden" name="total_days" value="{{ $patientdetail->days_admitted}}">
-      <input type="hidden" name="room_charge" value="{{$room_charge}}">
-     <input type="hidden" name="doctor_fee" value="{{ $doctor_total}}">
-    <input type="hidden" name="discount" value="{{ $discount}}">
-    <input type="hidden" name="discount_amount" value="{{$discountamount}}">
-    <input type="hidden" name="total_amount" value="{{$total}}">
-    <input type="hidden" name="generated_by" value="{{ auth()->user()->id }}"> 
+      <input type="hidden" id="room_charge" name="room_charge" value="{{$room_total}}">
+     <input type="hidden"  id="doctor_fee" name="doctor_fee" value="{{ $doctor_total}}">
+     <input type="hidden" id="discount" name="discount" value="0">
+     <input type="hidden"  id="discount_amount_hidden" name="discount_amount_hidden" value="0">
+     <input type="hidden"  id="total_amount" name="total_amount" value="0">
+
     </form>
     
-
 @endsection
 
 @section('admin-js')
 <script>
     function printInvoice() {
-        var printContent = document.getElementById("invoice-container").innerHTML;
+        // Get the container
+        var container = document.getElementById("invoice-container");
+    
+        // Clone it to avoid changing the original DOM
+        var clone = container.cloneNode(true);
+    
+        // Replace all input[type=number] with span elements showing their value
+        var numberInputs = clone.querySelectorAll('input[type="number"]');
+        numberInputs.forEach(function(input) {
+            var valueSpan = document.createElement("span");
+            valueSpan.textContent = input.value;
+            input.parentNode.replaceChild(valueSpan, input);
+        });
+    
+        // Get the modified HTML for printing
+        var printContent = clone.innerHTML;
         var originalContent = document.body.innerHTML;
-
+    
         document.body.innerHTML = printContent;
         window.print();
         document.body.innerHTML = originalContent;
         location.reload();
     }
-</script>
+    </script>
+    
 <script src="{{ asset('assets/admin/theme/js/custom/PatientBill.js') }}"></script>
 @endsection

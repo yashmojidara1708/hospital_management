@@ -159,8 +159,9 @@ class AdmitPatientController extends Controller
             ->join('rooms', 'admitted_patients.room_id', '=', 'rooms.id')
             ->join('rooms_category', 'rooms.category_id', '=', 'rooms_category.id') // Get room category name
             ->where('admitted_patients.isdeleted', 0)
-            ->orderBy('admitted_patients.id', 'desc')
+            ->orderBy('admitted_patients.id','desc')
             ->get();
+          //  dd($admit_patients);
         return Datatables::of($admit_patients)
             ->addIndexColumn()
             ->addColumn('patient', function ($appointment) {
