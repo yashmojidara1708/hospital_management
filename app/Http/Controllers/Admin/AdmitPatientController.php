@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AdmitPatient;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class AdmitPatientController extends Controller
 {
@@ -15,15 +16,45 @@ class AdmitPatientController extends Controller
         return view('admin.admit_patients.index');
     }
 
+    public function fetchRoomAvailability($room_id)
+{
+    // Fetch only bookings for the selected room
+
+    $roomsWithPatients = DB::table('rooms')
+    ->leftJoin('admitted_patients', function ($join) {
+        $join->on('rooms.id', '=', 'admitted_patients.room_id')
+            ->where(function ($query) {
+                $query->whereNull('admitted_patients.discharge_date') // Active Patients
+                      ->orWhere('admitted_patients.discharge_date', '>=', now()); // Future Discharges
+            });
+    })
+    ->leftJoin('rooms_category', 'rooms.category_id', '=', 'rooms_category.id') 
+    ->select(
+        'rooms_category.name as category_name', 
+        'rooms.room_number',
+        DB::raw('COUNT(admitted_patients.id) as occupied_beds'), // Count active patients
+        'rooms.beds',
+        DB::raw('(rooms.beds - COUNT(admitted_patients.id)) as remaining_beds') // Calculate free beds
+    )
+    ->where('rooms.id', $room_id)
+    ->groupBy('rooms.id', 'rooms.room_number', 'rooms.beds','rooms_category.name')
+    ->get();
+   return response()->json($roomsWithPatients);
+}
+
     public function save(Request $request)
     {
         $post = $request->post();
         $id = isset($post['hidden_id']) ? intval($post['hidden_id']) : null;
         $patientid = isset($post['patient_id']) ? $post['patient_id'] : "";
         if (!$id) {
-            $admit_patient = AdmitPatient::where('patient_id', $patientid)
-                ->where('isdeleted', 0)
-                ->first();
+            $admit_patient = AdmitPatient::where(function ($query) {
+                $query->whereNull('discharge_date')
+                      ->orWhere('discharge_date', '>', today());
+            })
+            ->where('isdeleted', 0)
+            ->where('patient_id', $patientid)
+            ->first();
 
             if ($admit_patient) {
                 $response['status'] = 0;
@@ -84,6 +115,34 @@ class AdmitPatientController extends Controller
         exit;
     }
 
+    public function generateBill($id)
+    {
+        $patientdetail=AdmitPatient::select(
+            'admitted_patients.*',
+            'patients.name as patient_name',
+            'patients.phone as patient_phone',
+            'patients.address as patient_address',
+            'doctors.name as doctor_name',
+            'cities.name as city_name',
+            'states.name as state_name',
+            'specialities.name as specialization_name',
+            'rooms.room_number as room_number',
+            'rooms.charges as charges',
+            'rooms_category.name as room_category',
+            DB::raw("IF(admitted_patients.discharge_date IS NOT NULL,
+             DATEDIFF(admitted_patients.discharge_date, admitted_patients.admit_date), NULL) AS days_admitted")
+        )->join('patients', 'admitted_patients.patient_id', '=', 'patients.patient_id')
+        ->join('doctors', 'admitted_patients.doctor_id', '=', 'doctors.id')
+        ->join('cities', 'patients.city', '=', 'cities.id')
+        ->join('states', 'patients.state', '=', 'states.id')
+        ->join('specialities', 'doctors.specialization', '=', 'specialities.id')
+        ->join('rooms', 'admitted_patients.room_id', '=', 'rooms.id')
+        ->join('rooms_category', 'rooms.category_id', '=', 'rooms_category.id') // Get room category name
+        ->where('admitted_patients.id','=',$id)
+        ->first();
+        // return $patientdetail;
+       return view('admin.Bill.index',compact('patientdetail'));
+    }
     public function list()
     {
         $admit_patients = AdmitPatient::select(
@@ -100,8 +159,9 @@ class AdmitPatientController extends Controller
             ->join('rooms', 'admitted_patients.room_id', '=', 'rooms.id')
             ->join('rooms_category', 'rooms.category_id', '=', 'rooms_category.id') // Get room category name
             ->where('admitted_patients.isdeleted', 0)
-            ->orderBy('admitted_patients.id', 'desc')
+            ->orderBy('admitted_patients.id','desc')
             ->get();
+          //  dd($admit_patients);
         return Datatables::of($admit_patients)
             ->addIndexColumn()
             ->addColumn('patient', function ($appointment) {
@@ -117,7 +177,7 @@ class AdmitPatientController extends Controller
                 return "{$room_number} - {$room_category}";
             })
             ->addColumn('discharge_date', function ($admit_patients) {
-                return $admit_patients->discharge_date ? date('d-m-Y', $admit_patients->discharge_date) : '-';
+                return $admit_patients->discharge_date ? date('d-m-Y', strtotime($admit_patients->discharge_date)) : '-';
             })
             ->addColumn('status', function ($admit_patients) {
                 $statusLabels = [
@@ -126,7 +186,20 @@ class AdmitPatientController extends Controller
                     3 => 'Transferred'
                 ];
                 $statusText = $statusLabels[$admit_patients->status] ?? 'Unknown';
-                return  $statusText;
+
+                if($admit_patients->status==2)
+                {
+                    return '<a href="'.route('admin.generatebill',['id'=>$admit_patients->id]).'" class="btn btn-sm btn-primary">Generate Bill</a>';
+                   
+                }
+                else if($admit_patients->status==1)
+                {
+                    return '<button class="btn btn-sm btn-secondary" disabled>Admitted</button>';
+                }
+                else
+                {
+                    return '<button class="btn btn-sm btn-warning" disabled>Admitted</button>';
+                }
             })
 
             ->addColumn('action', function ($row) {

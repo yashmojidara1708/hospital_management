@@ -1,7 +1,18 @@
-$(document).ready(function () {
+isEditing = false;
+$(document).ready(function() {
     if ($.fn.DataTable.isDataTable('#admitPatientTable')) {
         $('#admitPatientTable').DataTable().destroy();
     }
+    $('#room_id').change(function() {
+        var roomId = $(this).val();
+
+        if (!roomId || isEditing) {
+            return; // Prevent calling function during edit mode
+        }
+
+        fetchRoomAvailability(roomId); // Call function only if user manually changes the room
+    });
+
 
     $('#admitPatientTable').dataTable({
         processing: true,
@@ -19,7 +30,11 @@ $(document).ready(function () {
                 _token: $("[name='_token']").val(),
             },
         },
+        order: [
+            [0, 'desc']
+        ],
         columns: [
+            { data: "id" },
             { data: "patient" },
             { data: "doctor" },
             { data: "rooms" },
@@ -31,18 +46,26 @@ $(document).ready(function () {
         ],
     });
 
-    $("#add_admit_patient_details").on("hidden.bs.modal", function () {
+    $("#add_admit_patient_details").on("hidden.bs.modal", function() {
         $("#admitPatientForm")[0].reset();
         $("#hidden_id").val("");
         $("#admitPatientForm").validate().resetForm();
         $("#admitPatientForm").find('.error').removeClass('error');
     });
 
-    $('#add_admit_patient').click(function () {
+    $('#add_admit_patient').click(function() {
         $('#modal_title').text('Add Patient');
         $('#admitPatientForm')[0].reset();
         $('#hidden_id').val('');
         $('#add_admit_patient_details').modal('show');
+        setTimeout(() => {
+            var hiddenId = $("#hidden_id").val(); // Fetch hidden_id after modal is shown
+            if (!hiddenId) {
+                // If adding a new patient
+                $("#discharge_date").prop("disabled", true).val('');
+                $("#admission_date").prop("disabled", false);
+            }
+        }, 500);
     });
 
     let today = new Date().toISOString().split("T")[0]; // Get today's date
@@ -73,9 +96,11 @@ $(document).ready(function () {
     $('form[id="admitPatientForm"]').validate({
         rules: validationRules,
         messages: validationMessages,
-        submitHandler: function () {
+        submitHandler: function() {
             var formData = new FormData($("#admitPatientForm")[0]);
             $('#loader-container').show();
+            $("#discharge_date").prop("disabled", false);
+            $("#admission_date").prop("disabled", false);
             $.ajax({
                 url: BASE_URL + '/admin/admit-patient/save',
                 type: 'POST',
@@ -83,22 +108,22 @@ $(document).ready(function () {
                 processData: false,
                 contentType: false,
                 cache: false,
-                success: function (response) {
-                    if (response?.status == 1) {
+                success: function(response) {
+                    if (response.status == 1) {
                         $('#admitPatientForm')[0].reset();
                         $('#hidden_room_id').val('');
                         $('#add_admit_patient_details').modal('hide');
                         $('#admitPatientTable').DataTable().ajax.reload();
-                        toastr.success(response?.message);
+                        toastr.success(response.message);
                     } else {
-                        toastr.error(response?.message);
+                        toastr.error(response.message);
                     }
                 }
             });
         },
     });
 
-    $(document).on("click", "#delete_admitdetails", function () {
+    $(document).on("click", "#delete_admitdetails", function() {
         let id = $(this).data("id");
         Swal.fire({
             title: "Are you sure?",
@@ -117,7 +142,7 @@ $(document).ready(function () {
                         _token: $("[name='_token']").val(),
                         id: id,
                     },
-                    success: function (response) {
+                    success: function(response) {
                         var data = JSON.parse(response);
                         if (data.status == 1) {
                             $('#admitPatientTable').DataTable().ajax.reload();
@@ -131,8 +156,15 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on("click", "#edit_admitdetails", function () {
+    $(document).on("click", "#edit_admitdetails", function() {
+        isEditing = false;
         let id = $(this).data("id");
+        let today = new Date().toISOString().split("T")[0]; // Get today's date
+        let pastDate = new Date();
+        pastDate.setDate(pastDate.getDate() - 3); // Get past 3 days date
+        let minDate = pastDate.toISOString().split("T")[0];
+
+        $("#discharge_date").attr("max", today).attr("min", minDate);
         $('#modal_title').text('Edit Patient');
         $.ajax({
             type: "GET",
@@ -141,7 +173,7 @@ $(document).ready(function () {
                 _token: $("[name='_token']").val(),
                 id: id,
             },
-            success: function (response) {
+            success: function(response) {
                 var data = JSON.parse(response);
                 console.log("data", data);
                 if (data.status == 1) {
@@ -150,13 +182,28 @@ $(document).ready(function () {
                     $('#admitPatientForm').find('.error').removeClass('error');
                     $('#admitPatientForm').validate().resetForm();
                     $('#add_admit_patient_details').modal('show');
+                    $("#admission_date").prop("disabled", true);
+                    $("#discharge_date").prop("disabled", false);
                     $("#admitPatientForm").find("#patient_id").val(data.data.patient_id).trigger('change');
                     $("#admitPatientForm").find("#doctor_id").val(data.data.doctor_id).trigger('change');
+                    $('#room_id').off('change');
+
                     $("#admitPatientForm").find("#room_id").val(data.data.room_id).trigger('change');
                     $("#admitPatientForm").find("#admission_date").val(data.data.admit_date);
                     $("#admitPatientForm").find("#discharge_date").val(data.data.discharge_date);
                     $("#admitPatientForm").find("#admit_reason").val(data.data.admission_reason);
                     $("#admitPatientForm").find("#status").val(data.data.status).trigger('change');
+                    setTimeout(() => {
+                        $('#room_id').on('change', function() {
+                            var roomId = $(this).val();
+                            if (!roomId || isEditing) {
+                                return;
+                            }
+                            fetchRoomAvailability(roomId);
+                        });
+
+                        isEditing = false; // Reset flag after loading form data
+                    }, 500);
                 } else {
                     toastr.error(data.message);
                 }
@@ -165,3 +212,36 @@ $(document).ready(function () {
     });
 
 });
+
+function fetchRoomAvailability(roomId) {
+    $.ajax({
+        url: '/admin/fetch-room-availability/' + roomId,
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            console.log(response);
+            if (response.length > 0) {
+                let room = response[0]; // Assuming one room is returned
+                let message = `Room:${room.room_number}-${room.category_name}<br>
+                🛏 Total Beds: ${room.beds}<br>  
+                🏥 Occupied Beds: ${room.occupied_beds} <br> 
+                ✅ Available Beds: ${room.remaining_beds}<br>`;
+
+                let bgColor = room.remaining_beds == 0 ? "error" : "success";
+
+                toastr[bgColor](message, "Room Availability", {
+                    timeOut: 15000, // Auto-close after 10 seconds
+                    progressBar: true,
+                    positionClass: "toast-top-right"
+                });
+            } else {
+                toastr.warning("No data found for this room.", "Warning");
+            }
+            // Add new events
+        },
+        error: function(error) {
+            toastr.error("Failed to fetch room availability.", "Error");
+        }
+    });
+
+}

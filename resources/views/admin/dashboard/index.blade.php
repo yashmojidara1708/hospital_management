@@ -2,11 +2,11 @@
 @section('admin-title', 'Dashboard')
 @section('page-title', 'Dashboard')
 @php
-    $titles = ['Doctors', 'Staffs', 'Patients'];
-    $icons = ['fe fe-users', 'fa-solid fa-users', 'fe fe-user-plus'];
-    $colors = ['text-primary', 'text-success', 'text-warning'];
-    $border = ['border-primary', 'border-success', 'border-warning'];
-    $progressColors = ['bg-primary', 'bg-success', 'bg-warning'];
+    $titles = ['Doctors', 'Staffs', 'Patients','Rooms','Total Beds'];
+    $icons = ['fe fe-users', 'fa-solid fa-users', 'fe fe-user-plus','fa fa-bed','fa fa-procedures'];
+    $colors = ['text-primary', 'text-success', 'text-warning','text-info','text-danger'];
+    $border = ['border-primary', 'border-success', 'border-warning','border-info','border-danger'];
+    $progressColors = ['bg-primary', 'bg-success', 'bg-warning','bg-info','bg-danger'];
 @endphp
 @section('admin-content')
     <div class="row">

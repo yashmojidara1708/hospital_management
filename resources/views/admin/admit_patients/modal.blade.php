@@ -42,7 +42,7 @@
                             @endforeach
                         </select>
                     </div>
-
+                    <div id="roomAvailabilityCalendar"></div>
                     <div class="form-group">
                         <label>Admission Date</label>
                         <input type="date" id="admission_date" name="admission_date" class="form-control" required>
