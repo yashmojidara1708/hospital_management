@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    calculateTotal();
+
     function numberToWords(amount) {
         const words = [
             '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
@@ -53,7 +55,7 @@ $(document).ready(function() {
     var room_charge = parseFloat($('#room_charge').val()) || 0;
     // Calculate Subtotal
     var subtotal = doctor_fee + room_charge;
-    $('#sub_total').text('₹' + subtotal.toFixed(2));
+    $('#sub_total').text('\u20B9' + subtotal.toFixed(2));
 
     function calculateTotal() {
         // Fetch and parse subtotal safely
@@ -64,7 +66,7 @@ $(document).ready(function() {
         console.log(total_days);
         // Calculate Subtotal
         var subtotal = doctor_fee + room_charge;
-        $('#sub_total').text('₹' + subtotal.toFixed(2));
+        $('#sub_total').text('\u20B9' + subtotal.toFixed(2));
         // Initialize discount amount
         var discount_amount = 0;
         var grand_total = subtotal;
@@ -73,9 +75,11 @@ $(document).ready(function() {
 
         discount_amount = (subtotal * discount_percentage) / 100;
         grand_total = subtotal - discount_amount;
-        $('#discount_amount').text('- ₹' + discount_amount.toFixed(2));
-        $('#grand_total').text('₹' + grand_total.toFixed(2));
-        $('#grand_total_display').text('₹' + grand_total.toFixed(2));
+
+        $('#discount_amount').text('- \u20B9' + discount_amount.toFixed(2));
+        $('#grand_total').text('\u20B9' + grand_total.toFixed(2));
+        $('#grand_total_display').text('\u20B9' + grand_total.toFixed(2));
+
         $('#grand_total_in_words').text(numberToWords(grand_total));
 
         const hiddenDiscount = document.getElementById("discount");
@@ -89,7 +93,6 @@ $(document).ready(function() {
         // Show Grand Total
 
     }
-
 
     // Trigger calculation when discount input changes
     $('#discount_percentage').on('input', function() {
@@ -135,3 +138,4 @@ $(document).ready(function() {
         });
     }
 });
+
