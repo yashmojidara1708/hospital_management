@@ -10,8 +10,17 @@
                     <div class="card-body">
                         <div class="app-brand">
                             <span class="app-brand-logo demo" style="margin-left: 25%">
-                                <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="">
-                            </span>
+                               @if (!empty(get_setting('company_logo')))
+       				 @if (get_setting('company_logo'))
+            				<a href="{{ route('admin.login') }}" class="logo">
+               				 <img class="" src="{{ asset('uploads/' . get_setting('company_logo')) }}" alt="Hospital Logo">
+            				</a>
+        				@endif
+    				@else
+        			<a href="{{ route('admin.login') }}" class="logo">
+            				<img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Hospital Logo">
+        				</a>
+    				@endif                            </span>
                             </a>
                         </div>
                         {{-- <h4 class="mb-3 text-center">Admin Login</h4> --}}
@@ -43,7 +52,7 @@
                                             <label class="form-label text-dark" for="admin-password">Admin Password</label>
                                             <div class="input-group input-group-merge">
                                                 <input type="password" id="admin-password" class="form-control"
-                                                    name="password" placeholder="••••••••••••"
+                                                    name="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                                                     aria-describedby="password" />
                                             </div>
                                             @if ($errors->has('password'))
@@ -74,7 +83,7 @@
                                             <label class="form-label text-dark" for="admin-password">Doctor Password</label>
                                             <div class="input-group input-group-merge">
                                                 <input type="password" id="admin-password" class="form-control"
-                                                    name="password" placeholder="••••••••••••"
+                                                    name="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                                                     aria-describedby="password" />
                                             </div>
                                             @if ($errors->has('password'))
