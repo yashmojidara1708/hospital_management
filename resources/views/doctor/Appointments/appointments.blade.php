@@ -16,7 +16,7 @@
                         <!-- Appointment List -->
                         <div class="appointment-list">
                             <div class="profile-info-widget">
-                                <a href="patient-profile.html" class="booking-doc-img">
+                                <a href="#" class="booking-doc-img">
                                     <img src="assets/img/patients/patient.jpg" alt="User Image">
                                 </a>
                                 <div class="profile-det-info">

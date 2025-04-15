@@ -144,9 +144,9 @@
                                                         <td>{{ isset($appointment->last_visit) ? $appointment->last_visit : '' }}</td>
                                                         <td class="text-right">
                                                             <div class="table-action">
-                                                                <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+                                                                {{-- <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
                                                                     <i class="far fa-eye"></i>
-                                                                </a>
+                                                                </a> --}}
                                                                 <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
                                                                     <i class="fas fa-check"></i>
                                                                 </a>
@@ -314,9 +314,6 @@
                             <td>${appointment.last_visit || ''}</td>
                             <td class="text-right">
                                 <div class="table-action">
-                                    <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
-                                        <i class="far fa-eye"></i>
-                                    </a>
                                     <a href="javascript:void(0);" class="btn btn-sm bg-success-light mark-complete" data-id="${appointment.id}">
                                         <i class="fas fa-check"></i>
                                     </a>

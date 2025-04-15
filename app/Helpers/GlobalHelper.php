@@ -92,10 +92,10 @@ class GlobalHelper
             // Modify the doctor data to include the image HTML
             $doctor->avatar = '
                 <h2 class="table-avatar">
-                    <a href="profile.html" class="avatar avatar-sm mr-2">
+                    <a href="#" class="avatar avatar-sm mr-2">
                         <img src="' . $imageUrl . '" width="50" height="50" class="rounded-circle" alt="User Image">
                     </a>
-                    <a href="profile.html">' . e($doctor->name) . '</a>
+                    <a href="#">' . e($doctor->name) . '</a>
                 </h2>';
 
             return $doctor;
