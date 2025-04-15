@@ -8,7 +8,7 @@ class Doctor extends Model
 {
     //
     protected $primaryKey = 'id';
-    protected $table = 'Doctors';
+    protected $table = 'doctors';
     public $timestamps = false;
 
     // Fillable properties for mass assignment

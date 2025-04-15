@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Patients extends Model
 {
     protected $primaryKey = 'patient_id';
-    protected $table = 'Patients';
+    protected $table = 'patients';
     public $timestamps = false;
 
     // Fillable properties for mass assignment

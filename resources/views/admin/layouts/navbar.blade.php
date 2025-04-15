@@ -2,24 +2,24 @@
 <div class="header-left">
     @if (!empty(get_setting('company_logo')))
         @if (get_setting('company_logo'))
-            <a href="index.html" class="logo">
+            <a href="{{ route('admin.home') }}" class="logo">
                 <img class="" src="{{ asset('uploads/' . get_setting('company_logo')) }}" alt="Hospital Logo">
             </a>
         @endif
     @else
-        <a href="index.html" class="logo">
+        <a href="{{ route('admin.home') }}" class="logo">
             <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Hospital Logo">
         </a>
     @endif
     {{-- Favicon Icon --}}
     @if (!empty(get_setting('favicon')))
         @if (get_setting('favicon'))
-            <a href="index.html" class="logo logo-small">
+            <a href="{{ route('admin.home') }}" class="logo logo-small">
                 <img class="" src="{{ asset('uploads/' . get_setting('favicon')) }}" alt="Hospital Logo">
             </a>
         @endif
     @else
-        <a href="index.html" class="logo logo-small">
+        <a href="{{ route('admin.home') }}" class="logo logo-small">
             <img src="{{ asset('assets/admin/theme/img/logo.png') }}" alt="Hospital Logo">
         </a>
     @endif
