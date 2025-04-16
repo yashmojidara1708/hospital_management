@@ -31,10 +31,21 @@ class RoomController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    public function toggleStatus(Request $request)
+    {
+        $role =Room::find($request->id);
+        if ($role) {
+            $role->status = $request->status;
+            $role->save();
+            return response()->json(['message' => 'Status updated successfully.']);
+        }
+        return response()->json(['message' => 'Role not found!'], 404);
+    }
+
     public function store(Request $request)
     {
         $response = ['status' => 0, 'message' => "Something went wrong!"];
-        
+
         $roomId = $request->input('hidden_room_id');
 
         // Validation rules
@@ -56,7 +67,7 @@ class RoomController extends Controller
 
         // Validate request data
         $validator = Validator::make($request->all(), $rules, $messages);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 0, 'errors' => $validator->errors()], 422);
         }
@@ -111,13 +122,23 @@ class RoomController extends Controller
     {
         $rooms_data = Room::select('rooms.*', 'rooms_category.name as category_name')
         ->leftJoin('rooms_category', 'rooms.category_id', '=', 'rooms_category.id')
-        ->where('rooms.status', 1) 
+        ->where('rooms.status', 1)
+        ->where('rooms.isdeleted', 0)
         ->get();
-  
+
         return DataTables::of($rooms_data)
             ->addIndexColumn()
             ->addColumn('category_name', function ($row) {
                 return $row->category_name ?: 'N/A'; // If no category found, show 'N/A'
+            })
+            ->addColumn('status', function ($row) {
+                $checked = $row->status ? 'checked' : '';
+                return '
+                <div class="status-toggle">
+                    <input type="checkbox" id="status_' . $row->id . '" class="check toggle-status" data-id="' . $row->id . '" ' . $checked . '>
+                    <label for="status_' . $row->id . '" class="checktoggle">checkbox</label>
+                </div>';
+
             })
             ->addColumn('action', function ($row) {
                 $action = '<div class="dropdown dropup d-flex justify-content-center">
@@ -140,7 +161,7 @@ class RoomController extends Controller
                         </div>';
                 return $action;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['status','action'])
             ->make(true);
     }
 
@@ -184,26 +205,17 @@ class RoomController extends Controller
     public function delete(Request $request)
     {
         $id = $request->id;
-        $response = [
-            'status' => 0,
-            'message' => 'Something went wrong!'
-        ];
-
+        $response['status']  = 0;
+        $response['message']  = "Somthing Goes Wrong!";
         if (is_numeric($id)) {
-            $room = Room::find($id);
-         
-            if ($room) {
-                $room->update(['status' => 0]);
-
+            $delete_room = Room::where('id', $id)->update(['isdeleted' => 1]);
+            if ($delete_room) {
                 $response['status'] = 1;
-                $response['message'] = 'Room category deleted successfully.';
+                $response['message'] = 'Room deleted successfully.';
             } else {
-                $response['message'] = 'Room category not found.';
+                $response['message'] = 'something went wrong.';
             }
-        } else {
-            $response['message'] = 'Invalid ID provided.';
         }
-
         return response()->json($response);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\RoomCategory;
 use Illuminate\Http\Request;
+use App\Models\Room;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -31,26 +32,26 @@ class RoomCategoryController extends Controller
     public function store(Request $request)
     {
         $response = ['status' => 0, 'message' => "Something went wrong!"];
-        
+
         $roomId = $request->input('hidden_room_id');
-    
+
         // Validation rules
         $rules = [
             'room_name' => 'required|string|max:255',
         ];
-    
+
         // Custom error messages
         $messages = [
             'room_name.required' => 'Please enter the room name',
         ];
-    
+
         // Validate request data
         $validator = Validator::make($request->all(), $rules, $messages);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 0, 'errors' => $validator->errors()], 422);
         }
-    
+
         try {
             // Check if the room name already exists (excluding current record if updating)
             $existingRoom = RoomCategory::where('name', $request->room_name)
@@ -58,16 +59,16 @@ class RoomCategoryController extends Controller
                     return $query->where('id', '!=', $roomId);
                 })
                 ->exists();
-    
+
             if ($existingRoom) {
-                return response()->json(['status' => 0, 'message' => 'Room name already exists!'], 409);
+                return response()->json(['status' => 0, 'message' => 'Room name already exists!']);
             }
-    
+
             // Data to insert/update
             $roomData = [
                 'name' => isset($request->room_name) ? $request->room_name : '',
             ];
-    
+
             if ($roomId) {
                 // Update existing room
                 $room = RoomCategory::find($roomId);
@@ -85,7 +86,7 @@ class RoomCategoryController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => 0, 'message' => 'Database error: ' . $e->getMessage()], 500);
         }
-    
+
         return response()->json($response);
     }
     /**
@@ -165,11 +166,18 @@ class RoomCategoryController extends Controller
 
         if (is_numeric($id)) {
             $roomCategory = RoomCategory::find($id);
-            
+
             if ($roomCategory) {
-                $roomCategory->delete();
-                $response['status'] = 1;
-                $response['message'] = 'Room category deleted successfully.';
+                // Check if any room is associated with this category
+                $roomExists = Room::where('category_id', $id)->where('isdeleted', 0)->exists();
+
+                if ($roomExists) {
+                    $response['message'] = 'Cannot delete. Rooms are associated with this room category.';
+                } else {
+                    $roomCategory->delete();
+                    $response['status'] = 1;
+                    $response['message'] = 'Room category deleted successfully.';
+                }
             } else {
                 $response['message'] = 'Room category not found.';
             }

@@ -52,7 +52,7 @@
                                             <label class="form-label text-dark" for="admin-password">Admin Password</label>
                                             <div class="input-group input-group-merge">
                                                 <input type="password" id="admin-password" class="form-control"
-                                                    name="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                                                    name="password" placeholder="Enter your password"
                                                     aria-describedby="password" />
                                             </div>
                                             @if ($errors->has('password'))
@@ -83,7 +83,7 @@
                                             <label class="form-label text-dark" for="admin-password">Doctor Password</label>
                                             <div class="input-group input-group-merge">
                                                 <input type="password" id="admin-password" class="form-control"
-                                                    name="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                                                    name="password" placeholder="Enter your password"
                                                     aria-describedby="password" />
                                             </div>
                                             @if ($errors->has('password'))
